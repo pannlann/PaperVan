@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="WorkflowClient.xsd" >
+  <Globals>
+    <DefaultScreens activation="" credentials=""/>
+  </Globals>
+  <Triggers> 
+    <Actions>
+      <Action name="ZMOB_CHANGE_CONTACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CHANGE_CONTACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_FIRSTNAME_pkKey" pkName="PK_FIRSTNAME" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_LASTNAME_pkKey" pkName="PK_LASTNAME" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_EMAIL_pkKey" pkName="PK_EMAIL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_pkKey" pkName="PK_CONTACT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_TEL_pkKey" pkName="PK_TEL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_FUNCTION_pkKey" pkName="PK_FUNCTION" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_TITLE_pkKey" pkName="PK_CONTACT_TITLE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DEPARTMENT_pkKey" pkName="PK_DEPARTMENT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CHANGE_CONTACT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CHANGE_CONTACT_E_RETURN_attribKey" workflowType="text" attribName="E_RETURN" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CHANGE_CUSTOMER_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CHANGE_CUSTOMER" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_NAME2_pkKey" pkName="PK_NAME2" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_EMAIL_pkKey" pkName="PK_EMAIL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_NAME1_pkKey" pkName="PK_NAME1" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_POSTCODE_pkKey" pkName="PK_POSTCODE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_TEL_pkKey" pkName="PK_TEL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CITY_pkKey" pkName="PK_CITY" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_REGION_pkKey" pkName="PK_REGION" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_FAX_pkKey" pkName="PK_FAX" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_STREET_pkKey" pkName="PK_STREET" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CHANGE_CUSTOMER" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CHANGE_CUSTOMER_S_RETURN_attribKey" workflowType="text" attribName="S_RETURN" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CREATE_CONTACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CREATE_CONTACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_FIRSTNAME_pkKey" pkName="PK_FIRSTNAME" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_FUNCTION_pkKey" pkName="PK_FUNCTION" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_LASTNAME_pkKey" pkName="PK_LASTNAME" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_EMAIL_pkKey" pkName="PK_EMAIL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_TEL_pkKey" pkName="PK_TEL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_TITLE_pkKey" pkName="PK_CONTACT_TITLE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DEPARTMENT_pkKey" pkName="PK_DEPARTMENT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CREATE_CONTACT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CREATE_CONTACT_NEW_CONTACTID_attribKey" workflowType="text" attribName="NEW_CONTACTID" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CREATE_CONTACT_RETURN_STATUS_attribKey" workflowType="text" attribName="RETURN_STATUS" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CREATE_CUSTOMER_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CREATE_CUSTOMER" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_NAME2_pkKey" pkName="PK_NAME2" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_EMAIL_pkKey" pkName="PK_EMAIL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_NAME1_pkKey" pkName="PK_NAME1" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_POSTCODE_pkKey" pkName="PK_POSTCODE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_TEL_pkKey" pkName="PK_TEL" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CITY_pkKey" pkName="PK_CITY" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_REGION_pkKey" pkName="PK_REGION" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_FAX_pkKey" pkName="PK_FAX" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_STREET_pkKey" pkName="PK_STREET" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CREATE_CUSTOMER" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CREATE_CUSTOMER_E_KUNNR_attribKey" workflowType="text" attribName="E_KUNNR" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CREATE_DISPUTE_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CREATE_DISPUTE" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DIST_TEXT_pkKey" pkName="PK_DIST_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_REF_pkKey" pkName="PK_REF" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_pkKey" pkName="PK_CONTACT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CLAIM_AMOUNT_pkKey" pkName="PK_CLAIM_AMOUNT" mboType="decimal"/>		    					
+              <Value sourceType="Key" workflowKey="PK_TITLE_pkKey" pkName="PK_TITLE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CATEGORY_pkKey" pkName="PK_CATEGORY" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CREATE_DISPUTE" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CREATE_DISPUTE_E_RETURN_attribKey" workflowType="text" attribName="E_RETURN" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CREATE_SALES_ACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CREATE_SALES_ACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_QTY_pkKey" pkName="PK_QTY" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_REASON_pkKey" pkName="PK_REASON" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DATE_pkKey" pkName="PK_DATE" mboType="datetime"/>		    					
+              <Value sourceType="Key" workflowKey="PK_OUTCOME_pkKey" pkName="PK_OUTCOME" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DESC_1_pkKey" pkName="PK_DESC_1" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_AMOUNT_pkKey" pkName="PK_AMOUNT" mboType="decimal"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_pkKey" pkName="PK_CONTACT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DOC_NO_pkKey" pkName="PK_DOC_NO" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ACT_TYPE_pkKey" pkName="PK_ACT_TYPE" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ACT_TEXT_pkKey" pkName="PK_ACT_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_VOLUME_pkKey" pkName="PK_VOLUME" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CREATE_SALES_ACT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CREATE_SALES_ACT_E_ACTIVITY_NO_attribKey" workflowType="text" attribName="E_ACTIVITY_NO" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CUSTOMER_CONTACT_LIST_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CUSTOMER_CONTACT_LIST" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_CONTACT_attribKey" workflowType="text" attribName="CONTACT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_PHONE_attribKey" workflowType="text" attribName="PHONE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_EMAIL_attribKey" workflowType="text" attribName="EMAIL" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_FIRST_NAME_attribKey" workflowType="text" attribName="FIRST_NAME" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_LAST_NAME_attribKey" workflowType="text" attribName="LAST_NAME" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_FUNCTION_attribKey" workflowType="text" attribName="FUNCTION" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_DEPARTMENT_attribKey" workflowType="text" attribName="DEPARTMENT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_CONTACT_LIST_TITLE_attribKey" workflowType="text" attribName="TITLE" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CUSTOMER_DISPUTE_LIST_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CUSTOMER_DISPUTE_LIST" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_CASE_ID_attribKey" workflowType="text" attribName="CASE_ID" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_CASE_TITLE_attribKey" workflowType="text" attribName="CASE_TITLE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_CASE_STATUS_attribKey" workflowType="text" attribName="CASE_STATUS" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_REFERENCE_DOC_attribKey" workflowType="text" attribName="REFERENCE_DOC" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_CREATEDBY_attribKey" workflowType="text" attribName="CREATEDBY" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_PROCESSOR_attribKey" workflowType="text" attribName="PROCESSOR" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_DISPUTE_LIST_RESPO_PERS_attribKey" workflowType="text" attribName="RESPO_PERS" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CUSTOMER_LIST_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CUSTOMER_LIST" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_USER_pkKey" pkName="PK_USER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_SALES_OFF_pkKey" pkName="PK_SALES_OFF" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CUSTOMER_LIST" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_CUSTOMER_attribKey" workflowType="text" attribName="CUSTOMER" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_NAME_attribKey" workflowType="text" attribName="NAME" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_ADDRESS_attribKey" workflowType="text" attribName="ADDRESS" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_CREDIT_LIMIT_attribKey" workflowType="number" attribName="CREDIT_LIMIT" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_CREDIT_AVAILABLE_attribKey" workflowType="number" attribName="CREDIT_AVAILABLE" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_CREDIT_USED_attribKey" workflowType="number" attribName="CREDIT_USED" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_CREDIT_BLOCK_attribKey" workflowType="text" attribName="CREDIT_BLOCK" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_PLANT_attribKey" workflowType="text" attribName="PLANT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_TEL_NO_attribKey" workflowType="text" attribName="TEL_NO" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_P1_PTS_attribKey" workflowType="number" attribName="P1_PTS" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_P1_STATUS_attribKey" workflowType="text" attribName="P1_STATUS" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_LIST_ACC_GROUP_attribKey" workflowType="text" attribName="ACC_GROUP" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CUSTOMER_RECENT_ACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_CUSTOMER_RECENT_ACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ACT_MAX_pkKey" pkName="PK_ACT_MAX" mboType="int"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_NO_attribKey" workflowType="text" attribName="ACT_NO" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_CONTACT_attribKey" workflowType="text" attribName="CONTACT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_NAME_attribKey" workflowType="text" attribName="NAME" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_FROM_DATE_attribKey" workflowType="text" attribName="FROM_DATE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_TO_DATE_attribKey" workflowType="text" attribName="TO_DATE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TEXT_attribKey" workflowType="text" attribName="ACT_TEXT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_CREATEDBY_attribKey" workflowType="text" attribName="CREATEDBY" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TYPE_attribKey" workflowType="text" attribName="ACT_TYPE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TYPE_TEXT_attribKey" workflowType="text" attribName="ACT_TYPE_TEXT" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_CUSTOMER_RECENT_ACT_findByPrimaryKey" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findByPrimaryKey" type="search" mbo="ZMOB_CUSTOMER_RECENT_ACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findByPrimaryKey" generateOld="false">
+              <Value sourceType="Key" workflowKey="ZMOB_CUSTOMER_RECENT_ACT_findByPrimaryKey_ACT_NO_paramKey" paramName="ACT_NO" attribName="ACT_NO" mboType="string"/>
+			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ACT_MAX_pkKey" pkName="PK_ACT_MAX" mboType="int"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_NO_attribKey" workflowType="text" attribName="ACT_NO" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_CONTACT_attribKey" workflowType="text" attribName="CONTACT" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_NAME_attribKey" workflowType="text" attribName="NAME" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_FROM_DATE_attribKey" workflowType="text" attribName="FROM_DATE" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_TO_DATE_attribKey" workflowType="text" attribName="TO_DATE" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TEXT_attribKey" workflowType="text" attribName="ACT_TEXT" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_CREATEDBY_attribKey" workflowType="text" attribName="CREATEDBY" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TYPE_attribKey" workflowType="text" attribName="ACT_TYPE" mboType="string"/>
+              <Mapping workflowKey="ZMOB_CUSTOMER_RECENT_ACT_ACT_TYPE_TEXT_attribKey" workflowType="text" attribName="ACT_TYPE_TEXT" mboType="string"/>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_DELETE_CONTACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_DELETE_CONTACT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CONTACT_pkKey" pkName="PK_CONTACT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_DELETE_CONTACT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_DELETE_CONTACT_E_RETURN_attribKey" workflowType="text" attribName="E_RETURN" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_DELETE_CUSTOMER_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_DELETE_CUSTOMER" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_DELETE_CUSTOMER" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_DELETE_CUSTOMER_E_RETURN_attribKey" workflowType="text" attribName="E_RETURN" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_GET_CUSTOMER_ADDRESS_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_GET_CUSTOMER_ADDRESS" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_POSTCODE_attribKey" workflowType="text" attribName="E_POSTCODE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_TEL_attribKey" workflowType="text" attribName="E_TEL" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_REGION_attribKey" workflowType="text" attribName="E_REGION" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_NAME1_attribKey" workflowType="text" attribName="E_NAME1" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_CITY_attribKey" workflowType="text" attribName="E_CITY" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_FAX_attribKey" workflowType="text" attribName="E_FAX" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_NAME2_attribKey" workflowType="text" attribName="E_NAME2" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_EMAIL_attribKey" workflowType="text" attribName="E_EMAIL" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_GET_CUSTOMER_ADDRESS_E_STREET_attribKey" workflowType="text" attribName="E_STREET" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_ORDER_CREATE_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_ORDER_CREATE" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_ORDER_CREATE" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_SALESDOCUMENT_attribKey" workflowType="text" attribName="SALESDOCUMENT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_TYPE_attribKey" workflowType="text" attribName="TYPE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_MESSAGE_attribKey" workflowType="text" attribName="MESSAGE" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_ORDER_CREATE_peer1_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_ORDER_CREATE_peer1" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1_SALESDOCUMENT_attribKey" workflowType="text" attribName="SALESDOCUMENT" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_ORDER_PRODUCT_SEARCH_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_ORDER_PRODUCT_SEARCH" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_FIND_ALT_pkKey" pkName="PK_FIND_ALT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_FIND_NUM_pkKey" pkName="PK_FIND_NUM" mboType="int"/>		    					
+              <Value sourceType="Key" workflowKey="PK_MAX_HITS_pkKey" pkName="PK_MAX_HITS" mboType="int"/>		    					
+              <Value sourceType="Key" workflowKey="PK_STRING_pkKey" pkName="PK_STRING" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_pkKey" pkName="PK_CUSTOMER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ZERO_pkKey" pkName="PK_ZERO" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ATP_QTY_pkKey" pkName="PK_ATP_QTY" mboType="decimal"/>		    					
+              <Value sourceType="Key" workflowKey="PK_PLANT_pkKey" pkName="PK_PLANT" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_MATNR_attribKey" workflowType="text" attribName="MATNR" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_PRODUCT_attribKey" workflowType="text" attribName="PRODUCT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_KG_THS_attribKey" workflowType="number" attribName="KG_THS" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_EA_PACK_attribKey" workflowType="number" attribName="EA_PACK" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_THS_PAL_attribKey" workflowType="number" attribName="THS_PAL" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_STOCK_QTY_attribKey" workflowType="number" attribName="STOCK_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_ATP_QTY_attribKey" workflowType="number" attribName="ATP_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_ATP_UOM_attribKey" workflowType="text" attribName="ATP_UOM" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_ATP2_QTY_attribKey" workflowType="number" attribName="ATP2_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_ATP5_QTY_attribKey" workflowType="number" attribName="ATP5_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_MESSAGES_attribKey" workflowType="text" attribName="MESSAGES" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_FLAG_attribKey" workflowType="text" attribName="FLAG" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_FLAG2_attribKey" workflowType="text" attribName="FLAG2" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_E_LIST_PRICE_attribKey" workflowType="number" attribName="E_LIST_PRICE" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_E_CUST_PRICE_attribKey" workflowType="number" attribName="E_CUST_PRICE" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_E_COST_attribKey" workflowType="number" attribName="E_COST" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_COUNT_attribKey" workflowType="number" attribName="COUNT" mboType="int"/>
+                 <Mapping workflowKey="ZMOB_ORDER_PRODUCT_SEARCH_E_CURRENCY_attribKey" workflowType="text" attribName="E_CURRENCY" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_ORDER_SIMULATE_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_ORDER_SIMULATE" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_ORDER_SIMULATE" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_TYPE_attribKey" workflowType="text" attribName="TYPE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_MESSAGE_attribKey" workflowType="text" attribName="MESSAGE" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_ORDER_SIMULATE_ITEM_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_ORDER_SIMULATE_ITEM" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_ITM_NUMBER_attribKey" workflowType="text" attribName="ITM_NUMBER" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_MATERIAL_attribKey" workflowType="text" attribName="MATERIAL" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_SHORT_TEXT_attribKey" workflowType="text" attribName="SHORT_TEXT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_REQ_QTY_attribKey" workflowType="number" attribName="REQ_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_SALES_UNIT_attribKey" workflowType="text" attribName="SALES_UNIT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_NET_VALUE1_attribKey" workflowType="number" attribName="NET_VALUE1" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_CURR_ISO_attribKey" workflowType="text" attribName="CURR_ISO" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM_PLANT_attribKey" workflowType="text" attribName="PLANT" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_PREVIOUS_PURCHASES_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_PREVIOUS_PURCHASES" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_PREV_pkKey" pkName="PK_CUSTOMER_PREV" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DAYS_pkKey" pkName="PK_DAYS" mboType="int"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_MATNR_attribKey" workflowType="text" attribName="MATNR" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_PRODUCT_attribKey" workflowType="text" attribName="PRODUCT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_KG_THS_attribKey" workflowType="number" attribName="KG_THS" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_EA_PACK_attribKey" workflowType="number" attribName="EA_PACK" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_THS_PAL_attribKey" workflowType="number" attribName="THS_PAL" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_STOCK_QTY_attribKey" workflowType="number" attribName="STOCK_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP_QTY_attribKey" workflowType="number" attribName="ATP_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP_UOM_attribKey" workflowType="text" attribName="ATP_UOM" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP2_QTY_attribKey" workflowType="number" attribName="ATP2_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP5_QTY_attribKey" workflowType="number" attribName="ATP5_QTY" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_MESSAGES_attribKey" workflowType="text" attribName="MESSAGES" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_FLAG_attribKey" workflowType="text" attribName="FLAG" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_FLAG2_attribKey" workflowType="text" attribName="FLAG2" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_LIST_PRICE_attribKey" workflowType="number" attribName="E_LIST_PRICE" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_CUST_PRICE_attribKey" workflowType="number" attribName="E_CUST_PRICE" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_COST_attribKey" workflowType="number" attribName="E_COST" mboType="decimal"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_CURRENCY_attribKey" workflowType="text" attribName="E_CURRENCY" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_COUNT_attribKey" workflowType="number" attribName="COUNT" mboType="int"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_PREVIOUS_PURCHASES_findByPrimaryKey" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findByPrimaryKey" type="search" mbo="ZMOB_PREVIOUS_PURCHASES" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findByPrimaryKey" generateOld="false">
+              <Value sourceType="Key" workflowKey="ZMOB_PREVIOUS_PURCHASES_findByPrimaryKey_MATNR_paramKey" paramName="MATNR" attribName="MATNR" mboType="string"/>
+			
+              <Value sourceType="Key" workflowKey="PK_CUSTOMER_PREV_pkKey" pkName="PK_CUSTOMER_PREV" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DAYS_pkKey" pkName="PK_DAYS" mboType="int"/>		    		
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_MATNR_attribKey" workflowType="text" attribName="MATNR" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_PRODUCT_attribKey" workflowType="text" attribName="PRODUCT" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_KG_THS_attribKey" workflowType="number" attribName="KG_THS" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_EA_PACK_attribKey" workflowType="number" attribName="EA_PACK" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_THS_PAL_attribKey" workflowType="number" attribName="THS_PAL" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_STOCK_QTY_attribKey" workflowType="number" attribName="STOCK_QTY" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP_QTY_attribKey" workflowType="number" attribName="ATP_QTY" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP_UOM_attribKey" workflowType="text" attribName="ATP_UOM" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP2_QTY_attribKey" workflowType="number" attribName="ATP2_QTY" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_ATP5_QTY_attribKey" workflowType="number" attribName="ATP5_QTY" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_MESSAGES_attribKey" workflowType="text" attribName="MESSAGES" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_FLAG_attribKey" workflowType="text" attribName="FLAG" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_FLAG2_attribKey" workflowType="text" attribName="FLAG2" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_LIST_PRICE_attribKey" workflowType="number" attribName="E_LIST_PRICE" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_CUST_PRICE_attribKey" workflowType="number" attribName="E_CUST_PRICE" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_COST_attribKey" workflowType="number" attribName="E_COST" mboType="decimal"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_E_CURRENCY_attribKey" workflowType="text" attribName="E_CURRENCY" mboType="string"/>
+              <Mapping workflowKey="ZMOB_PREVIOUS_PURCHASES_COUNT_attribKey" workflowType="number" attribName="COUNT" mboType="int"/>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+      <Action name="ZMOB_VALIDATE_ACCOUNT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
+        <Methods>
+          <Method name="findAll" type="search" mbo="ZMOB_VALIDATE_ACCOUNT" package="spicersorder:1.4" showCredScreenOnAuthFailure="true" >
+            <InputBinding optype="none" opname="findAll" generateOld="false">
+            </InputBinding>
+            <OutputBinding generateOld="true">			    
+              <Mapping workflowKey="ZMOB_VALIDATE_ACCOUNT" workflowType="list" mboType="list">
+                 <Mapping workflowKey="ZMOB_VALIDATE_ACCOUNT_E_RESULT_attribKey" workflowType="text" attribName="E_RESULT" mboType="string"/>
+              </Mapping>
+
+            </OutputBinding>
+          </Method>
+        </Methods>
+      </Action>
+    </Actions>
+    <Notifications>
+    </Notifications>
+  </Triggers>
+</Workflow>
+        
