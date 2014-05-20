@@ -64,6 +64,23 @@
     width: 120px;
 }
 
+.cust_address {
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.cust_schedule {
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.cust_visit {
+    text-align: left;
+    font-size: 0.8em;
+    width: 170px;
+    float: left;
+}
+
 /* customer credit limit text*/
 .cust_list_crlim_text {
     float: left;

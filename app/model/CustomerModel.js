@@ -37,6 +37,37 @@ Ext.define("PaperVan.model.CustomerModel", {
         }, {
             name : 'accountGroup',
             type : 'string'
-        }]
+        }, {
+            name : 'monday',
+            type : 'string'
+        }, {
+            name : 'tuesday',
+            type : 'string'
+        }, {
+            name : 'wednesday',
+            type : 'string'
+        }, {
+            name : 'thursday',
+            type : 'string'
+        }, {
+            name : 'friday',
+            type : 'string'
+        }, {
+            name : 'saturday',
+            type : 'string'
+        }, {
+            name : 'sunday',
+            type : 'string'
+        }, {
+            name : 'visitPeriod',
+            type : 'string'
+        }, {
+            name : 'sequence',
+            type : 'int'
+        }, {
+            name : 'address',
+            type : 'string'
+        } 
+        ]
     }
 }); 

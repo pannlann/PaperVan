@@ -24,58 +24,40 @@ hwc.processDataMessage = function(incomingWorkflowMessageValue, noUI, loading, f
 var errCallback = function(errorString) {
 	if (errorString.indexOf(DEVICE_NOT_CONNECTED) >= 0) {
 		// no internet connection
-		Ext.Msg.alert('Error', 'Please check your internet connection.', function() {
-			mainContainer.unmask();
+		mainContainer.unmask();
+		reportErrorMessage(CONNECTION_LOST_EXCEPTION, function() {
 		});
 	} else if (errorString.indexOf(DEVICE_TIME_OUT) >= 0) {
-		switch (calledBAPI) {
-			case PRODUCT_SEARCH_BAPI :
-				break;
-			case ACCOUNT_VALIDATION_BAPI :
-				break;
-			case CUSTOMER_LIST_BAPI :
-				Ext.Msg.alert('Error', 'Error when getting customer. Please try again.', function() {
-					mainContainer.unmask();
-				});
-				break;
-			case PREVIOUS_PUR_BAPI :
-				break;
-			case ORDER_SIMULATE_MESSAGE_BAPI :
-				break;
-			case ORDER_SIMULATE_BAPI :
-				break;
-			case ORDER_CREATE_BAPI :
-				break;
-			case CUSTOMER_CONTACT_LIST_BAPI :
-				break;
-			case CUSTOMER_RECENT_ACTIVITY_BAPI :
-				break;
-			case CUSTOMER_ADDRESS_BAPI :
-				break;
-			case ACTIVITY_CREATION_BAPI :
-				break;
-			case CUSTOMER_DISPUTE_LIST_BAPI :
-				break;
-			case DISPUTE_CREATION_BAPI :
-				break;
-			case CHANGE_CONTACT_BAPI :
-				break;
-			case CREATE_CONTACT_BAPI :
-				break;
-			case CREATE_CUSTOMER_BAPI :
-				break;
-			case CHANGE_CUSTOMER_BAPI :
-				break;
-			case DELETE_CUSTOMER_BAPI :
-				break;
-			case DELETE_CONTACT_BAPI :
-				break;
-			default :
-				break;
-		}
+		mainContainer.unmask();
+		reportErrorMessage(TIMEOUT_EXCEPTION, function() {
+			switch (calledBAPI) {
+				case ORDER_CREATE_BAPI :
+					break;
+				case ACTIVITY_CREATION_BAPI :
+					break;
+				case DISPUTE_CREATION_BAPI :
+					break;
+				case CHANGE_CONTACT_BAPI :
+					break;
+				case CREATE_CONTACT_BAPI :
+					break;
+				case CREATE_CUSTOMER_BAPI :
+					break;
+				case CHANGE_CUSTOMER_BAPI :
+					break;
+				case DELETE_CUSTOMER_BAPI :
+					break;
+				case DELETE_CONTACT_BAPI :
+					break;
+				case UPDATE_VAN_SCHEDULE_BAPI:
+					break;
+				default :
+					break;
+			}
+		});
 	} else {
-		Ext.Msg.alert('Error', 'Please try again.', function() {
-			mainContainer.unmask();
+		mainContainer.unmask();
+		reportErrorMessage(UNKNOWN_EXCEPTION, function() {
 		});
 	}
 };
@@ -180,9 +162,106 @@ function afterDataReceived(incomingWorkflowMessage) {
 				var data = mvc.getData(DELETE_CONTACT_BAPI);
 				checkDeleteContactStatus(data, mvc);
 				break;
+
+			case VAN_PRODUCT_LIST_BAPI :
+				var data = mvc.getData(VAN_PRODUCT_LIST_BAPI);
+				saveVanProductData(data, mvc);
+				break;
+
+			case VAN_BATCH_LIST_BAPI :
+				var data = mvc.getData(VAN_BATCH_LIST_BAPI);
+				saveVanBatchData(data, mvc);
+				break;
+
+			case DELETE_VAN_SCHEDULE_BAPI :
+				var data = mvc.getData(DELETE_VAN_SCHEDULE_BAPI);
+				checkDeleteVanScheduleStatus(data, mvc);
+				break;
+
+			case UPDATE_VAN_SCHEDULE_BAPI :
+				var data = mvc.getData(UPDATE_VAN_SCHEDULE_BAPI);
+				saveVanScheduleUpdate(data, mvc);
+				break;
+
+			case ADD_ATTACHMENT_BAPI :
+				var data = mvc.getData(ADD_ATTACHMENT_BAPI);
+				checkAddAttachment(data, mvc);
+				break;
+
+			case CREATE_DELIVERY_BAPI :
+				var data = mvc.getData(CREATE_DELIVERY_BAPI);
+				checkCreateDelivery(data, mvc);
+				break;
+
 			default :
 				break;
 		}
+	}
+}
+
+function checkCreateDelivery(data, message) {
+	if (data) {
+		var items = data.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			//get storage location
+			var theItems = items[0];
+			var status = theItems.getData(CREATE_DELIVERY_BAPI + '_E_RETURN_attribKey').getValue();
+			var deliveryNo = theItems.getData(CREATE_DELIVERY_BAPI + '_E_DELIVERY_attribKey').getValue();
+			if (status == 'S') {
+				Ext.Msg.alert('Order', 'The order ' + orderNumber + ' and delivery ' + deliveryNo + ' has been created successfully', function() {
+					refreshData(true);
+					mainContainer.unmask();
+				});
+			} else if (status == 'E' && deliveryNo != '') {
+				Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery ' + deliveryNo + ' may not sucessfully post good issue. Please PGI manually.', function() {
+					refreshData(true);
+					mainContainer.unmask();
+				});
+			} else {
+				Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery is not. Please create delivery and PGI manually.', function() {
+					refreshData(true);
+					mainContainer.unmask();
+				});
+			}
+		} else {
+			Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery is not. Please create delivery and PGI manually.', function() {
+				refreshData(true);
+				mainContainer.unmask();
+			});
+		}
+	} else {
+		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery is not. Please create delivery and PGI manually.', function() {
+			refreshData(true);
+			mainContainer.unmask();
+		});
+	}
+}
+
+function checkAddAttachment(data, message) {
+	if (data) {
+		var items = data.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			//get storage location
+			var theItems = items[0];
+			var status = theItems.getData(ADD_ATTACHMENT_BAPI + '_E_STATUS_attribKey').getValue();
+			if (status == 'S') {
+				createDelivery(orderNumber);
+			} else {
+				mainContainer.unmask();
+				reportErrorMessage(ADD_ORDER_ATTACHMENT_EXCEPTION, function() {
+				});
+			}
+		} else {
+			mainContainer.unmask();
+			reportErrorMessage(ADD_ORDER_ATTACHMENT_EXCEPTION, function() {
+			});
+		}
+	} else {
+		mainContainer.unmask();
+		reportErrorMessage(ADD_ORDER_ATTACHMENT_EXCEPTION, function() {
+		});
 	}
 }
 
@@ -214,6 +293,44 @@ function checkDeleteCustomerStatus(data, message) {
 	} else {
 		Ext.Msg.alert('Error', 'The customer may be locked by other users. So it cannot be deleted.', function() {
 			mainContainer.unmask();
+		});
+	}
+}
+
+function checkDeleteVanScheduleStatus(data, message) {
+	if (data) {
+		var items = data.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			//get storage location
+			var theItems = items[0];
+			var status = theItems.getData(DELETE_VAN_SCHEDULE_BAPI + '_RETURN_STATUS_attribKey').getValue();
+			if (status == 'S') {
+				Ext.Msg.alert('Contact', 'The contact has succesfully deleted.', function() {
+					mainContainer.unmask();
+					updateRecentVanScheduleDelete();
+					customerTabPop();
+					updateCustomerStore();
+				});
+			} else {
+				mainContainer.unmask();
+				// handling exception raised from BAPI
+				var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+				reportErrorMessage(errorString, function() {
+				});
+			}
+		} else {
+			mainContainer.unmask();
+			// handling exception raised from BAPI
+			var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+			reportErrorMessage(errorString, function() {
+			});
+		}
+	} else {
+		mainContainer.unmask();
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
 		});
 	}
 }
@@ -313,6 +430,8 @@ function saveCustomerAddress(addressData, message) {
 			selectedCustAddr.tel = theItems.getData(CUSTOMER_ADDRESS_BAPI + '_E_TEL_attribKey').getValue();
 			selectedCustAddr.fax = theItems.getData(CUSTOMER_ADDRESS_BAPI + '_E_FAX_attribKey').getValue();
 		}
+
+		selectedCustRecord.custAddr = selectedCustAddr.street + ', ' + selectedCustAddr.city + ' ' + selectedCustAddr.region + ' ' + selectedCustAddr.postcode;
 
 		mainContainer.unmask();
 
@@ -504,23 +623,116 @@ function savePreviousPurchaseData(prevPurData, message) {
 		} else {
 			mainContainer.unmask();
 			// no result return
-			Ext.Msg.alert(NO_RESULT_FOUND_HEADING, NO_RESULT_FOUND_TEXT, function() {
+			Ext.Msg.alert(NO_RESULTS_FOUND_HEADING, NO_RESULTS_FOUND_TEXT, function() {
 			});
 		}
 	} else {
 		mainContainer.unmask();
-		try {
-			// get error message
-			var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
-			// check whether it contains 'NO_RESULTS_FOUND'
-			if (errorString.indexOf(NO_RESULTS_FOUND_EXCEPTION) > 0) {
-				Ext.Msg.alert(NO_RESULT_FOUND_HEADING, NO_RESULT_FOUND_TEXT, function() {
-				});
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
+		});
+	}
+}
+
+function saveVanProductData(vanProductData, message) {
+	if (vanProductData) {
+		var items = vanProductData.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			// reset product Result
+			vanProdResultData = {
+				items : []
+			};
+			console.log('get data from product search MBO');
+			for (var i = 0; i < noOfItems; i++) {
+				var myitem = {};
+				var theItems = items[i];
+				myitem.prodDesc = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_PRODUCT_attribKey').getValue();
+
+				myitem.prodNo = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_MATNR_attribKey').getValue();
+
+				myitem.listPr = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_E_LIST_PRICE_attribKey').getValue();
+
+				myitem.custPr = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_E_CUST_PRICE_attribKey').getValue();
+
+				myitem.uom = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_ATP_UOM_attribKey').getValue();
+
+				myitem.cost = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_E_COST_attribKey').getValue();
+
+				myitem.stock = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_STOCK_QTY_attribKey').getValue();
+				// for traffic light purpose
+				myitem.atpQty = myitem.stock;
+
+				myitem.atp2Qty = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_ATP2_QTY_attribKey').getValue();
+
+				myitem.atp5Qty = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_ATP5_QTY_attribKey').getValue();
+
+				myitem.message = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_MESSAGES_attribKey').getValue();
+
+				myitem.isObs = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_FLAG_attribKey').getValue();
+
+				myitem.isCustPurch = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_FLAG2_attribKey').getValue();
+
+				myitem.kgPerThs = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_KG_THS_attribKey').getValue();
+
+				myitem.thsPerPal = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_THS_PAL_attribKey').getValue();
+
+				myitem.eaPerPk = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_EA_PACK_attribKey').getValue();
+
+				myitem.count = theItems.getData(VAN_PRODUCT_LIST_BAPI + '_COUNT_attribKey').getValue();
+
+				vanProdResultData.items.push(myitem);
 			}
-		} catch (err) {
-			Ext.Msg.alert(TRY_CATCH_ERROR_HEADING, err, function() {
+			console.log('finish getting data from product search MBO');
+
+			updateVanProductResultStore();
+			getVanBatch();
+		} else {
+			mainContainer.unmask();
+			// no result return
+			reportErrorMessage(NO_RESULTS_FOUND_EXCEPTION, function() {
 			});
-		};
+		}
+	} else {
+		mainContainer.unmask();
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
+		});
+	}
+}
+
+function saveVanBatchData(vanBatchData, message) {
+	if (vanBatchData) {
+		var items = vanBatchData.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			// reset product Result
+			vanBatchResultData = {
+				items : []
+			};
+			console.log('get data from product search MBO');
+			for (var i = 0; i < noOfItems; i++) {
+				var myitem = {};
+				var theItems = items[i];
+				myitem.prodNo = theItems.getData(VAN_BATCH_LIST_BAPI + '_PRODUCT_attribKey').getValue().replace(/^0+/, '');
+
+				myitem.batch = theItems.getData(VAN_BATCH_LIST_BAPI + '_BATCH_attribKey').getValue();
+
+				vanBatchResultData.items.push(myitem);
+			}
+			mainContainer.unmask();
+		} else {
+			// no result return
+			mainContainer.unmask();
+		}
+	} else {
+		mainContainer.unmask();
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
+		});
 	}
 }
 
@@ -584,23 +796,15 @@ function saveProductSearchData(productSearchData, message) {
 		} else {
 			mainContainer.unmask();
 			// no result return
-			Ext.Msg.alert(NO_SEARCH_RESULT_HEADING, NO_SEARCH_RESULT_TEXT, function() {
+			reportErrorMessage(NO_RESULTS_FOUND_EXCEPTION, function() {
 			});
 		}
 	} else {
 		mainContainer.unmask();
-		try {
-			// get error message
-			var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
-			// check whether it contains 'TOO_MANY_SEARCH_HITS'
-			if (errorString.indexOf(TOO_MANY_EXCEPTION) > 0) {
-				Ext.Msg.alert(TOO_MANY_RESULT_HEADING, TOO_MANY_RESULT_TEXT, function() {
-				});
-			}
-		} catch (err) {
-			Ext.Msg.alert(TRY_CATCH_ERROR_HEADING, err, function() {
-			});
-		};
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
+		});
 	}
 }
 
@@ -619,7 +823,8 @@ function validateAccount(accountData, message) {
 				savePasswordCredential();
 				credScreen.hide();
 			}
-			getCustomerList('');
+			getCustomerList('', 'X', '', '');
+			updateCustomerListTitle();
 		} else {
 			mainContainer.unmask();
 			showIncorrectPasswordAlert();
@@ -694,6 +899,52 @@ function saveActivityNumber(activty, mvc) {
 	} else {
 		Ext.Msg.alert('Error', 'An error has occurred. An activity may not be created', function() {
 			mainContainer.unmask();
+		});
+	}
+	mainContainer.unmask();
+}
+
+function saveVanScheduleUpdate(data, mvc) {
+	var returnStatus = null;
+	if (data) {
+		var items = data.getValue();
+		var noOfItems = items.length;
+		if (noOfItems > 0) {
+			console.log('get message from order creation MBO');
+			var myitem = {};
+			var theItems = items[0];
+			returnStatus = theItems.getData(UPDATE_VAN_SCHEDULE_BAPI + '_RETURN_STATUS_attribKey').getValue();
+		}
+	}
+
+	if (returnStatus == 'S') {
+		Ext.Msg.alert('Van', 'The schedule has been changed successfully.', function() {
+			// update customer record from changed data
+			var updateCustomerRecord = customerData.items.find({
+				custNo : selectedCust
+			});
+			updateCustomerRecord.visitPeriod = tempChangeCustomer.visitPeriod;
+			updateCustomerRecord.monday = tempChangeCustomer.monday;
+			updateCustomerRecord.tuesday = tempChangeCustomer.tuesday;
+			updateCustomerRecord.wednesday = tempChangeCustomer.wednesday;
+			updateCustomerRecord.thursday = tempChangeCustomer.thursday;
+			updateCustomerRecord.friday = tempChangeCustomer.friday;
+			updateCustomerRecord.saturday = tempChangeCustomer.saturday;
+			updateCustomerRecord.sunday = tempChangeCustomer.sunday;
+			customerData.items.remove({
+				custNo : selectedCust
+			});
+			customerData.items.splice(0, 0, updateCustomerRecord);
+			tempChangeCustomer = {};
+			updateCustomerStore();
+			mainContainer.unmask();
+			customerTabPop();
+		});
+	} else {
+		mainContainer.unmask();
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
 		});
 	}
 	mainContainer.unmask();
@@ -890,10 +1141,14 @@ function saveOrderNumber(order, mvc) {
 		message = 'The quote ';
 	}
 
-	if (orderNumber != null) {
-		Ext.Msg.alert(header, message + orderNumber + ' has been created successfully.', function() {
-			refreshData(true);
-		});
+	if (orderNumber != null && orderNumber != '') {
+		if (isVanOrder) {
+			addOrderAttachment(orderNumber);
+		} else {
+			Ext.Msg.alert('Order', 'The order ' + orderNumber + ' has been created successfully', function() {
+				refreshData(true);
+			});
+		}
 	} else {
 		Ext.Msg.alert('Error', 'An error has occurred. ' + message + ' may not be created', function() {
 			refreshData(false);
@@ -1007,8 +1262,6 @@ function saveCustomerListData(customerListData, message) {
 
 				myitem.creditUsed = theItems.getData(CUSTOMER_LIST_BAPI + '_CREDIT_USED_attribKey').getValue();
 
-				myitem.custAddr = theItems.getData(CUSTOMER_LIST_BAPI + '_ADDRESS_attribKey').getValue();
-
 				myitem.creditBlock = theItems.getData(CUSTOMER_LIST_BAPI + '_CREDIT_BLOCK_attribKey').getValue();
 
 				myitem.plant = theItems.getData(CUSTOMER_LIST_BAPI + '_PLANT_attribKey').getValue();
@@ -1021,46 +1274,45 @@ function saveCustomerListData(customerListData, message) {
 
 				myitem.accountGroup = theItems.getData(CUSTOMER_LIST_BAPI + '_ACC_GROUP_attribKey').getValue();
 
+				myitem.monday = theItems.getData(CUSTOMER_LIST_BAPI + '_MONDAY_attribKey').getValue();
+
+				myitem.tuesday = theItems.getData(CUSTOMER_LIST_BAPI + '_TUESDAY_attribKey').getValue();
+
+				myitem.wednesday = theItems.getData(CUSTOMER_LIST_BAPI + '_WEDNESDAY_attribKey').getValue();
+
+				myitem.thursday = theItems.getData(CUSTOMER_LIST_BAPI + '_THURSDAY_attribKey').getValue();
+
+				myitem.friday = theItems.getData(CUSTOMER_LIST_BAPI + '_FRIDAY_attribKey').getValue();
+
+				myitem.saturday = theItems.getData(CUSTOMER_LIST_BAPI + '_SATURDAY_attribKey').getValue();
+
+				myitem.sunday = theItems.getData(CUSTOMER_LIST_BAPI + '_SUNDAY_attribKey').getValue();
+
+				myitem.visitPeriod = theItems.getData(CUSTOMER_LIST_BAPI + '_VISIT_PERIOD_attribKey').getValue();
+
+				myitem.sequence = theItems.getData(CUSTOMER_LIST_BAPI + '_SEQUENCE_attribKey').getValue();
+
+				myitem.address = theItems.getData(CUSTOMER_LIST_BAPI + '_ADDRESS_attribKey').getValue();
+
 				customerData.items.push(myitem);
 			}
 			console.log('finish getting data from customer list MBO');
+
+			updateCustomerList(message.storage.PK_SALES_OFF_pkKey.value, message.storage.PK_TODAY_FLAG_pkKey.value, message.storage.PK_ALL_FLAG_pkKey.value, message.storage.PK_ALL_VAN_FLAG_pkKey.value);
 			updateCustomerStore();
 			mainContainer.unmask();
 		} else {
 			mainContainer.unmask();
-			// no result return
-			Ext.Msg.alert(NO_CUST_RESULT_HEADING, NO_CUST_RESULT_TEXT, function() {
+			// no customer returned
+			reportErrorMessage(NO_CUSTOMERS_FOUND_EXCEPTION, function() {
 			});
 		}
 	} else {
 		mainContainer.unmask();
-		// handling exeption raised from BAPI
-		try {
-			// get error message
-			var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
-
-			var alertHeader;
-			var alertDetail;
-			// check exeption
-			if (errorString.indexOf(INVALID_USER_EXCEPTION) > 0) {
-				alertHeader = USR_ACCOUNT_ERROR_HEADING;
-				alertDetail = '';
-			} else if (errorString.indexOf(NO_CUSTOMERS_FOUND) > 0) {
-				alertHeader = NO_CUST_RESULT_HEADING;
-				alertDetail = NO_CUST_RESULT_TEXT;
-			} else if (errorString.indexOf(REP_NOT_ASSIGNED) > 0) {
-				alertHeader = USR_ACCOUNT_ERROR_HEADING;
-				alertDetail = NO_CUST_RESULT_TEXT;
-			} else if (errorString.indexOf(NO_SALES_OFFICE) > 0) {
-				alertHeader = USR_ACCOUNT_ERROR_HEADING;
-				alertDetail = NO_SALES_OFFICE_RESULT_TEXT;
-			}
-			Ext.Msg.alert(alertHeader, alertDetail, function() {
-			});
-		} catch (err) {
-			Ext.Msg.alert(TRY_CATCH_ERROR_HEADING, err, function() {
-			});
-		};
+		// handling exception raised from BAPI
+		var errorString = message.getData('ErrorLogs').getValue()[0].getData('ErrorLogMessage').getValue();
+		reportErrorMessage(errorString, function() {
+		});
 	}
 }
 
@@ -1073,13 +1325,13 @@ function includeCss() {
 	if (hwc.isIPad() || hwc.isWindows()) {
 		cssfile = "PaperVan_iPad.css";
 		fieldLabelWidth = '30%';
-		signatureWidth = 300;
-		signatureHeight = 100;
+		signatureWidth = 500;
+		signatureHeight = 400;
 	} else {
 		cssfile = "PaperVan.css";
 		fieldLabelWidth = '50%';
-		signatureWidth = 120;
-		signatureHeight = 60;
+		signatureWidth = 300;
+		signatureHeight = 200;
 	}
 
 	var headID = document.getElementsByTagName("head")[0];
@@ -1088,4 +1340,76 @@ function includeCss() {
 	newScript.rel = "stylesheet";
 	newScript.href = "app/resource/css/" + cssfile;
 	headID.appendChild(newScript);
+}
+
+function reportErrorMessage(errorString, callbackFunction) {
+	var alertHeader;
+	var alertDetail;
+	var saveLog = false;
+	// check exeption
+	if (errorString.indexOf(INVALID_USER_EXCEPTION) >= 0) {
+		alertHeader = USR_ACCOUNT_ERROR_HEADING;
+		alertDetail = '';
+	} else if (errorString.indexOf(NO_CUSTOMERS_FOUND_EXCEPTION) >= 0) {
+		alertHeader = NO_CUST_RESULT_HEADING;
+		alertDetail = NO_CUST_RESULT_TEXT;
+	} else if (errorString.indexOf(NO_SALES_OFFICE_EXCEPTION) >= 0) {
+		alertHeader = USR_ACCOUNT_ERROR_HEADING;
+		alertDetail = NO_SALES_OFFICE_RESULT_TEXT;
+	} else if (errorString.indexOf(VAN_NOT_ASSIGNED_EXCEPTION) >= 0) {
+		alertHeader = USR_ACCOUNT_ERROR_HEADING;
+		alertDetail = NO_VAN_RESULT_TEXT;
+	} else if (errorString.indexOf(INPUT_ERROR_EXCEPTION) >= 0) {
+		alertHeader = INPUT_ERROR_HEADING;
+		alertDetail = ERROR_INPUT_RESULT_TEXT;
+		saveLog = true;
+	} else if (errorString.indexOf(CONNECTION_LOST_EXCEPTION) >= 0) {
+		alertHeader = CONNECTION_LOST_HEADING;
+		alertDetail = CONNECTION_LOST_TEXT;
+	} else if (errorString.indexOf(TIMEOUT_EXCEPTION) >= 0) {
+		alertHeader = TIMEOUT_HEADING;
+		alertDetail = TIMEOUT_TEXT;
+	} else if (errorString.indexOf(NO_RESULTS_FOUND_EXCEPTION) >= 0) {
+		alertHeader = NO_SEARCH_RESULT_HEADING;
+		alertDetail = NO_SEARCH_RESULT_TEXT;
+	} else if (errorString.indexOf(VAN_NOT_ASSIGNED_EXCEPTION) >= 0) {
+		alertHeader = VAN_NOT_ASSIGNED_HEADING;
+		alertDetail = VAN_NOT_ASSIGNED_TEXT;
+	} else if (errorString.indexOf(UPDATE_VAN_SCHEDULE_EXCEPTION) >= 0) {
+		alertHeader = UPDATE_VAN_SCHEDULE_HEADING;
+		alertDetail = UPDATE_VAN_SCHEDULE_TEXT;
+	} else if (errorString.indexOf(DELETE_VAN_SCHEDULE_EXCEPTION) >= 0) {
+		alertHeader = DELETE_VAN_SCHEDULE_HEADING;
+		alertDetail = DELETE_VAN_SCHEDULE_TEXT;
+	} else if (errorString.indexOf(LINK_ATTACHMENT_EXCEPTION) >= 0) {
+		alertHeader = LINK_ATTACHMENT_HEADING;
+		alertDetail = LINK_ATTACHMENT_TEXT;
+	} else if (errorString.indexOf(CREATE_IMAGE_EXCEPTION) >= 0) {
+		alertHeader = CREATE_IMAGE_HEADING;
+		alertDetail = CREATE_IMAGE_TEXT;
+	} else if (errorString.indexOf(CREATE_NOTE_EXCEPTION) >= 0) {
+		alertHeader = CREATE_NOTE_HEADING;
+		alertDetail = CREATE_NOTE_TEXT;
+	} else if (errorString.indexOf(DELIVERY_PGI_EXCEPTION) >= 0) {
+		alertHeader = DELIVERY_PGI_HEADING;
+		alertDetail = DELIVERY_PGI_TEXT;
+	} else if (errorString.indexOf(DELIVERY_CREATION_EXCEPTION) >= 0) {
+		alertHeader = DELIVERY_CREATION_HEADING;
+		alertDetail = DELIVERY_CREATION_TEXT;
+	} else if (errorString.indexOf(ADD_ORDER_ATTACHMENT_EXCEPTION) >= 0) {
+		alertHeader = ADD_ORDER_ATTACHMENT_HEADING;
+		alertDetail = ADD_ORDER_ATTACHMENT_TEXT;
+	} else if (errorString.indexOf(PLANT_NOT_ASSIGNED_EXCEPTION) >= 0) {
+		alertHeader = PLANT_NOT_ASSIGNED_HEADING;
+		alertDetail = PLANT_NOT_ASSIGNED_TEXT;
+	} else {
+		alertHeader = "Unknown error";
+		alertDetail = "Please contact IT";
+		saveLog = true;
+	}
+	if (saveLog) {
+		hwc.log("Error log: " + errorString, "ERROR", false);
+	}
+	Ext.Msg.alert(alertHeader, alertDetail, callbackFunction);
+
 }

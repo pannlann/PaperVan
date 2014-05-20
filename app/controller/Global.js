@@ -13,7 +13,20 @@ var calledBAPI;
 var userStorageLoc;
 var storageLocOptions;
 var customerPlant;
+var isVanOrder;
+var currentGeoLocation;
+var customerGrouper;
+var vanBatchResultData = {
+	items : []
+};
 var orderMessage = {
+	items : []
+};
+
+var prodResultData = {
+	items : []
+};
+var vanProdResultData = {
 	items : []
 };
 var isInOrderConfirmationScreen = false;
@@ -71,6 +84,17 @@ if (hwc.isWindows()) {
 			plant : '3610'
 		}]
 	};
+
+	vanBatchResultData.items = [{
+		prodNo : '200003',
+		batch : 'batch1'
+	}, {
+		prodNo : '200003',
+		batch : 'batch2'
+	}, {
+		prodNo : '200002',
+		batch : 'batch3'
+	}];
 
 }
 
@@ -194,6 +218,3 @@ var favoriteData = {
 	}]
 }
 
-var prodResultData = {
-	items : []
-};

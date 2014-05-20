@@ -14,6 +14,8 @@ Ext.define('PaperVan.view.Main', {
 		items : [{
 			xclass : 'PaperVan.view.Customers'
 		}, {
+			xclass : 'PaperVan.view.VanProducts'
+		}, {
 			xclass : 'PaperVan.view.Products'
 		}, {
 			xclass : 'PaperVan.view.PreviousPurchase'
@@ -22,4 +24,4 @@ Ext.define('PaperVan.view.Main', {
 		}]
 
 	}
-}); 
+});

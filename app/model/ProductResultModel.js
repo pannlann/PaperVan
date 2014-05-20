@@ -58,6 +58,9 @@ Ext.define("PaperVan.model.ProductResultModel", {
         }, {
             name : 'count',
             type : 'int'
+        }, {
+        	name : 'batch',
+        	type : 'string'
         }]
     }
 }); 

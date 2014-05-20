@@ -30,8 +30,33 @@ Ext.define('PaperVan.controller.Controller', {
 			customerDetailOption : 'customerDetailOption',
 			customerCreate : 'customerCreate',
 			customerChange : 'customerChange',
+			vanProductTab : 'vanProductTab',
+			vanProductResultList : 'vanProductResultList',
+			vanScheduleUpdate : 'vanScheduleUpdate',
 		},
 		control : {
+
+			'vanProductTab button[itemId=vanAddToCartButton]' : {
+				tap : 'onAddToCartTap'
+			},
+
+			vanProductTab : {
+				back : 'onVanProductTabBack',
+				pop : 'onVanProductTabBack',
+			},
+
+			'vanProductTab button[itemId=vanRefreshButton]' : {
+				tap : 'onVanRefreshButtonTap',
+			},
+
+			'vanProductTab button[itemId=vanSortButton]' : {
+				tap : 'onSortTap'
+			},
+
+			vanScheduleUpdate : {
+				initialize : 'onVanScheduleUpdateInit',
+			},
+
 			customerCreate : {
 				initialize : 'onCustomerCreateInit',
 			},
@@ -117,8 +142,13 @@ Ext.define('PaperVan.controller.Controller', {
 				clearicontap : 'onClearSearch',
 				keyup : 'onSearchKeyUp'
 			},
+			'mainPanel searchfield[itemId=vanProductSearch]' : {
+				clearicontap : 'onClearVanSearch',
+				keyup : 'onVanSearchKeyUp'
+			},
 			customerList : {
 				select : 'onCustomerListSelect',
+				itemdoubletap : 'onCustomerListDoubleTap',
 				initialize : 'onCustListIniialize'
 			},
 
@@ -145,6 +175,11 @@ Ext.define('PaperVan.controller.Controller', {
 			productResultList : {
 				activate : 'onProductResultActivate',
 				select : 'onProductResultListSelect'
+			},
+
+			vanProductResultList : {
+				activate : 'onVanProductResultActivate',
+				select : 'onVanProductResultListSelect'
 			},
 
 			'productTab button[itemId=productSortButton]' : {
@@ -191,6 +226,10 @@ Ext.define('PaperVan.controller.Controller', {
 				tap : 'onCreateOrderButtonTap'
 			},
 
+			'cartOrder button[itemId=signatureConfirmButton]' : {
+				tap : 'onSignatureConfirmButtonTap'
+			},
+
 			'cartOrderDetail selectfield[itemId=orderType]' : {
 				change : 'onOrderTypeChange'
 			},
@@ -214,7 +253,6 @@ Ext.define('PaperVan.controller.Controller', {
 			},
 
 			'previousPurchaseTab button[itemId=preAddToCartButton]' : {
-				painted : 'onPreAddButtonPainted',
 				tap : 'onAddToCartTap'
 			},
 
@@ -277,8 +315,48 @@ Ext.define('PaperVan.controller.Controller', {
 			'customerDetailOption button[itemId=deleteCustomerOption]' : {
 				tap : 'onDeleteCustomerOptionTap',
 			},
+			'customerContainerOption button[itemId=updateVanScheduleButton]' : {
+				tap : 'onUpdateVanScheduleButtonTap',
+			},
+			'customerTab button[itemId=deleteVanScheduleButton]' : {
+				tap : 'onVanScheduleDeleteButtonTap'
+			},
+			'vanScheduleUpdate button[itemId=vanScheduleUpdateButton]' : {
+				tap : 'onVanScheduleUpdateButtonTap'
+			}
 		}
 	},
+
+	onVanScheduleUpdateButtonTap : function(button) {
+		var visitPeriod = Ext.ComponentQuery.query('#vanRoutineSelect')[0].getValue();
+		var monday = (Ext.ComponentQuery.query('#vanRoutineMon')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineMon')[0].getValue() : "");
+		var tuesday = (Ext.ComponentQuery.query('#vanRoutineTue')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineTue')[0].getValue() : "");
+		var wednesday = (Ext.ComponentQuery.query('#vanRoutineWed')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineWed')[0].getValue() : "");
+		var thursday = (Ext.ComponentQuery.query('#vanRoutineThu')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineThu')[0].getValue() : "");
+		var friday = (Ext.ComponentQuery.query('#vanRoutineFri')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineFri')[0].getValue() : "");
+		var saturday = (Ext.ComponentQuery.query('#vanRoutineSat')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineSat')[0].getValue() : "");
+		var sunday = (Ext.ComponentQuery.query('#vanRoutineSun')[0].getChecked() == true ? Ext.ComponentQuery.query('#vanRoutineSun')[0].getValue() : "");
+
+		tempChangeCustomer.custNo = selectedCust;
+		tempChangeCustomer.visitPeriod = visitPeriod;
+		tempChangeCustomer.monday = monday;
+		tempChangeCustomer.tuesday = tuesday;
+		tempChangeCustomer.wednesday = wednesday;
+		tempChangeCustomer.thursday = thursday;
+		tempChangeCustomer.friday = friday;
+		tempChangeCustomer.saturday = saturday;
+		tempChangeCustomer.sunday = sunday;
+
+		changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+	},
+	onVanScheduleDeleteButtonTap : function(button) {
+		deleteVanSchedule();
+	},
+
+	onVanRefreshButtonTap : function(button) {
+		getVanProduct();
+	},
+
 	onTextAreaBlur : function(textArea) {
 		textArea.parent.parent.getScrollable().getScroller().setDisabled(false);
 
@@ -301,12 +379,31 @@ Ext.define('PaperVan.controller.Controller', {
 	onRefreshCustomerOptionSelectChange : function(select, newValue, oldValue) {
 		if (newValue != '') {
 			var salesOffice;
-			if (newValue != MY_CUSTOMER_FLAG) {
-				salesOffice = newValue;
-			} else {
+			var todayCustomerFlag;
+			var allCustomerFlag;
+			var allVanCustomerFlag;
+			if (newValue == MY_CUSTOMER_FLAG) {
 				salesOffice = '';
+				todayCustomerFlag = '';
+				allCustomerFlag = 'X';
+				allVanCustomerFlag = '';
+			} else if (newValue == TODAY_CUSTOMER_FLAG) {
+				salesOffice = '';
+				todayCustomerFlag = 'X';
+				allCustomerFlag = '';
+				allVanCustomerFlag = '';
+			} else if (newValue == VAN_CUSTOMER_FLAG) {
+				salesOffice = '';
+				todayCustomerFlag = '';
+				allCustomerFlag = '';
+				allVanCustomerFlag = 'X';
+			} else {
+				salesOffice = newValue;
+				todayCustomerFlag = '';
+				allCustomerFlag = '';
+				allVanCustomerFlag = '';
 			}
-			getCustomerList(salesOffice);
+			getCustomerList(salesOffice, todayCustomerFlag, allCustomerFlag, allVanCustomerFlag);
 		}
 	},
 
@@ -368,6 +465,82 @@ Ext.define('PaperVan.controller.Controller', {
 		var availableDisputeField = Ext.ComponentQuery.query('#availableDisputeSelect')[0];
 		availableDisputeField.setOptions(availableContact);
 		availableDisputeField.setReadOnly(isContactReadOnly);
+	},
+
+	onUpdateVanScheduleButtonTap : function(button) {
+		console.log('onUpdateVanScheduleButton');
+
+		if (selectedCust != null) {
+			customerContainerOption.hide();
+			var customerTab = Ext.ComponentQuery.query('customerTab')[0];
+
+			customerTab.push({
+				xtype : 'vanScheduleUpdate',
+			});
+
+			//update van schedule screen
+			if (selectedCustRecord.visitPeriod != '') {
+				Ext.ComponentQuery.query('#vanRoutineSelect')[0].setValue(selectedCustRecord.visitPeriod);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineSelect')[0].setValue('W');
+			}
+			if (selectedCustRecord.monday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineMon')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineMon')[0].setChecked(false);
+			}
+			if (selectedCustRecord.tuesday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineTue')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineTue')[0].setChecked(false);
+			}
+			if (selectedCustRecord.wednesday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineWed')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineWed')[0].setChecked(false);
+			}
+			if (selectedCustRecord.thursday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineThu')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineThu')[0].setChecked(false);
+			}
+			if (selectedCustRecord.friday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineFri')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineFri')[0].setChecked(false);
+			}
+			if (selectedCustRecord.saturday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineSat')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineSat')[0].setChecked(false);
+			}
+			if (selectedCustRecord.sunday == 'X') {
+				Ext.ComponentQuery.query('#vanRoutineSun')[0].setChecked(true);
+			} else {
+				Ext.ComponentQuery.query('#vanRoutineSun')[0].setChecked(false);
+			}
+
+			var button = Ext.ComponentQuery.query('#customerContainerOptionButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+			button = Ext.ComponentQuery.query('#customerDetailButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+			button = Ext.ComponentQuery.query('#customerExitButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+			button = Ext.ComponentQuery.query('#deleteVanScheduleButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+		} else {
+			Ext.Msg.alert('Alert', 'Please select customer before proceeding', function() {
+			});
+		}
+
 	},
 
 	onChangeCustomerButtonTap : function(button) {
@@ -635,6 +808,42 @@ Ext.define('PaperVan.controller.Controller', {
 		if (button.length > 0) {
 			button[0].setHidden(false);
 		}
+		button = Ext.ComponentQuery.query('#deleteVanScheduleButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+	},
+
+	onVanScheduleUpdateInit : function(customerCreate) {
+		console.log('van update init');
+		var button = Ext.ComponentQuery.query('#customerExitButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#customerContainerOptionButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#customerDetailButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#createActivityButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#createDisputeButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#customerDetailOptionButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+		button = Ext.ComponentQuery.query('#deleteVanScheduleButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
 	},
 
 	onCustomerCreateInit : function(customerCreate) {
@@ -663,12 +872,42 @@ Ext.define('PaperVan.controller.Controller', {
 		if (button.length > 0) {
 			button[0].setHidden(true);
 		}
+		button = Ext.ComponentQuery.query('#vanScheduleUpdateButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+	},
+
+	onVanProductTabBack : function(vanProductTab) {
+		if (vanProductTab.getActiveItem().getItemId() == 'vanProductContainer') {
+
+			// show delete all button
+			var button = Ext.ComponentQuery.query('#vanExitButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+
+			button = Ext.ComponentQuery.query('#vanRefreshButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+
+			button = Ext.ComponentQuery.query('#vanSortButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+
+			button = Ext.ComponentQuery.query('#vanAddToCartButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+		}
 	},
 
 	onCustomerTabBack : function(customerTab) {
 		console.log('back to custTab');
 		if (customerTab.getActiveItem().getItemId() == 'customerContainer') {
-
+			updateCustomerListTitle();
 			// show delete all button
 			var button = Ext.ComponentQuery.query('#customerExitButton');
 			if (button.length > 0) {
@@ -694,10 +933,15 @@ Ext.define('PaperVan.controller.Controller', {
 			if (button.length > 0) {
 				button[0].setHidden(true);
 			}
-			// button = Ext.ComponentQuery.query('#createActButton');
-			// if (button.length > 0) {
-			// button[0].setHidden(true);
-			// }
+			button = Ext.ComponentQuery.query('#vanScheduleUpdateButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+			button = Ext.ComponentQuery.query('#deleteVanScheduleButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+
 		}
 	},
 
@@ -871,32 +1115,37 @@ Ext.define('PaperVan.controller.Controller', {
 	},
 
 	onCustomerDetailButtonTap : function(button) {
+		getCustomerDetail();
+	},
 
-		if (selectedCust != null) {
-			// call R3 BAPI to get list of contacts
-			if (hwc.isIOS()) {
-				getCustomerContactList();
-			} else {
-				//call customer main view
-				console.log('customer detail');
-				var customerTab = Ext.ComponentQuery.query('customerTab')[0];
-
-				customerTab.push({
-					xtype : 'customerMain',
-					id : 'customerMain',
-					title : 'Customer Detail'
-				});
-			}
-
-		} else {
-			Ext.Msg.alert('Alert', 'Please select customer before proceeding', function() {
-			});
-		}
-
+	onSignatureConfirmButtonTap : function() {
+		// open up signature capturing screen
+		showConfirmDelivery();
 	},
 
 	onCreateOrderButtonTap : function() {
-		createOrder();
+		if (isVanOrder) {
+			//check print name, check and signature first
+			var signatureField = Ext.ComponentQuery.query('#signatureField')[0].getValue();
+			var confirmCheck = Ext.ComponentQuery.query('#vanConfirmDeliveryConfirm')[0].getChecked();
+			var deliveryName = Ext.ComponentQuery.query('#vanConfirmDeliveryName')[0].getValue();
+
+			if (signatureField == null) {
+				Ext.Msg.alert('Alert', 'Please enter a signature', function() {
+				});
+			} else if (deliveryName.length == 0) {
+				Ext.Msg.alert('Alert', 'Please enter recipient\'s name', function() {
+				});
+			} else if (confirmCheck == false) {
+				Ext.Msg.alert('Alert', 'Please check to confirm receipt', function() {
+				});
+			} else {
+				createOrder();
+			}
+
+		} else {
+			createOrder();
+		}
 	},
 
 	onCartOrderBack : function(cartOrder) {
@@ -938,6 +1187,11 @@ Ext.define('PaperVan.controller.Controller', {
 			if (button.length > 0) {
 				button[0].setHidden(true);
 			}
+
+			button = Ext.ComponentQuery.query('#signatureConfirmButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
 		}
 	},
 
@@ -946,6 +1200,7 @@ Ext.define('PaperVan.controller.Controller', {
 		var messageStoreCount = orderMessage.items.length;
 		var orderItemStoreCount = simulatedOrder.items.length;
 		var tempHeight;
+		var button;
 
 		// update message and item store before show order confirmation screem
 		updateOrderItemStore();
@@ -962,6 +1217,27 @@ Ext.define('PaperVan.controller.Controller', {
 				tempHeight = (orderItemStoreCount * LIST_IPHONE_HEIGHT) + HEADER_HEIGHT;
 			}
 			this.getOrderItemList().element.setHeight(tempHeight);
+		}
+
+		if (isVanOrder) {
+			button = Ext.ComponentQuery.query('#createOrderButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+			button = Ext.ComponentQuery.query('#signatureConfirmButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+		} else {
+			button = Ext.ComponentQuery.query('#createOrderButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+			button = Ext.ComponentQuery.query('#signatureConfirmButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+
 		}
 
 	},
@@ -992,7 +1268,7 @@ Ext.define('PaperVan.controller.Controller', {
 	},
 
 	onDeliveringPlantChange : function(select, newValue, oldValue) {
-		updateCartStorageLoc(newValue);
+		//updateCartStorageLoc(newValue);
 	},
 
 	onOrderConfirmation : function() {
@@ -1009,20 +1285,43 @@ Ext.define('PaperVan.controller.Controller', {
 				cartTab.setActiveItem(1);
 			})
 		} else {
-			getOrderConfirmation();
-		}
-	},
 
-	onDirectCustomerButtonTap : function() {
-		getCustomerList('');
+			Ext.Msg.show({
+				title : 'Order confirmation',
+				message : 'Where do stocks come from?',
+				scope : this,
+				buttons : [{
+					itemId : 'v',
+					text : 'Van'
+				}, {
+					itemId : 'w',
+					text : 'Warehouse'
+				}],
+				fn : function(btn) {
+					if (btn == 'v') {
+						isVanOrder = true;
+					} else if (btn == 'w') {
+						isVanOrder = false;
+					}
+					if (hwc.isIOS()) {
+						getOrderConfirmation();
+					} else {
+						showOrderSimulation();
+					}
+
+				}
+			});
+
+		}
 	},
 
 	onCustListIniialize : function() {
 		console.log('customer List is init');
+		//save initi group to memory for later use
+		customerGrouper = Ext.getStore('customer').getGrouper();
 		if (hwc.isWindows) {
 			updateCustomerStore();
 		}
-		// getCustomerList(' ');
 	},
 
 	onChangeTab : function(mainPanel, value, oldValue) {
@@ -1035,6 +1334,14 @@ Ext.define('PaperVan.controller.Controller', {
 						// mainContainer.setActiveItem('#customerTab');
 					})
 					return false;
+				} else if (value.getItemId() == 'vanProductTab' && vanProdResultData.items.length <= 0) {
+					if (!hwc.isWindows()) {
+						getVanProduct();
+					} else {
+						// for testing
+						vanProdResultData = testPrevData;
+						updateVanProductResultStore();
+					}
 				}
 			}
 		} else {
@@ -1072,6 +1379,8 @@ Ext.define('PaperVan.controller.Controller', {
 				var store = Ext.getStore('previousPurchase');
 			} else if (pickerId == 'favorite') {
 				var store = Ext.getStore('favorite');
+			} else if (pickerId == 'vanProduct') {
+				var store = Ext.getStore('vanProductResult');
 			}
 
 			var sortDirection;
@@ -1247,24 +1556,32 @@ Ext.define('PaperVan.controller.Controller', {
 				title : selectedProduct.prodDesc
 			});
 
+			if (selectedProduct.batch != '') {
+				setProdDescBatchOption('#cartProductDesc', selectedProduct.prodNo);
+			}
+
 			var cartProductDescView = Ext.ComponentQuery
 			.query('#cartProductDesc')[0];
 			var allItems = cartProductDescView.items.items;
 			for (var i = 0; i < allItems.length; i++) {
 				// set job number in the cart
 				if (allItems[i].getItemId() == 'jobNumber') {
-					allItems[i].setValue(selectedProduct.jobNumber)
+					allItems[i].setValue(selectedProduct.jobNumber);
 				}
 				// set orderQty in the cart
 				if (allItems[i].getItemId() == 'orderQty') {
-					allItems[i].setValue(selectedProduct.orderQty)
+					allItems[i].setValue(selectedProduct.orderQty);
 				}
 
 				// set manualPr in the cart
 				if (allItems[i].getItemId() == 'manualPr') {
-					allItems[i].setValue(selectedProduct.manualPr)
+					allItems[i].setValue(selectedProduct.manualPr);
 				}
 
+				// set batchNumber in the cart
+				if (allItems[i].getItemId() == 'batchNumber') {
+					allItems[i].setValue(selectedProduct.batch);
+				}
 			}
 		}
 	},
@@ -1338,6 +1655,29 @@ Ext.define('PaperVan.controller.Controller', {
 			if (button.length > 0) {
 				button[0].setHidden(false);
 			}
+		} else if (listId == 'vanProductDesc') {
+			// show done button
+			button = Ext.ComponentQuery.query('#vanAddToCartButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+			// hide sort button
+			button = Ext.ComponentQuery.query('#vanSortButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+
+			// hide refresh button
+			button = Ext.ComponentQuery.query('#vanRefreshButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
+
+			// hide exit button
+			button = Ext.ComponentQuery.query('#vanExitButton');
+			if (button.length > 0) {
+				button[0].setHidden(true);
+			}
 		}
 
 		// set uom in order qty field
@@ -1365,6 +1705,7 @@ Ext.define('PaperVan.controller.Controller', {
 			id : 'previousProductDesc',
 			title : selectedProduct.prodDesc
 		});
+
 	},
 
 	// when product is selected then save product record in
@@ -1383,6 +1724,27 @@ Ext.define('PaperVan.controller.Controller', {
 			id : 'searchProductDesc',
 			title : selectedProduct.prodDesc
 		});
+
+	},
+
+	// when product is selected then save product record in
+	// selectedProduct variable
+	// and display product description
+	onVanProductResultListSelect : function(list, record) {
+
+		// save select record
+		selectedProduct = record.getData();
+		console.log('van product result list is select at: ' + selectedProduct.prodNo);
+
+		// call Product Description screen
+		list.up('vanProductTab').push({
+			xtype : 'productDesc',
+			data : selectedProduct,
+			id : 'vanProductDesc',
+			title : selectedProduct.prodDesc
+		});
+		setProdDescBatchOption('#vanProductDesc', selectedProduct.prodNo);
+
 	},
 
 	// when done button is tapped, add update cart item
@@ -1390,6 +1752,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 		// copy selectedProduct to temp product by JSON parser
 		var tempProduct = JSON.parse(JSON.stringify(selectedProduct));
+		var requiredBatch = false;
 
 		var cartProductDescView = Ext.ComponentQuery.query('#cartProductDesc')[0];
 		var allItems = cartProductDescView.items.items;
@@ -1406,15 +1769,40 @@ Ext.define('PaperVan.controller.Controller', {
 			if (allItems[i].getItemId() == 'manualPr') {
 				tempProduct.manualPr = allItems[i].getValue();
 			}
+
+			// set batchNumber
+			if (allItems[i].getItemId() == 'batchNumber') {
+				tempProduct.batch = allItems[i].getValue();
+			}
 		}
 
-		// add temp object to productsInCart variable
-		updateToCart(tempProduct);
-		updateCartTotal();
-		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been updated.', function() {
-			// return to previous page
-			button.up('cartOrder').pop();
-		})
+		if (tempProduct.batch == '') {
+			var relatedBatch = vanBatchResultData.items.findAll({
+				prodNo : tempProduct.prodNo
+			});
+			// there is one batch available for selected product
+			if (relatedBatch.length == 1) {
+				// assign batch automatically
+				tempProduct.batch = relatedBatch[0].batch;
+			} else if (relatedBatch.length > 1) {
+				// more than one batches available but user didn't pick any
+				requiredBatch = true;
+			}
+		}
+
+		if (!requiredBatch) {
+			// add temp object to productsInCart variable
+			updateToCart(tempProduct);
+			updateCartTotal();
+			Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been updated.', function() {
+				// return to previous page
+				button.up('cartOrder').pop();
+			});
+		} else {
+			Ext.Msg.alert('Warning', 'Batch number is required.', function() {
+			});
+		}
+
 	},
 
 	// when + button is tapped, add selected product to productsInCart variable
@@ -1423,6 +1811,7 @@ Ext.define('PaperVan.controller.Controller', {
 		// var tempProduct = JSON.parse(JSON.stringify(selectedProduct));
 		var tempData;
 		var buttonId = button.getItemId();
+		var requiredBatch = false;
 
 		// determine which view used to retrieve a product data beofre adding to
 		// the cart
@@ -1441,6 +1830,10 @@ Ext.define('PaperVan.controller.Controller', {
 			var favoriteDescView = Ext.ComponentQuery.query('#favoriteDesc')[0];
 			var allItems = favoriteDescView.items.items;
 			tempData = favoriteDescView.getData();
+		} else if (buttonId == 'vanAddToCartButton') {
+			var vanProductDescView = Ext.ComponentQuery.query('#vanProductDesc')[0];
+			var allItems = vanProductDescView.items.items;
+			tempData = vanProductDescView.getData();
 		}
 
 		// copy data from a view to temp product by JSON parser
@@ -1459,20 +1852,45 @@ Ext.define('PaperVan.controller.Controller', {
 			if (allItems[i].getItemId() == 'manualPr') {
 				tempProduct.manualPr = allItems[i].getValue();
 			}
+
+			// set batchNumber
+			if (allItems[i].getItemId() == 'batchNumber') {
+				tempProduct.batch = allItems[i].getValue();
+			}
 		}
 
-		// add temp object to productsInCart variable
-		addToCart(tempProduct);
-		updateCartTotal();
-		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been added to the cart.', function() {
-			// return to previous page
-			if (buttonId == 'addToCartButton') {
-				button.up('productTab').pop();
-			} else if (buttonId == 'preAddToCartButton') {
-				button.up('previousPurchaseTab').pop();
+		if (buttonId == 'vanAddToCartButton' && tempProduct.batch == '') {
+			var relatedBatch = vanBatchResultData.items.findAll({
+				prodNo : tempProduct.prodNo
+			});
+			// there is one batch available for selected product
+			if (relatedBatch.length == 1) {
+				// assign batch automatically
+				tempProduct.batch = relatedBatch[0].batch;
+			} else if (relatedBatch.length > 1) {
+				// more than one batches available but user didn't pick any
+				requiredBatch = true;
 			}
+		}
 
-		})
+		if (!requiredBatch) {
+			// add temp object to productsInCart variable
+			addToCart(tempProduct);
+			updateCartTotal();
+			Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been added to the cart.', function() {
+				// return to previous page
+				if (buttonId == 'addToCartButton') {
+					button.up('productTab').pop();
+				} else if (buttonId == 'preAddToCartButton') {
+					button.up('previousPurchaseTab').pop();
+				} else if (buttonId == 'vanAddToCartButton') {
+					button.up('vanProductTab').pop();
+				}
+			});
+		} else {
+			Ext.Msg.alert('Error', 'Batch number is required.', function() {
+			});
+		}
 	},
 
 	// when sort button is tapped, show sort type
@@ -1486,6 +1904,8 @@ Ext.define('PaperVan.controller.Controller', {
 			picker.setItemId('previousPurchase');
 		} else if (buttonId == 'favoriteSortButton') {
 			picker.setItemId('favorite');
+		} else if (buttonId == 'vanSortButton') {
+			picker.setItemId('vanProduct');
 		}
 
 		Ext.Viewport.add(picker);
@@ -1506,6 +1926,34 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 		button = null;
+	},
+
+	// when van product result is active, hide exit button and show sort
+	// button
+	onVanProductResultActivate : function(list) {
+		console.log('Result list is active');
+		var button = Ext.ComponentQuery.query('#vanExitButton');
+		if (button.length > 0) {
+			button[0].setHidden(false);
+		}
+
+		button = Ext.ComponentQuery.query('#vanRefreshButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+
+		// hide add button
+		button = Ext.ComponentQuery.query('#vanAddToCartButton');
+		if (button.length > 0) {
+			button[0].setHidden(true);
+		}
+
+		button = Ext.ComponentQuery.query('#vanSortButton');
+		if (button.length > 0) {
+			button[0].setHidden(false);
+		}
+		button = null;
+
 	},
 
 	// when product result is active, hide exit button and show sort
@@ -1571,6 +2019,15 @@ Ext.define('PaperVan.controller.Controller', {
 
 	},
 
+	onCustomerListDoubleTap : function(list, index, target, record) {
+		selectedCustRecord = record.getData();
+		selectedCust = record.get('custNo');
+		//		selectedCustomerAddress = record.get('custAddr');
+		updateCartOrderHeader(record);
+		updateProductSearch(record);
+		getCustomerDetail();
+	},
+
 	// when customer is selected then save customer number to global
 	// variable
 	onCustomerListSelect : function(list, record) {
@@ -1578,11 +2035,28 @@ Ext.define('PaperVan.controller.Controller', {
 		// save customer number
 		selectedCustRecord = record.getData();
 		selectedCust = record.get('custNo');
-		selectedCustomerAddress = record.get('custAddr');
+		//	selectedCustomerAddress = record.get('custAddr');
 		updateCartOrderHeader(record);
 		updateProductSearch(record);
-		// Ext.Msg.alert('Message', record.get('custName') + ' is selected.',
-		// Ext.emptyFn);
+	},
+
+	onVanSearchKeyUp : function(searchField) {
+		queryString = searchField.getValue();
+		console.log(this, 'Please search van by: ' + queryString);
+
+		var store = Ext.getStore('vanProductResult');
+		store.clearFilter();
+
+		if (queryString) {
+			var thisRegEx = new RegExp(queryString, "i");
+			store.filterBy(function(record) {
+				if (thisRegEx.test(record.get('prodDesc')) || thisRegEx.test(record.get('prodNo'))) {
+					return true;
+				};
+				return false;
+			});
+		}
+
 	},
 
 	onSearchKeyUp : function(searchField) {
@@ -1601,7 +2075,12 @@ Ext.define('PaperVan.controller.Controller', {
 				return false;
 			});
 		}
+	},
 
+	onClearVanSearch : function() {
+		console.log('Clear icon is tapped');
+		var store = Ext.getStore('vanProductResult');
+		store.clearFilter();
 	},
 
 	onClearSearch : function() {
@@ -1618,7 +2097,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 		if (hwc.isIOS()) {
 			// get user name from SUP setting
-			userId = hwc.loadSettings().UserName;
+			userId = hwc.loadSettings().UserName.toUpperCase();
 			// initiate shared storage
 			sharedStorage = new hwc.SharedStorage();
 			// get saved password
@@ -1649,7 +2128,9 @@ Ext.define('PaperVan.controller.Controller', {
 					telNo : '04 1397 7815',
 					p1Pts : 999.50,
 					p1Status : 'P1',
-					accountGroup : 'Z001'
+					accountGroup : 'Z001',
+					sequence : 2,
+					visitPeriod : 'D'
 				}, {
 					custName : 'customer 2',
 					custNo : '200002',
@@ -1662,7 +2143,17 @@ Ext.define('PaperVan.controller.Controller', {
 					telNo : '04 1397 7815',
 					p1Pts : 999.50,
 					p1Status : 'P1',
-					accountGroup : 'Z005'
+					accountGroup : 'Z005',
+					sequence : 1,
+					address : '5 shaw street, ashwood, 3147',
+					visitPeriod : 'W',
+					monday : 'X',
+					tuesday : '',
+					wednesday : '',
+					thursday : 'X',
+					friday : '',
+					saturday : '',
+					sunday : '',
 				}]
 			};
 
@@ -1757,7 +2248,7 @@ function refreshPanel(fullRefreshPanel) {
 		fullRefreshPanel.refreshReady();
 		// update total
 		updateCartTotal();
-	}, 1000);
+	}, 50);
 
 }
 
@@ -1857,11 +2348,12 @@ function updateToCart(product) {
 			productsInCart.items[i].orderQty = product.orderQty;
 			productsInCart.items[i].jobNumber = product.jobNumber;
 			productsInCart.items[i].manualPr = product.manualPr;
+			productsInCart.items[i].batch = product.batch;
 			break;
 		}
 	}
 	// update cartStore
-	updateCartStore()
+	updateCartStore();
 }
 
 function deleteAllInCart() {
@@ -1884,7 +2376,7 @@ function deleteItemInCart(idx) {
 
 function updateCartBadgeText() {
 	// update badgeText
-	var cartTab = mainContainer.getTabBar().getComponent(3);
+	var cartTab = mainContainer.getTabBar().getComponent(4);
 	var noItems = productsInCart.items.length;
 	cartTab.setBadgeText(noItems);
 }
@@ -1949,6 +2441,14 @@ function updateOrderItemStore() {
 	var store = Ext.getStore('orderitem');
 	if (store != null) {
 		store.setData(simulatedOrder);
+	}
+}
+
+// update vanProductResultStore
+function updateVanProductResultStore() {
+	var store = Ext.getStore('vanProductResult');
+	if (store != null) {
+		store.setData(vanProdResultData);
 	}
 }
 
@@ -2055,13 +2555,17 @@ function showCredentialScreen(userId) {
 }
 
 function validateCredentials(username, password) {
-	calledBAPI = ACCOUNT_VALIDATION_BAPI;
-	// save credential
-	hwc.saveLoginCredentials(username, password);
-	// call validation function
-	var zaccountValidate = new ZMOB_VALIDATE_ACCOUNT();
 
-	zmob_validate_account_findAll(zaccountValidate, '', '');
+	Ext.defer(function() {
+
+		calledBAPI = ACCOUNT_VALIDATION_BAPI;
+		// save credential
+		hwc.saveLoginCredentials(username, password);
+		// call validation function
+		var zaccountValidate = new ZMOB_VALIDATE_ACCOUNT();
+
+		zmob_validate_account_findAll(zaccountValidate, '', '');
+	}, 500);
 }
 
 function getPreviousPurchase(selectedDays) {
@@ -2158,27 +2662,30 @@ function getCustomerAddress() {
 	}, 50);
 }
 
-function getCustomerList(salesOffice) {
+function getCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer) {
 
 	// set wait time to half second
 	Ext.defer(function() {
 		// set calledBAPI
 		calledBAPI = CUSTOMER_LIST_BAPI;
 		// new a mbo instance
-		var zcustomerList = new ZMOB_CUSTOMER_LIST();
+		var zcustomerList = new ZMOB_VAN_CUSTOMER_LIST();
 		// call findAll() function
 		if (salesOffice == '' || salesOffice == null) {
 			salesOffice = '';
 		}
+		zcustomerList.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
 		zcustomerList.pks.put('PK_SALES_OFF_pkKey', salesOffice);
-		zcustomerList.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName);
+		zcustomerList.pks.put('PK_TODAY_FLAG_pkKey', todayCustomer);
+		zcustomerList.pks.put('PK_ALL_FLAG_pkKey', allCustomer);
+		zcustomerList.pks.put('PK_ALL_VAN_FLAG_pkKey', allVanCustomer);
 		customerContainerOption.hide();
 		mainContainer.setMasked({
 			xtype : 'loadmask',
 			message : CUSTOMER_LOADING,
 			indicator : true
 		});
-		zmob_customer_list_findAll(zcustomerList, '', '');
+		zmob_van_customer_list_findAll(zcustomerList, '', '');
 	}, 50);
 }
 
@@ -2242,19 +2749,19 @@ function savePasswordCredential() {
 	if (passwordField.length > 0) {
 		password = passwordField[0].getValue();
 	}
-	hwc.saveLoginCredentials(hwc.loadSettings().UserName, password);
+	hwc.saveLoginCredentials(hwc.loadSettings().UserName.toUpperCase(), password);
 	sharedStorage.setItem(PASSWORD_KEY, password);
 }
 
 function showIncorrectPasswordAlert() {
 	Ext.Msg.alert('Alert', 'Incorrect password. Please enter new password.', function() {
-		showCredentialScreen(hwc.loadSettings().UserName);
+		showCredentialScreen(hwc.loadSettings().UserName.toUpperCase());
 	});
 }
 
 function getOrderConfirmation() {
 	// set wait time to half second
-
+	var mobAppType;
 	orderHeader = prepareOrderHeader();
 	orderItem = prepareOrderItem();
 	orderPartner = prepareOrderPartner();
@@ -2262,6 +2769,11 @@ function getOrderConfirmation() {
 	// prepare data
 	var docType, salesOrg, distChan, division, reqDate, poNum, shipCond;
 
+	if (isVanOrder) {
+		mobAppType = 'VAN';
+	} else {
+		mobAppType = 'SAL';
+	}
 	// set calledBAPI
 	calledBAPI = ORDER_SIMULATE_MESSAGE_BAPI;
 	// // new a mbo instance
@@ -2270,6 +2782,7 @@ function getOrderConfirmation() {
 	zorderSimulateMe.pks.put('PK_ORDER_HEADER_pkKey', orderHeader);
 	zorderSimulateMe.pks.put('PK_ORDER_ITEM_pkKey', orderItem);
 	zorderSimulateMe.pks.put('PK_ORDER_PARTNER_pkKey', orderPartner);
+	zorderSimulateMe.pks.put('PK_MOB_APP_pkKey', mobAppType);
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -2289,8 +2802,8 @@ function getOrderConfirmation() {
 function updateCartOrderHeader(record) {
 	customerPlant = record.get('plant');
 	updateCartPlant(customerPlant);
-	updateCartStorageLoc(customerPlant);
-	updateShippingAddr(record.get('custAddr'));
+	//updateCartStorageLoc(customerPlant);
+	//updateShippingAddr(record.get('custAddr'));
 }
 
 function updateProductSearch(record) {
@@ -2308,19 +2821,19 @@ function updateShippingAddr(address) {
 	shippingAdrField.setValue(address);
 }
 
-function updateCartStorageLoc(plant) {
-	for (var i = 0; i < STORAGE_LOC.length; i++) {
-		if (STORAGE_LOC[i].value == plant) {
-			storageLocOptions = STORAGE_LOC[i].items;
-			break;
-		}
-	}
-	var storageLocField = Ext.ComponentQuery.query('#storageLoc')[0];
-	storageLocField.setOptions(storageLocOptions);
-	if (userStorageLoc != '') {
-		storageLocField.setValue(userStorageLoc);
-	}
-}
+// function updateCartStorageLoc(plant) {
+// for (var i = 0; i < STORAGE_LOC.length; i++) {
+// if (STORAGE_LOC[i].value == plant) {
+// storageLocOptions = STORAGE_LOC[i].items;
+// break;
+// }
+// }
+// var storageLocField = Ext.ComponentQuery.query('#storageLoc')[0];
+// storageLocField.setOptions(storageLocOptions);
+// if (userStorageLoc != '') {
+// storageLocField.setValue(userStorageLoc);
+// }
+// }
 
 function prepareOrderHeader() {
 	//order_header_in format is
@@ -2363,12 +2876,18 @@ function prepareOrderItem() {
 	var orderItem = '';
 	var temp;
 	var tempManualPr;
+	var storLoc;
 
 	// convert product in a cart to string
 	//*MATERIAL|REQ_QTY|SALES_UNIT|MANUAL_PRICE|PURCH_NO_S|STOR_LOC|PLANT
 
 	var plant = Ext.ComponentQuery.query('#deliveringPlant')[0].getValue().trim();
-	var storLoc = Ext.ComponentQuery.query('#storageLoc')[0].getValue().trim();
+	//	var storLoc = Ext.ComponentQuery.query('#storageLoc')[0].getValue().trim();
+	if (isVanOrder) {
+		storLoc = userStorageLoc;
+	} else {
+		storLoc = '';
+	}
 
 	for (var i = 0; i < productsInCart.items.length; i++) {
 		temp = '';
@@ -2380,7 +2899,12 @@ function prepareOrderItem() {
 		if (i != 0) {
 			temp = '|';
 		}
-		temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant
+
+		if (isVanOrder) {
+			temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant + '|' + productsInCart.items[i].batch;
+		} else {
+			temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
+		}
 
 		orderItem += temp;
 	};
@@ -2396,14 +2920,72 @@ function prepareOrderPartner() {
 	return orderPartner;
 }
 
+function createDelivery(orderNo) {
+
+	var signatureValue = Ext.ComponentQuery.query('#signatureField')[0];
+	var signatureBase64 = signatureValue.getValue().split(',')[1];
+	var deliveryName = "Recipient Name: " + Ext.ComponentQuery.query('#vanConfirmDeliveryName')[0].getValue();
+	var deliveryTime = "Delivery Time: " + Ext.ComponentQuery.query('#vanConfirmDeliveryTime')[0].getValue();
+	var deliveryGeo = "Geolocation :" + Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].getValue();
+
+	calledBAPI = CREATE_DELIVERY_BAPI;
+	var zcreateDelivery = new ZMOB_CREATE_DEL_PGI();
+	zcreateDelivery.pks.put('PK_ORDER_NO_pkKey', orderNo);
+	zcreateDelivery.pks.put('PK_IMAGE_pkKey', signatureBase64);
+	zcreateDelivery.pks.put('PK_TIMESTAMP_pkKey', deliveryTime);
+	zcreateDelivery.pks.put('PK_GEO_TEXT_pkKey', deliveryGeo);
+	zcreateDelivery.pks.put('PK_RECIPIENT_pkKey', deliveryName);
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : CREATE_DELIVERY_LOADING,
+		indicator : true
+	});
+
+	zmob_create_del_pgi_findAll(zcreateDelivery, '', '');
+}
+
+function addOrderAttachment(orderNo) {
+
+	var signatureValue = Ext.ComponentQuery.query('#signatureField')[0];
+	var signatureBase64 = signatureValue.getValue().split(',')[1];
+	var deliveryName = "Recipient Name: " + Ext.ComponentQuery.query('#vanConfirmDeliveryName')[0].getValue();
+	var deliveryTime = "Delivery Time: " + Ext.ComponentQuery.query('#vanConfirmDeliveryTime')[0].getValue();
+	var deliveryGeo = "Geolocation :" + Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].getValue();
+
+	calledBAPI = ADD_ATTACHMENT_BAPI;
+	var zorderAttachment = new ZMOB_ADD_ATTACHMENT();
+	zorderAttachment.pks.put('PK_DOC_NO_pkKey', orderNo);
+	zorderAttachment.pks.put('PK_IMAGE_pkKey', signatureBase64);
+	zorderAttachment.pks.put('PK_TIMESTAMP_pkKey', deliveryTime);
+	zorderAttachment.pks.put('PK_GEO_TEXT_pkKey', deliveryGeo);
+	zorderAttachment.pks.put('PK_RECIPIENT_pkKey', deliveryName);
+	zorderAttachment.pks.put('PK_DOC_TYPE_pkKey', 'S');
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : ADD_ATTACHMENT_LOADING,
+		indicator : true
+	});
+
+	zmob_add_attachment_findAll(zorderAttachment, '', '');
+}
+
 function createOrder() {
 	// prepare header text
+	var mobAppType;
 	var quoteComment = Ext.ComponentQuery.query('#quoteCommentField')[0].getValue();
 	var orderComment = Ext.ComponentQuery.query('#orderCommentField')[0].getValue();
 	var delInstruction = Ext.ComponentQuery.query('#delInstructionField')[0].getValue();
 	quoteComment = removeSpecialCharacter(quoteComment);
 	orderComment = removeSpecialCharacter(orderComment);
 	delInstruction = removeSpecialCharacter(delInstruction);
+
+	if (isVanOrder) {
+		mobAppType = 'VAN';
+	} else {
+		mobAppType = 'SAL';
+	}
 
 	calledBAPI = ORDER_CREATE_BAPI;
 	var zorderCreate = new ZMOB_ORDER_CREATE_peer1();
@@ -2413,6 +2995,7 @@ function createOrder() {
 	zorderCreate.pks.put('PK_GENERAL_ORDER_TEXT_pkKey', orderComment);
 	zorderCreate.pks.put('PK_DELIVERY_TEXT_pkKey', delInstruction);
 	zorderCreate.pks.put('PK_QUOTATION_TEXT_pkKey', quoteComment);
+	zorderCreate.pks.put('PK_MOB_APP_pkKey', mobAppType);
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -2420,7 +3003,44 @@ function createOrder() {
 		indicator : true
 	});
 
-	zmob_order_create_peer1_findAll(zorderCreate, '','');
+	zmob_order_create_peer1_findAll(zorderCreate, '', '');
+}
+
+function showConfirmDelivery() {
+	var cartOrder = Ext.ComponentQuery.query('cartOrder')[0];
+	var now = new Date();
+
+	cartOrder.push({
+		xclass : 'PaperVan.view.VanConfirmDelivery',
+	});
+
+	button = Ext.ComponentQuery.query('#createOrderButton');
+	if (button.length > 0) {
+		button[0].setHidden(false);
+	}
+	button = Ext.ComponentQuery.query('#signatureConfirmButton');
+	if (button.length > 0) {
+		button[0].setHidden(true);
+	}
+
+	navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
+	//setup geolocation and timestamp
+	var deliveryTimestamp = Ext.ComponentQuery.query('#vanConfirmDeliveryTime')[0].setValue(now.toLocaleString());
+
+}
+
+var getLocationSuccess = function(position) {
+	hwc.log('Latitude: ' + position.coords.latitude + '\n' + 'Longitude: ' + position.coords.longitude + '\n' + 'Altitude: ' + position.coords.altitude + '\n' + 'Accuracy: ' + position.coords.accuracy + '\n' + 'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' + 'Heading: ' + position.coords.heading + '\n' + 'Speed: ' + position.coords.speed + '\n' + 'Timestamp: ' + position.timestamp + '\n', 'DEBUG', false);
+	currentGeoLocation = position.coords.latitude + ', ' + position.coords.longitude;
+	var deliveryGeolocation = Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].setValue(currentGeoLocation);
+};
+
+// onError Callback receives a PositionError object
+//
+function getLocationError(error) {
+	hwc.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n', 'ERROR', false);
+	currentGeoLocation = 'Cannot determine location';
+	var deliveryGeolocation = Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].setValue(currentGeoLocation);
 }
 
 function showOrderSimulation() {
@@ -2476,11 +3096,18 @@ function showOrderSimulation() {
 	}
 
 	if (!hasError) {
-		// show createOrder button
-		button = Ext.ComponentQuery.query('#createOrderButton');
-		if (button.length > 0) {
-			button[0].setHidden(false);
+		if (!isVanOrder) {
+			button = Ext.ComponentQuery.query('#createOrderButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
+		} else {
+			button = Ext.ComponentQuery.query('#signatureConfirmButton');
+			if (button.length > 0) {
+				button[0].setHidden(false);
+			}
 		}
+		// show createOrder button
 
 		var totalField = Ext.ComponentQuery.query('#cartTotal');
 		if (totalField.length > 0) {
@@ -2523,6 +3150,31 @@ function changeCustomer(name1, name2, street, postcode, suburb, region, email, t
 	zmob_change_customer_findAll(zchangeCust, '', '');
 }
 
+function changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
+	// set calledBAPI
+	calledBAPI = UPDATE_VAN_SCHEDULE_BAPI;
+	// new a mbo instance
+	var zvanScheduleUpdate = new ZMOB_VAN_CUSTOMER_UPDATE();
+	// call findAll() function
+	zvanScheduleUpdate.pks.put('PK_CUSTOMER_pkKey', selectedCust);
+	zvanScheduleUpdate.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
+	zvanScheduleUpdate.pks.put('PK_VISIT_PERIOD_pkKey', visitPeriod);
+	zvanScheduleUpdate.pks.put('PK_MONDAY_pkKey', monday);
+	zvanScheduleUpdate.pks.put('PK_TUESDAY_pkKey', tuesday);
+	zvanScheduleUpdate.pks.put('PK_WEDNESDAY_pkKey', wednesday);
+	zvanScheduleUpdate.pks.put('PK_THURSDAY_pkKey', thursday);
+	zvanScheduleUpdate.pks.put('PK_FRIDAY_pkKey', friday);
+	zvanScheduleUpdate.pks.put('PK_SATURDAY_pkKey', saturday);
+	zvanScheduleUpdate.pks.put('PK_SUNDAY_pkKey', sunday);
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : UPDATE_VAN_SCHEDULE_LOADING,
+		indicator : true
+	});
+	zmob_van_customer_update_findAll(zvanScheduleUpdate, '', '');
+}
+
 function createCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
 	// set calledBAPI
 	calledBAPI = CREATE_CUSTOMER_BAPI;
@@ -2544,7 +3196,7 @@ function createCustomer(name1, name2, street, postcode, suburb, region, email, t
 		message : CUSTOMER_CREATE_LOADING,
 		indicator : true
 	});
-	zmob_create_customer_findAll(zcreateCust, '','');
+	zmob_create_customer_findAll(zcreateCust, '', '');
 }
 
 function createContact(firstName, lastName, tel, email, title, department, functions) {
@@ -2594,6 +3246,21 @@ function changeContact(firstName, lastName, tel, email, title, department, funct
 	zmob_change_contact_findAll(zchangeContact, '', '');
 }
 
+function deleteVanSchedule() {
+	calledBAPI = DELETE_VAN_SCHEDULE_BAPI;
+	var zvanScheduleDelete = new ZMOB_VAN_CUSTOMER_DEL();
+	zvanScheduleDelete.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
+	zvanScheduleDelete.pks.put('PK_CUSTOMER_pkKey', selectedCust);
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : DELETE_VAN_SCHEDULE_LOADING,
+		indicator : true
+	});
+
+	zmob_van_customer_del_findAll(zvanScheduleDelete, '', '');
+}
+
 function deleteCustomer() {
 	calledBAPI = DELETE_CUSTOMER_BAPI;
 	var zcustDelete = new ZMOB_DELETE_CUSTOMER();
@@ -2606,6 +3273,36 @@ function deleteCustomer() {
 	});
 
 	zmob_delete_customer_findAll(zcustDelete, '', '');
+}
+
+function getVanProduct() {
+	calledBAPI = VAN_PRODUCT_LIST_BAPI;
+	var zvanProduct = new ZMOB_VAN_PRODUCT_LIST();
+	zvanProduct.pks.put('PK_CUSTOMER_pkKey', selectedCust);
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : VAN_PRODUCT_LOADING,
+		indicator : true
+	});
+
+	zmob_van_product_list_findAll(zvanProduct, '', '');
+}
+
+function getVanBatch() {
+
+	Ext.defer(function() {
+		calledBAPI = VAN_BATCH_LIST_BAPI;
+		var zvanBatch = new ZMOB_VAN_BATCH_LIST();
+
+		mainContainer.setMasked({
+			xtype : 'loadmask',
+			message : VAN_BATCH_LOADING,
+			indicator : true
+		});
+
+		zmob_van_batch_list_findAll(zvanBatch, '', '');
+	}, 500);
 }
 
 function deleteContact() {
@@ -2691,11 +3388,20 @@ function refreshData(successful) {
 		updateCartTotal();
 	}
 	var cartOrder = Ext.ComponentQuery.query('cartOrder')[0];
-	cartOrder.pop();
+	if (isVanOrder) {
+		// back twice for van order
+		cartOrder.pop(2);
+	} else {
+		cartOrder.pop(1);
+	}
 	orderNumber = null;
-
 	// show createOrder button
 	button = Ext.ComponentQuery.query('#createOrderButton');
+	if (button.length > 0) {
+		button[0].setHidden(true);
+	}
+
+	button = Ext.ComponentQuery.query('#signatureConfirmButton');
 	if (button.length > 0) {
 		button[0].setHidden(true);
 	}
@@ -2725,6 +3431,7 @@ function refreshData(successful) {
 			allChilds[i].setValue('');
 		}
 	}
+
 	mainContainer.unmask();
 }
 
@@ -2767,6 +3474,22 @@ function updateRecentContactDelete() {
 		value : selectedContact
 	});
 	selectedContact = '';
+}
+
+function updateRecentVanScheduleDelete() {
+
+	for (var i = 0; i < customerData.items.length; i++) {
+		if (customerData.items[i].custNo == selectedCust) {
+			customerData.items[i].visitPeriod = '';
+			customerData.items[i].monday = '';
+			customerData.items[i].tuesday = '';
+			customerData.items[i].wednesday = '';
+			customerData.items[i].thursday = '';
+			customerData.items[i].friday = '';
+			customerData.items[i].saturday = '';
+			customerData.items[i].sunday = '';
+		}
+	}
 }
 
 function updateRecentContactChange() {
@@ -2840,7 +3563,8 @@ function removeSpecialCharacter(inText) {
 	inText = inText.replace('\<', '\(');
 	inText = inText.replace('\>', '\)');
 
-	outText = inText;
+	outText = hwc.unescapeValue(inText);
+	;
 	return outText;
 }
 
@@ -2848,4 +3572,87 @@ function positionText(functions) {
 	return CONTACT_FUNCTION.find({
 		value : functions
 	}).text;
+}
+
+function getCustomerDetail() {
+	if (selectedCust != null) {
+		// call R3 BAPI to get list of contacts
+		if (hwc.isIOS()) {
+			getCustomerContactList();
+		} else {
+			//call customer main view
+			console.log('customer detail');
+			var customerTab = Ext.ComponentQuery.query('customerTab')[0];
+
+			customerTab.push({
+				xtype : 'customerMain',
+				id : 'customerMain',
+				title : 'Customer Detail'
+			});
+		}
+
+	} else {
+		Ext.Msg.alert('Alert', 'Please select customer before proceeding', function() {
+		});
+	}
+}
+
+function updateCustomerListTitle() {
+	var customerList = Ext.ComponentQuery.query("customerTab")[0];
+	customerList.getNavigationBar().setTitle('Customers for ' + userStorageLoc);
+}
+
+function updateCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer) {
+	var customerStore = Ext.getStore('customer');
+	var customerList = Ext.ComponentQuery.query("customerList")[0];
+	customerStore.clearFilter();
+	if (todayCustomer == 'X') {
+		customerList.setGrouped(false);
+		customerStore.setGrouper(null);
+		customerStore.sort('sequence', 'ASC');
+	} else {
+		customerStore.setGrouper(customerGrouper);
+		customerStore.sort('custName', 'ASC');
+		customerList.setGrouped(true);
+	}
+}
+
+function getVisitPeriodText(visitPeriodKey) {
+	if (visitPeriodKey != '') {
+		return VISITING_PERIOD[VISITING_PERIOD.findIndex({
+			value : visitPeriodKey
+		})].text;
+	} else {
+		return 'No schedule';
+	}
+}
+
+function getProductBatch(prodNo) {
+	var productBatch = [{
+		text : 'Empty',
+		value : ''
+	}];
+	var tempBatch = {};
+	var relatedBatch = vanBatchResultData.items.findAll({
+		prodNo : prodNo
+	});
+
+	for (var i = 0; i < relatedBatch.length; i++) {
+		tempBatch = {};
+		tempBatch.text = relatedBatch[i].batch;
+		tempBatch.value = relatedBatch[i].batch;
+		productBatch.push(tempBatch);
+	};
+
+	return productBatch;
+}
+
+function setProdDescBatchOption(itemId, prodNo) {
+	var prodDesc = Ext.ComponentQuery.query(itemId)[0];
+	var prodDescItems = prodDesc.getItems();
+	var batchIndex = prodDescItems.keys.findIndex('batchNumber');
+	var batchSelect = prodDescItems.items[batchIndex];
+	var productBatch = getProductBatch(prodNo);
+	batchSelect.setOptions(productBatch);
+	batchSelect.setHidden(false);
 }

@@ -13,8 +13,14 @@ Ext.application({
 
 	name : 'PaperVan',
 	controllers : ['Controller'],
-	views : ['Main', 'Customers', 'Favorites', 'Products', 'Cart', 'CustomerList', 'ProductDesc', 'ProductResultList', 'ProductSearch', 'CartOrder', 'CartList', 'CartOrderDetail', 'PreviousPurchase', 'PreviousPurchaseList', 'FavoriteList', 'Credentials', 'OrderConfirmation', 'OrderMessageList', 'OrderItemList', 'CustomerContainer', 'CustomerMain', 'CustomerDetail', 'CustomerContactChange', 'CustomerContact', 'CustomerRecentActivity', 'ActivityCreation', 'ActivityDisplay', 'DisputeCreation', 'CustomerDispute', 'CustomerContainerOption', 'CustomerDetailOption', 'CustomerContactCreate', 'CustomerCreate', 'CustomerChange'],
-	stores : ['CustomerStore', 'ProductResultStore', 'CartStore', 'PreviousPurchaseStore', 'FavoriteStore', 'OrderMessageStore', 'OrderItemStore', 'ContactStore', 'ActivityStore', 'DisputeStore'],
+	views : ['Main', 'Customers', 'Favorites', 'Products', 'Cart', 'CustomerList', 'ProductDesc', 'ProductResultList', 'ProductSearch',
+			 'CartOrder', 'CartList', 'CartOrderDetail', 'PreviousPurchase', 'PreviousPurchaseList', 'FavoriteList', 'Credentials', 
+			 'OrderConfirmation', 'OrderMessageList', 'OrderItemList', 'CustomerContainer', 'CustomerMain', 'CustomerDetail', 
+			 'CustomerContactChange', 'CustomerContact', 'CustomerRecentActivity', 'ActivityCreation', 'ActivityDisplay', 'DisputeCreation',
+			 'CustomerDispute', 'CustomerContainerOption', 'CustomerDetailOption', 'CustomerContactCreate', 'CustomerCreate', 'CustomerChange',
+			 'VanProducts', 'VanProductResultList', 'VanProductContainer', 'VanScheduleUpdate', 'VanConfirmDelivery'],
+	stores : ['CustomerStore', 'ProductResultStore', 'CartStore', 'PreviousPurchaseStore', 'FavoriteStore', 'OrderMessageStore',
+			  'OrderItemStore', 'ContactStore', 'ActivityStore', 'DisputeStore', 'VanProductResultStore'],
 	models : ['CustomerModel', 'ContactModel', 'ActivityModel', 'DisputeModel', 'ProductResultModel', 'OrderMessageModel'],
 	launch : function() {
 		console.log('launch');

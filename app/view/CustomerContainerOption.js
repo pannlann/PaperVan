@@ -20,7 +20,14 @@ Ext.define('PaperVan.view.CustomerContainerOption', {
 				label : 'Customer',
 				usePicker : false,
 				labelWidth : '50%',
-				options : SALES_OFFICE
+				options : CUSTOMER_SELECTION
+			}, {
+				xtype : 'button',
+				itemId : 'updateVanScheduleButton',
+				ui : 'confirm',
+				iconCls : 'compose',
+				iconMask : true,
+				text : 'Update Van Schedule'
 			}, {
 				xtype : 'button',
 				itemId : 'createCustomerButton',

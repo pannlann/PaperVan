@@ -10,15 +10,7 @@ Ext.define('PaperVan.view.Customers', {
 			items : [{
 				xtype : 'exitButton',
 				itemId : 'customerExitButton'
-			},
-			// xtype : 'button',
-			// itemId : 'regionalCustomerButton',
-			// ui : 'normal',
-			// text : 'Regional',
-			// align : 'right',
-			// hidden : false
-			// }, {
-			{
+			}, {
 				xtype : 'button',
 				itemId : 'customerContainerOptionButton',
 				ui : 'normal',
@@ -28,19 +20,20 @@ Ext.define('PaperVan.view.Customers', {
 				hidden : false
 			}, {
 				xtype : 'button',
+				itemId : 'deleteVanScheduleButton',
+				ui : 'decline',
+				iconMask : true,
+				iconCls : 'trash',
+				align : 'right',
+				hidden : true
+			}, {
+				xtype : 'button',
 				itemId : 'customerDetailOptionButton',
 				ui : 'normal',
 				iconCls : 'more',
 				iconMask : true,
 				align : 'right',
 				hidden : true
-			// }, {
-				// xtype : 'button',
-				// itemId : 'directCustomerButton',
-				// ui : 'normal',
-				// text : 'Direct',
-				// align : 'right',
-				// hidden : true
 			}, {
 				xtype : 'button',
 				itemId : 'customerDetailButton',
@@ -49,24 +42,6 @@ Ext.define('PaperVan.view.Customers', {
 				iconMask : true,
 				align : 'right',
 				hidden : false
-			// }, {
-				// xtype : 'button',
-				// itemId : 'createActivityButton',
-				// ui : 'add',
-				// text : 'Activity',
-				// iconCls : 'compose',
-				// iconMask : true,
-				// align : 'right',
-				// hidden : true
-			// }, {
-				// xtype : 'button',
-				// itemId : 'createDisputeButton',
-				// ui : 'add',
-				// text : 'Dispute',
-				// iconCls : 'compose',
-				// iconMask : true,
-				// align : 'right',
-				// hidden : true
 			}]
 		},
 		items : [{

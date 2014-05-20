@@ -41,13 +41,12 @@ Ext.define('PaperVan.view.CartOrder', {
 			docked : 'bottom',
 			hidden : true
 		}, {
-			xtype : 'signaturefield',
-			id : 'signatureField',
-			sigWidth: signatureWidth,
-			sigHieght : signatureHeight,
-			label : 'Signature',
+			xtype : 'button',
+			itemId : 'signatureConfirmButton',
+			ui : 'action',
+			text : 'Signature Confirmaion',
 			docked : 'bottom',
-			labelWidth : '50%'
+			hidden : true
 		}, {
 			xtype : 'textfield',
 			name : 'total',

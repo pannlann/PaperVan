@@ -1,5 +1,6 @@
 // file to handle constant variables.
 var CUST_SEARCH_PLACE_HOLDER = 'Customer search.....';
+var VAN_PRODUCT_SEARCH_PLACE_HOLDER = 'Van product search.....';
 var CUST_SEARCH_ITM_ID = 'custSearch';
 var APP_EXIT_BUTTOM_TEXT = 'Exit';
 var CREDIT_LOW = 0;
@@ -13,13 +14,14 @@ var COUNT_INDEX = 3;
 var PRODUCT_DESC_INDEX = 4;
 var PRODUCT_CODE_INDEX = 5;
 var MESSAGE_HEIGHT = 47;
-var LIST_IPAD_HEIGHT = 64;
+var LIST_IPAD_HEIGHT = 86;
 var LIST_IPHONE_HEIGHT = 76;
 var HEADER_HEIGHT = 26;
 var PASSWORD_KEY = 'passwordKey';
 var PRODUCT_SEARCH_BAPI = 'ZMOB_ORDER_PRODUCT_SEARCH';
 var ACCOUNT_VALIDATION_BAPI = 'ZMOB_VALIDATE_ACCOUNT';
-var CUSTOMER_LIST_BAPI = 'ZMOB_CUSTOMER_LIST';
+var CUSTOMER_LIST_BAPI = 'ZMOB_VAN_CUSTOMER_LIST';
+var VAN_PRODUCT_LIST_BAPI = 'ZMOB_VAN_PRODUCT_LIST';
 var PREVIOUS_PUR_BAPI = 'ZMOB_PREVIOUS_PURCHASES';
 var ORDER_SIMULATE_BAPI = 'ZMOB_ORDER_SIMULATE_ITEM';
 var ORDER_SIMULATE_MESSAGE_BAPI = 'ZMOB_ORDER_SIMULATE';
@@ -35,7 +37,12 @@ var DELETE_CONTACT_BAPI = 'ZMOB_DELETE_CONTACT';
 var CREATE_CONTACT_BAPI = 'ZMOB_CREATE_CONTACT';
 var CREATE_CUSTOMER_BAPI = 'ZMOB_CREATE_CUSTOMER';
 var CHANGE_CUSTOMER_BAPI = 'ZMOB_CHANGE_CUSTOMER';
+var DELETE_VAN_SCHEDULE_BAPI = 'ZMOB_VAN_CUSTOMER_DEL';
+var UPDATE_VAN_SCHEDULE_BAPI = 'ZMOB_VAN_CUSTOMER_UPDATE';
 var CUSTOMER_ADDRESS_BAPI = 'ZMOB_GET_CUSTOMER_ADDRESS';
+var CREATE_DELIVERY_BAPI = 'ZMOB_CREATE_DEL_PGI';
+var ADD_ATTACHMENT_BAPI = 'ZMOB_ADD_ATTACHMENT';
+var VAN_BATCH_LIST_BAPI = 'ZMOB_VAN_BATCH_LIST';
 var SHARED_STORAGE_KEY = 'Spicers';
 var ERROR_MESSAGE = 'E';
 var WARNING_MESSAGE = 'W';
@@ -43,8 +50,27 @@ var CREDIT_BLOCK = 'X';
 var CREDIT_NOT_BLOCK = '';
 var FIND_NUM = 1;
 var MAX_HITS = 100;
+var VAN_CUSTOMER_FLAG = 'VanCustomer';
 var MY_CUSTOMER_FLAG = 'MyCustomer';
+var TODAY_CUSTOMER_FLAG = 'TodayCustomer';
 var SALES_OPPORTUNITY_TYPE = 'Sales Opportunity';
+var VISITING_PERIOD = [{
+	value : 'D',
+	text : 'Daily'
+}, {
+	value : 'W',
+	text : 'Weekly'
+}, {
+	value : 'F',
+	text : 'Fortnightly'
+}, {
+	value : 'T',
+	text : '3-weekly'
+}, {
+	value : 'M',
+	text : 'Monthly'
+}];
+
 var REGION_LIST = [{
 	text : '',
 	value : '',
@@ -332,12 +358,18 @@ var SORT_BY = [{
 	value : 'prodNo'
 }];
 
-var SALES_OFFICE = [{
+var CUSTOMER_SELECTION = [{
 	text : 'Select',
 	value : ''
 }, {
-	text : 'My Customer',
+	text : "Today Customers",
+	value : TODAY_CUSTOMER_FLAG
+}, {
+	text : 'My Customers',
 	value : MY_CUSTOMER_FLAG
+}, {
+	text : 'Regional Van Customers',
+	value : VAN_CUSTOMER_FLAG
 }, {
 	text : 'VIC',
 	value : '5010'
@@ -709,6 +741,9 @@ var STORAGE_LOC = [{
 	}, {
 		text : '2000 | Bssendean Alt Pr',
 		value : '2000'
+	}, {
+		text : 'VH06 | Xpress Van',
+		value : 'VH06'
 	}]
 }, {
 	value : '7510',
@@ -734,7 +769,7 @@ var STORAGE_LOC = [{
 		text : '2000 | Winnellie Alt Pr',
 		value : '2000'
 	}]
-}]
+}];
 
 var DEFAULT_PLANTS = [{
 	text : '1510',
@@ -766,25 +801,68 @@ var DEFAULT_PLANTS = [{
 }];
 
 var NO_SEARCH_RESULT_HEADING = 'No results returned';
-var NO_SEARCH_RESULT_TEXT = 'Please check the search options.';
-var NO_RESULT_FOUND_HEADING = 'No products found';
-var NO_RESULT_FOUND_TEXT = 'Please change date range to get more result.';
+var TRY_CATCH_ERROR_HEADING = 'Error';
+var REGIONAL_CUSTOMER_HEADING = 'Regional Customers';
+var NO_RESULTS_FOUND_HEADING = 'No products found';
 var NO_CUST_RESULT_HEADING = 'No customers returned';
 var USR_ACCOUNT_ERROR_HEADING = 'User account error';
+var TOO_MANY_RESULT_HEADING = 'Too many search hits';
+var INPUT_ERROR_HEADING = 'Input error';
+var CONNECTION_LOST_HEADING = 'Connection Lost';
+var TIMEOUT_HEADING = 'Timeout';
+var DELETE_VAN_SCHEDULE_HEADING = 'Error';
+var UPDATE_VAN_SCHEDULE_HEADING = 'Error';
+var VAN_NOT_ASSIGNED_HEADING = USR_ACCOUNT_ERROR_HEADING;
+var LINK_ATTACHMENT_HEADING = 'Error';
+var CREATE_IMAGE_HEADING = 'Error';
+var CREATE_NOTE_HEADING = 'Error';
+var DELIVERY_PGI_HEADING = 'Error'; 
+var DELIVERY_CREATION_HEADING = 'Error';
+var ADD_ORDER_ATTACHMENT_HEADING = 'Error';
+var PLANT_NOT_ASSIGNED_HEADING = "Error";
+
+var NO_SEARCH_RESULT_TEXT = 'Please check the search options.';
+var NO_RESULTS_FOUND_TEXT = 'Please change date range to get more result.';
 var NO_CUST_RESULT_TEXT = 'Please check whether reps number is assigned correctly in SAP.';
 var NO_SALES_OFFICE_RESULT_TEXT = 'Please check whether sales office is assigned correctly in SAP.';
-var TOO_MANY_RESULT_HEADING = 'Too many search hits';
+var NO_VAN_RESULT_TEXT = 'Please check whether paper van number is assigned correctly in SAP.';
+var ERROR_INPUT_RESULT_TEXT = 'Please contact IT.';
 var TOO_MANY_RESULT_TEXT = 'Please refine search';
+var REGIONAL_CUSTOMER_TEXT = 'It will take a minute to retrieve all customers. Do you want to load the customers?';
+var CONNECTION_LOST_TEXT = 'Please check your internet connection.';
+var TIMEOUT_TEXT = 'A request takes longer than expected. Please check internet signal and try again.';
+var DELETE_VAN_SCHEDULE_TEXT = 'Schedule may no be deleted.';
+var UPDATE_VAN_SCHEDULE_TEXT = 'Schedule may no be deleted.';
+var VAN_NOT_ASSIGNED_TEXT = "A van number is not assigned in SAP user's account.'";
+var LINK_ATTACHMENT_TEXT = 'Error when linking attachments. Please contact IT.';
+var CREATE_IMAGE_TEXT = 'Error when creating signature\'s image. Please contact IT.';
+var CREATE_NOTE_TEXT = 'Error when creating recipient\'s note. Please contact IT.';
+var DELIVERY_PGI_TEXT = 'Error when posting goods issue.'; 
+var DELIVERY_CREATION_TEXT = 'Error when creating delivery.';
+var ADD_ORDER_ATTACHMENT_TEXT = 'Signature cannot be attached to order.';
+var PLANT_NOT_ASSIGNED_TEXT = "A plant number is not assigned in SAP user's account. Please contact SAP team";
+
 var TOO_MANY_EXCEPTION = 'TOO_MANY_SEARCH_HITS';
 var INVALID_USER_EXCEPTION = 'INVALID_USER';
 var NO_CUSTOMERS_FOUND_EXCEPTION = 'NO_CUSTOMERS_FOUND';
 var REP_NOT_ASSIGNED_EXCEPTION = 'REP_NOT_ASSIGNED';
 var NO_SALES_OFFICE_EXCEPTION = 'NO_SALES_OFFICE';
+var VAN_NOT_ASSIGNED_EXCEPTION = 'VAN_NOT_ASSIGNED';
+var INPUT_ERROR_EXCEPTION = 'INPUT_ERROR';
 var NO_RESULTS_FOUND_EXCEPTION = 'NO_RESULTS_FOUND';
-var TRY_CATCH_ERROR_HEADING = 'Error';
-var REGIONAL_CUSTOMER_HEADING = 'Regional Customers';
-var REGIONAL_CUSTOMER_TEXT = 'It will take a minute to retrieve all customers. Do you want to load the customers?';
-
+var CONNECTION_LOST_EXCEPTION = 'CONNECTION_LOST';
+var UNKNOWN_EXCEPTION = 'UNKNOWN';
+var TIMEOUT_EXCEPTION = 'TIMEOUT';
+var DELETE_VAN_SCHEDULE_EXCEPTION = 'DELETE_VAN_ERROR';
+var UPDATE_VAN_SCHEDULE_EXCEPTION = 'UPDATE_VAN_ERROR';
+var VAN_NOT_ASSIGNED_EXCEPTION = 'VAN_NOT_ASSIGNED';
+var LINK_ATTACHMENT_EXCEPTION = 'LINK_ATTACHMENT_ERROR';
+var CREATE_IMAGE_EXCEPTION = 'CREATE_IMAGE_ERROR';
+var CREATE_NOTE_EXCEPTION = 'CREATE_NOTE_ERROR';
+var DELIVERY_PGI_EXCEPTION = 'PGI_ERROR'; 
+var DELIVERY_CREATION_EXCEPTION = 'DELIVERY_CREATION_ERROR';
+var ADD_ORDER_ATTACHMENT_EXCEPTION = 'ORDER_ATTACHMENT_EXCEPTION';
+var PLANT_NOT_ASSIGNED_EXCEPTION = 'NO_PLANT_ASSIGNED';
 // // loading message
 var VALIDATE_ACCOUNT_LOADING = 'Validaing user account...';
 var PRODUCT_LOADING = 'Retrieving products...';
@@ -804,7 +882,12 @@ var DISPUTE_LOADING = 'Retrieving dispute cases...';
 var DELETE_CUSTOMER_LOADING = 'Deleting customer...';
 var DELETE_CONTACT_LOADING = 'Deleting contact...';
 var CUSTOMER_ADDRESS_LOADING = 'Loading customer address...';
-
+var VAN_PRODUCT_LOADING = "Loading van's products...";
+var DELETE_VAN_SCHEDULE_LOADING = "Deleting van's schedule...";
+var UPDATE_VAN_SCHEDULE_LOADING = "Updating van's schedule...";
+var VAN_BATCH_LOADING = "Retrieving batches...";
+var CREATE_DELIVERY_LOADING = "Creating delivery...";
+var ADD_ATTACHMENT_LOADING = "Adding attachment...";
 // ERROR CONST
 var DEVICE_NOT_CONNECTED = 'Device%2520not%2520connected';
 var DEVICE_TIME_OUT = 'Server%2520response%2520time%2520out';
