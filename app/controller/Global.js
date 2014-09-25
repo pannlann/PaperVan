@@ -85,16 +85,16 @@ if (hwc.isWindows()) {
 		}]
 	};
 
-	vanBatchResultData.items = [{
-		prodNo : '200003',
-		batch : 'batch1'
-	}, {
-		prodNo : '200003',
-		batch : 'batch2'
-	}, {
-		prodNo : '200002',
-		batch : 'batch3'
-	}];
+	// vanBatchResultData.items = [{
+		// prodNo : '200003',
+		// batch : 'batch1'
+	// }, {
+		// prodNo : '200003',
+		// batch : 'batch2'
+	// }, {
+		// prodNo : '200002',
+		// batch : 'batch3'
+	// }];
 
 }
 

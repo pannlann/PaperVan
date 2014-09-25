@@ -1250,7 +1250,7 @@ Ext.define('PaperVan.controller.Controller', {
 		var orderCommentField = Ext.ComponentQuery.query('#orderCommentField')[0];
 		var delInstructionField = Ext.ComponentQuery.query('#delInstructionField')[0];
 
-		if (newValue == 'ZSTK') {
+		if (newValue == 'ZSTK' || newValue == 'ZMCF') {
 			validToDate.setHidden(true);
 			quoteCommentField.setHidden(true);
 			orderCommentField.setHidden(false);
@@ -1556,9 +1556,9 @@ Ext.define('PaperVan.controller.Controller', {
 				title : selectedProduct.prodDesc
 			});
 
-			if (selectedProduct.batch != '') {
-				setProdDescBatchOption('#cartProductDesc', selectedProduct.prodNo);
-			}
+			// if (selectedProduct.batch != '') {
+			// setProdDescBatchOption('#cartProductDesc', selectedProduct.prodNo);
+			// }
 
 			var cartProductDescView = Ext.ComponentQuery
 			.query('#cartProductDesc')[0];
@@ -1579,9 +1579,9 @@ Ext.define('PaperVan.controller.Controller', {
 				}
 
 				// set batchNumber in the cart
-				if (allItems[i].getItemId() == 'batchNumber') {
-					allItems[i].setValue(selectedProduct.batch);
-				}
+				// if (allItems[i].getItemId() == 'batchNumber') {
+				// allItems[i].setValue(selectedProduct.batch);
+				// }
 			}
 		}
 	},
@@ -1743,7 +1743,7 @@ Ext.define('PaperVan.controller.Controller', {
 			id : 'vanProductDesc',
 			title : selectedProduct.prodDesc
 		});
-		setProdDescBatchOption('#vanProductDesc', selectedProduct.prodNo);
+		// setProdDescBatchOption('#vanProductDesc', selectedProduct.prodNo);
 
 	},
 
@@ -1752,7 +1752,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 		// copy selectedProduct to temp product by JSON parser
 		var tempProduct = JSON.parse(JSON.stringify(selectedProduct));
-		var requiredBatch = false;
+		// var requiredBatch = false;
 
 		var cartProductDescView = Ext.ComponentQuery.query('#cartProductDesc')[0];
 		var allItems = cartProductDescView.items.items;
@@ -1771,37 +1771,38 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 
 			// set batchNumber
-			if (allItems[i].getItemId() == 'batchNumber') {
-				tempProduct.batch = allItems[i].getValue();
-			}
+			// if (allItems[i].getItemId() == 'batchNumber') {
+			// tempProduct.batch = allItems[i].getValue();
+			// }
 		}
 
-		if (tempProduct.batch == '') {
-			var relatedBatch = vanBatchResultData.items.findAll({
-				prodNo : tempProduct.prodNo
-			});
-			// there is one batch available for selected product
-			if (relatedBatch.length == 1) {
-				// assign batch automatically
-				tempProduct.batch = relatedBatch[0].batch;
-			} else if (relatedBatch.length > 1) {
-				// more than one batches available but user didn't pick any
-				requiredBatch = true;
-			}
-		}
+		// if (tempProduct.batch == '') {
+		// var relatedBatch = vanBatchResultData.items.findAll({
+		// prodNo : tempProduct.prodNo
+		// });
+		// // there is one batch available for selected product
+		// if (relatedBatch.length == 1) {
+		// // assign batch automatically
+		// tempProduct.batch = relatedBatch[0].batch;
+		// } else if (relatedBatch.length > 1) {
+		// // more than one batches available but user didn't pick any
+		// requiredBatch = true;
+		// }
+		// }
 
-		if (!requiredBatch) {
-			// add temp object to productsInCart variable
-			updateToCart(tempProduct);
-			updateCartTotal();
-			Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been updated.', function() {
-				// return to previous page
-				button.up('cartOrder').pop();
-			});
-		} else {
-			Ext.Msg.alert('Warning', 'Batch number is required.', function() {
-			});
-		}
+		// if (!requiredBatch) {
+		// add temp object to productsInCart variable
+		updateToCart(tempProduct);
+		updateCartTotal();
+		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been updated.', function() {
+			// return to previous page
+			button.up('cartOrder').pop();
+		});
+
+		// } else {
+		// Ext.Msg.alert('Warning', 'Batch number is required.', function() {
+		// });
+		// }
 
 	},
 
@@ -1811,7 +1812,7 @@ Ext.define('PaperVan.controller.Controller', {
 		// var tempProduct = JSON.parse(JSON.stringify(selectedProduct));
 		var tempData;
 		var buttonId = button.getItemId();
-		var requiredBatch = false;
+		// var requiredBatch = false;
 
 		// determine which view used to retrieve a product data beofre adding to
 		// the cart
@@ -1854,43 +1855,45 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 
 			// set batchNumber
-			if (allItems[i].getItemId() == 'batchNumber') {
-				tempProduct.batch = allItems[i].getValue();
-			}
+			// if (allItems[i].getItemId() == 'batchNumber') {
+			// tempProduct.batch = allItems[i].getValue();
+			// }
 		}
 
-		if (buttonId == 'vanAddToCartButton' && tempProduct.batch == '') {
-			var relatedBatch = vanBatchResultData.items.findAll({
-				prodNo : tempProduct.prodNo
-			});
-			// there is one batch available for selected product
-			if (relatedBatch.length == 1) {
-				// assign batch automatically
-				tempProduct.batch = relatedBatch[0].batch;
-			} else if (relatedBatch.length > 1) {
-				// more than one batches available but user didn't pick any
-				requiredBatch = true;
-			}
-		}
+		// if (buttonId == 'vanAddToCartButton' && tempProduct.batch == '') {
+		// var relatedBatch = vanBatchResultData.items.findAll({
+		// prodNo : tempProduct.prodNo
+		// });
+		// // there is one batch available for selected product
+		// if (relatedBatch.length == 1) {
+		// // assign batch automatically
+		// tempProduct.batch = relatedBatch[0].batch;
+		// } else if (relatedBatch.length > 1) {
+		// // more than one batches available but user didn't pick any
+		// requiredBatch = true;
+		// }
+		// }
+		//
+		// if (!requiredBatch) {
 
-		if (!requiredBatch) {
-			// add temp object to productsInCart variable
-			addToCart(tempProduct);
-			updateCartTotal();
-			Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been added to the cart.', function() {
-				// return to previous page
-				if (buttonId == 'addToCartButton') {
-					button.up('productTab').pop();
-				} else if (buttonId == 'preAddToCartButton') {
-					button.up('previousPurchaseTab').pop();
-				} else if (buttonId == 'vanAddToCartButton') {
-					button.up('vanProductTab').pop();
-				}
-			});
-		} else {
-			Ext.Msg.alert('Error', 'Batch number is required.', function() {
-			});
-		}
+		// add temp object to productsInCart variable
+		addToCart(tempProduct);
+		updateCartTotal();
+		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been added to the cart.', function() {
+			// return to previous page
+			if (buttonId == 'addToCartButton') {
+				button.up('productTab').pop();
+			} else if (buttonId == 'preAddToCartButton') {
+				button.up('previousPurchaseTab').pop();
+			} else if (buttonId == 'vanAddToCartButton') {
+				button.up('vanProductTab').pop();
+			}
+		});
+
+		// } else {
+		// Ext.Msg.alert('Error', 'Batch number is required.', function() {
+		// });
+		// }
 	},
 
 	// when sort button is tapped, show sort type
@@ -2556,16 +2559,17 @@ function showCredentialScreen(userId) {
 
 function validateCredentials(username, password) {
 
+	// save credential
+	hwc.saveLoginCredentials(username, password);
+	
 	Ext.defer(function() {
 
 		calledBAPI = ACCOUNT_VALIDATION_BAPI;
-		// save credential
-		hwc.saveLoginCredentials(username, password);
 		// call validation function
 		var zaccountValidate = new ZMOB_VALIDATE_ACCOUNT();
 
 		zmob_validate_account_findAll(zaccountValidate, '', '');
-	}, 500);
+	}, 1000);
 }
 
 function getPreviousPurchase(selectedDays) {
@@ -2900,11 +2904,7 @@ function prepareOrderItem() {
 			temp = '|';
 		}
 
-		if (isVanOrder) {
-			temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant + '|' + productsInCart.items[i].batch;
-		} else {
-			temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
-		}
+		temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
 
 		orderItem += temp;
 	};
@@ -3052,7 +3052,7 @@ function showOrderSimulation() {
 	var title;
 	var cartOrder = Ext.ComponentQuery.query('cartOrder')[0];
 
-	if (orderType == 'ZSTK') {
+	if (orderType == 'ZSTK' || orderType == 'ZMCF') {
 		title = 'Order Confimation';
 	} else {
 		title = 'Quote Confirmation';

@@ -577,6 +577,9 @@ var DEFAULT_ORDER_TYPE = [{
 }, {
 	text : 'Quote',
 	value : 'ZMQT'
+}, {
+	text : 'Con Cust Fill-Up',
+	value : 'ZMCF'
 }];
 
 var DEFAULT_SHIPPING_COND = [{
@@ -820,6 +823,7 @@ var DELIVERY_PGI_HEADING = 'Error';
 var DELIVERY_CREATION_HEADING = 'Error';
 var ADD_ORDER_ATTACHMENT_HEADING = 'Error';
 var PLANT_NOT_ASSIGNED_HEADING = "Error";
+var DELIVERY_BATCH_SPLIT_HEADING = "Error";
 
 var NO_SEARCH_RESULT_TEXT = 'Please check the search options.';
 var NO_RESULTS_FOUND_TEXT = 'Please change date range to get more result.';
@@ -841,6 +845,7 @@ var DELIVERY_PGI_TEXT = 'Error when posting goods issue.';
 var DELIVERY_CREATION_TEXT = 'Error when creating delivery.';
 var ADD_ORDER_ATTACHMENT_TEXT = 'Signature cannot be attached to order.';
 var PLANT_NOT_ASSIGNED_TEXT = "A plant number is not assigned in SAP user's account. Please contact SAP team";
+var DELIVERY_BATCH_SPLIT_TEXT = 'An error occurs when spliting batches. Please change a delivery and manually assign batches';
 
 var TOO_MANY_EXCEPTION = 'TOO_MANY_SEARCH_HITS';
 var INVALID_USER_EXCEPTION = 'INVALID_USER';
@@ -863,6 +868,7 @@ var DELIVERY_PGI_EXCEPTION = 'PGI_ERROR';
 var DELIVERY_CREATION_EXCEPTION = 'DELIVERY_CREATION_ERROR';
 var ADD_ORDER_ATTACHMENT_EXCEPTION = 'ORDER_ATTACHMENT_EXCEPTION';
 var PLANT_NOT_ASSIGNED_EXCEPTION = 'NO_PLANT_ASSIGNED';
+var DELIVERY_BATCH_SPLIT_EXCEPTION = 'BATCH_SPLIT_ERROR';
 // // loading message
 var VALIDATE_ACCOUNT_LOADING = 'Validaing user account...';
 var PRODUCT_LOADING = 'Retrieving products...';

@@ -22,7 +22,7 @@ Ext.define('PaperVan.view.VanProductResultList', {
 				'<tr>',
 				'<td style="width:20%" class="prd_result_no">#<b>{prodNo}</b></td>',
 				'<td style="width:45%" class="prd_result_lpr_val">Price: <b>{[number(values.custPr)]}/{uom}</b></td>',
-				'<td style="width:35%" class="prd_result_atp_val">List pr:  <b>{[number(values.atpQty)]}/{uom}</b></td>',
+				'<td style="width:35%" class="prd_result_atp_val">List pr:  <b>{[number(values.listPr)]}/{uom}</b></td>',
 				'</tr>',
 				'<tr>',
 				'<td></td>',

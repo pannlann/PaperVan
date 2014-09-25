@@ -5,26 +5,6 @@
   </Globals>
   <Triggers> 
     <Actions>
-      <Action name="ZMOB_ADD_ATTACHMENT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
-        <Methods>
-          <Method name="findAll" type="search" mbo="ZMOB_ADD_ATTACHMENT" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
-            <InputBinding optype="none" opname="findAll" generateOld="false">			
-              <Value sourceType="Key" workflowKey="PK_TIMESTAMP_pkKey" pkName="PK_TIMESTAMP" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_RECIPIENT_pkKey" pkName="PK_RECIPIENT" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_DOC_NO_pkKey" pkName="PK_DOC_NO" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_IMAGE_pkKey" pkName="PK_IMAGE" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_DOC_TYPE_pkKey" pkName="PK_DOC_TYPE" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_GEO_TEXT_pkKey" pkName="PK_GEO_TEXT" mboType="string"/>		    		
-            </InputBinding>
-            <OutputBinding generateOld="true">			    
-              <Mapping workflowKey="ZMOB_ADD_ATTACHMENT" workflowType="list" mboType="list">
-                 <Mapping workflowKey="ZMOB_ADD_ATTACHMENT_E_STATUS_attribKey" workflowType="text" attribName="E_STATUS" mboType="string"/>
-              </Mapping>
-
-            </OutputBinding>
-          </Method>
-        </Methods>
-      </Action>
       <Action name="ZMOB_CHANGE_CONTACT_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
         <Methods>
           <Method name="findAll" type="search" mbo="ZMOB_CHANGE_CONTACT" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
@@ -112,26 +92,6 @@
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_CREATE_CUSTOMER" workflowType="list" mboType="list">
                  <Mapping workflowKey="ZMOB_CREATE_CUSTOMER_E_KUNNR_attribKey" workflowType="text" attribName="E_KUNNR" mboType="string"/>
-              </Mapping>
-
-            </OutputBinding>
-          </Method>
-        </Methods>
-      </Action>
-      <Action name="ZMOB_CREATE_DEL_PGI_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
-        <Methods>
-          <Method name="findAll" type="search" mbo="ZMOB_CREATE_DEL_PGI" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
-            <InputBinding optype="none" opname="findAll" generateOld="false">			
-              <Value sourceType="Key" workflowKey="PK_TIMESTAMP_pkKey" pkName="PK_TIMESTAMP" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_RECIPIENT_pkKey" pkName="PK_RECIPIENT" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_ORDER_NO_pkKey" pkName="PK_ORDER_NO" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_IMAGE_pkKey" pkName="PK_IMAGE" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_GEO_TEXT_pkKey" pkName="PK_GEO_TEXT" mboType="string"/>		    		
-            </InputBinding>
-            <OutputBinding generateOld="true">			    
-              <Mapping workflowKey="ZMOB_CREATE_DEL_PGI" workflowType="list" mboType="list">
-                 <Mapping workflowKey="ZMOB_CREATE_DEL_PGI_E_RETURN_attribKey" workflowType="text" attribName="E_RETURN" mboType="string"/>
-                 <Mapping workflowKey="ZMOB_CREATE_DEL_PGI_E_DELIVERY_attribKey" workflowType="text" attribName="E_DELIVERY" mboType="string"/>
               </Mapping>
 
             </OutputBinding>
@@ -361,16 +321,17 @@
           <Method name="findAll" type="search" mbo="ZMOB_ORDER_CREATE" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
             <InputBinding optype="none" opname="findAll" generateOld="false">			
               <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_MOB_APP_pkKey" pkName="PK_MOB_APP" mboType="string"/>		    		
+              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    		
             </InputBinding>
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_ORDER_CREATE" workflowType="list" mboType="list">
                  <Mapping workflowKey="ZMOB_ORDER_CREATE_SALESDOCUMENT_attribKey" workflowType="text" attribName="SALESDOCUMENT" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_TYPE_attribKey" workflowType="text" attribName="TYPE" mboType="string"/>
+                 <Mapping workflowKey="ZMOB_ORDER_CREATE_MESSAGE_attribKey" workflowType="text" attribName="MESSAGE" mboType="string"/>
               </Mapping>
 
             </OutputBinding>
@@ -382,18 +343,15 @@
           <Method name="findAll" type="search" mbo="ZMOB_ORDER_CREATE_peer1" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
             <InputBinding optype="none" opname="findAll" generateOld="false">			
               <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_MOB_APP_pkKey" pkName="PK_MOB_APP" mboType="string"/>		    		
+              <Value sourceType="Key" workflowKey="PK_GENERAL_ORDER_TEXT_pkKey" pkName="PK_GENERAL_ORDER_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_QUOTATION_TEXT_pkKey" pkName="PK_QUOTATION_TEXT" mboType="string"/>		    					
+              <Value sourceType="Key" workflowKey="PK_DELIVERY_TEXT_pkKey" pkName="PK_DELIVERY_TEXT" mboType="string"/>		    		
             </InputBinding>
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1" workflowType="list" mboType="list">
                  <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1_SALESDOCUMENT_attribKey" workflowType="text" attribName="SALESDOCUMENT" mboType="string"/>
-                 <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1_TYPE_attribKey" workflowType="text" attribName="TYPE" mboType="string"/>
-                 <Mapping workflowKey="ZMOB_ORDER_CREATE_peer1_MESSAGE_attribKey" workflowType="text" attribName="MESSAGE" mboType="string"/>
               </Mapping>
 
             </OutputBinding>
@@ -445,8 +403,7 @@
             <InputBinding optype="none" opname="findAll" generateOld="false">			
               <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_MOB_APP_pkKey" pkName="PK_MOB_APP" mboType="string"/>		    		
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    		
             </InputBinding>
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_ORDER_SIMULATE" workflowType="list" mboType="list">
@@ -464,8 +421,7 @@
             <InputBinding optype="none" opname="findAll" generateOld="false">			
               <Value sourceType="Key" workflowKey="PK_ORDER_ITEM_pkKey" pkName="PK_ORDER_ITEM" mboType="string"/>		    					
               <Value sourceType="Key" workflowKey="PK_ORDER_PARTNER_pkKey" pkName="PK_ORDER_PARTNER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    					
-              <Value sourceType="Key" workflowKey="PK_MOB_APP_pkKey" pkName="PK_MOB_APP" mboType="string"/>		    		
+              <Value sourceType="Key" workflowKey="PK_ORDER_HEADER_pkKey" pkName="PK_ORDER_HEADER" mboType="string"/>		    		
             </InputBinding>
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_ORDER_SIMULATE_ITEM" workflowType="list" mboType="list">
@@ -557,21 +513,6 @@
             <OutputBinding generateOld="true">			    
               <Mapping workflowKey="ZMOB_VALIDATE_ACCOUNT" workflowType="list" mboType="list">
                  <Mapping workflowKey="ZMOB_VALIDATE_ACCOUNT_E_RESULT_attribKey" workflowType="text" attribName="E_RESULT" mboType="string"/>
-              </Mapping>
-
-            </OutputBinding>
-          </Method>
-        </Methods>
-      </Action>
-      <Action name="ZMOB_VAN_BATCH_LIST_findAll" sourcescreen="" targetscreen="" errorscreen="" errorlogskey="ErrorLogs" errorlogmessagekey="ErrorLogMessage" errorlogmessageaslistkey="ErrorLogMessageAsList">
-        <Methods>
-          <Method name="findAll" type="search" mbo="ZMOB_VAN_BATCH_LIST" package="papervan:1.4" showCredScreenOnAuthFailure="true" >
-            <InputBinding optype="none" opname="findAll" generateOld="false">
-            </InputBinding>
-            <OutputBinding generateOld="true">			    
-              <Mapping workflowKey="ZMOB_VAN_BATCH_LIST" workflowType="list" mboType="list">
-                 <Mapping workflowKey="ZMOB_VAN_BATCH_LIST_PRODUCT_attribKey" workflowType="text" attribName="PRODUCT" mboType="string"/>
-                 <Mapping workflowKey="ZMOB_VAN_BATCH_LIST_BATCH_attribKey" workflowType="text" attribName="BATCH" mboType="string"/>
               </Mapping>
 
             </OutputBinding>

@@ -687,7 +687,8 @@ function saveVanProductData(vanProductData, message) {
 			console.log('finish getting data from product search MBO');
 
 			updateVanProductResultStore();
-			getVanBatch();
+			mainContainer.unmask();
+			// getVanBatch();
 		} else {
 			mainContainer.unmask();
 			// no result return
@@ -1133,7 +1134,7 @@ function saveOrderNumber(order, mvc) {
 	var orderType = Ext.ComponentQuery.query('#orderType')[0].getValue().trim();
 	var header;
 	var message;
-	if (orderType == 'ZSTK') {
+	if (orderType == 'ZSTK' || orderType == 'ZMCF') {
 		header = 'Order';
 		message = 'The order ';
 	} else {
@@ -1402,6 +1403,9 @@ function reportErrorMessage(errorString, callbackFunction) {
 	} else if (errorString.indexOf(PLANT_NOT_ASSIGNED_EXCEPTION) >= 0) {
 		alertHeader = PLANT_NOT_ASSIGNED_HEADING;
 		alertDetail = PLANT_NOT_ASSIGNED_TEXT;
+	} else if (errorString.indexOf(DELIVERY_BATCH_SPLIT_EXCEPTION) >= 0) {
+		alertHeader = DELIVERY_BATCH_SPLIT_HEADING;
+		alertDetail = DELIVERY_BATCH_SPLIT_TEXT;
 	} else {
 		alertHeader = "Unknown error";
 		alertDetail = "Please contact IT";

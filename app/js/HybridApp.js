@@ -77,15 +77,6 @@ function makeClass(attributes, children) {
  
   
 /**
- * Returns ZMOB_ADD_ATTACHMENT MBO structure. 
- * Used by JavaScript functions of zmob_add_attachment_findAll
- * @param E_STATUS, The "E_STATUS" is an attribute field of the MBO ZMOB_ADD_ATTACHMENT
- * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
- */   
-ZMOB_ADD_ATTACHMENT = makeClass( "E_STATUS _surrogateKey", "" );
- 
-  
-/**
  * Returns ZMOB_CHANGE_CONTACT MBO structure. 
  * Used by JavaScript functions of zmob_change_contact_findAll
  * @param E_RETURN, The "E_RETURN" is an attribute field of the MBO ZMOB_CHANGE_CONTACT
@@ -120,16 +111,6 @@ ZMOB_CREATE_CONTACT = makeClass( "NEW_CONTACTID RETURN_STATUS _surrogateKey", ""
  * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
  */   
 ZMOB_CREATE_CUSTOMER = makeClass( "E_KUNNR _surrogateKey", "" );
- 
-  
-/**
- * Returns ZMOB_CREATE_DEL_PGI MBO structure. 
- * Used by JavaScript functions of zmob_create_del_pgi_findAll
- * @param E_RETURN, The "E_RETURN" is an attribute field of the MBO ZMOB_CREATE_DEL_PGI
- * @param E_DELIVERY, The "E_DELIVERY" is an attribute field of the MBO ZMOB_CREATE_DEL_PGI
- * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
- */   
-ZMOB_CREATE_DEL_PGI = makeClass( "E_RETURN E_DELIVERY _surrogateKey", "" );
  
   
 /**
@@ -257,20 +238,20 @@ ZMOB_GET_CUSTOMER_ADDRESS = makeClass( "E_POSTCODE E_TEL E_REGION E_NAME1 E_CITY
  * Returns ZMOB_ORDER_CREATE MBO structure. 
  * Used by JavaScript functions of zmob_order_create_findAll
  * @param SALESDOCUMENT, The "SALESDOCUMENT" is an attribute field of the MBO ZMOB_ORDER_CREATE
+ * @param TYPE, The "TYPE" is an attribute field of the MBO ZMOB_ORDER_CREATE
+ * @param MESSAGE, The "MESSAGE" is an attribute field of the MBO ZMOB_ORDER_CREATE
  * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
  */   
-ZMOB_ORDER_CREATE = makeClass( "SALESDOCUMENT _surrogateKey", "" );
+ZMOB_ORDER_CREATE = makeClass( "SALESDOCUMENT TYPE MESSAGE _surrogateKey", "" );
  
   
 /**
  * Returns ZMOB_ORDER_CREATE_peer1 MBO structure. 
  * Used by JavaScript functions of zmob_order_create_peer1_findAll
  * @param SALESDOCUMENT, The "SALESDOCUMENT" is an attribute field of the MBO ZMOB_ORDER_CREATE_peer1
- * @param TYPE, The "TYPE" is an attribute field of the MBO ZMOB_ORDER_CREATE_peer1
- * @param MESSAGE, The "MESSAGE" is an attribute field of the MBO ZMOB_ORDER_CREATE_peer1
  * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
  */   
-ZMOB_ORDER_CREATE_peer1 = makeClass( "SALESDOCUMENT TYPE MESSAGE _surrogateKey", "" );
+ZMOB_ORDER_CREATE_peer1 = makeClass( "SALESDOCUMENT _surrogateKey", "" );
  
   
 /**
@@ -361,16 +342,6 @@ ZMOB_VALIDATE_ACCOUNT = makeClass( "E_RESULT _surrogateKey", "" );
  
   
 /**
- * Returns ZMOB_VAN_BATCH_LIST MBO structure. 
- * Used by JavaScript functions of zmob_van_batch_list_findAll
- * @param PRODUCT, The "PRODUCT" is an attribute field of the MBO ZMOB_VAN_BATCH_LIST
- * @param BATCH, The "BATCH" is an attribute field of the MBO ZMOB_VAN_BATCH_LIST
- * @param _surrogateKey, _surrogateKey need to be set if this MBO used in delete operation from its parent MBO. 
- */   
-ZMOB_VAN_BATCH_LIST = makeClass( "PRODUCT BATCH _surrogateKey", "" );
- 
-  
-/**
  * Returns ZMOB_VAN_CUSTOMER_DEL MBO structure. 
  * Used by JavaScript functions of zmob_van_customer_del_findAll
  * @param RETURN_STATUS, The "RETURN_STATUS" is an attribute field of the MBO ZMOB_VAN_CUSTOMER_DEL
@@ -443,30 +414,6 @@ ZMOB_VAN_CUSTOMER_UPDATE = makeClass( "RETURN_STATUS _surrogateKey", "" );
 ZMOB_VAN_PRODUCT_LIST = makeClass( "MATNR PRODUCT KG_THS EA_PACK THS_PAL STOCK_QTY ATP_QTY ATP_UOM ATP2_QTY ATP5_QTY MESSAGES FLAG FLAG2 E_LIST_PRICE E_CUST_PRICE E_COST E_CURRENCY COUNT _surrogateKey", "" );
 
 /**
- * Variable PK_TIMESTAMP_pkKey   used by function zmob_add_attachment_findAll, zmob_create_del_pgi_findAll, for details please see the definition of the functions.
- */
-var  PK_TIMESTAMP_pkKey = "PK_TIMESTAMP_pkKey";
-/**
- * Variable PK_RECIPIENT_pkKey   used by function zmob_add_attachment_findAll, zmob_create_del_pgi_findAll, for details please see the definition of the functions.
- */
-var  PK_RECIPIENT_pkKey = "PK_RECIPIENT_pkKey";
-/**
- * Variable PK_DOC_NO_pkKey   used by function zmob_add_attachment_findAll, zmob_create_sales_act_findAll, for details please see the definition of the functions.
- */
-var  PK_DOC_NO_pkKey = "PK_DOC_NO_pkKey";
-/**
- * Variable PK_IMAGE_pkKey   used by function zmob_add_attachment_findAll, zmob_create_del_pgi_findAll, for details please see the definition of the functions.
- */
-var  PK_IMAGE_pkKey = "PK_IMAGE_pkKey";
-/**
- * Variable PK_DOC_TYPE_pkKey   used by function zmob_add_attachment_findAll, for details please see the definition of the functions.
- */
-var  PK_DOC_TYPE_pkKey = "PK_DOC_TYPE_pkKey";
-/**
- * Variable PK_GEO_TEXT_pkKey   used by function zmob_add_attachment_findAll, zmob_create_del_pgi_findAll, for details please see the definition of the functions.
- */
-var  PK_GEO_TEXT_pkKey = "PK_GEO_TEXT_pkKey";
-/**
  * Variable PK_FIRSTNAME_pkKey   used by function zmob_change_contact_findAll, zmob_create_contact_findAll, for details please see the definition of the functions.
  */
 var  PK_FIRSTNAME_pkKey = "PK_FIRSTNAME_pkKey";
@@ -531,10 +478,6 @@ var  PK_FAX_pkKey = "PK_FAX_pkKey";
  */
 var  PK_STREET_pkKey = "PK_STREET_pkKey";
 /**
- * Variable PK_ORDER_NO_pkKey   used by function zmob_create_del_pgi_findAll, for details please see the definition of the functions.
- */
-var  PK_ORDER_NO_pkKey = "PK_ORDER_NO_pkKey";
-/**
  * Variable PK_DIST_TEXT_pkKey   used by function zmob_create_dispute_findAll, for details please see the definition of the functions.
  */
 var  PK_DIST_TEXT_pkKey = "PK_DIST_TEXT_pkKey";
@@ -579,6 +522,10 @@ var  PK_DESC_1_pkKey = "PK_DESC_1_pkKey";
  */
 var  PK_AMOUNT_pkKey = "PK_AMOUNT_pkKey";
 /**
+ * Variable PK_DOC_NO_pkKey   used by function zmob_create_sales_act_findAll, for details please see the definition of the functions.
+ */
+var  PK_DOC_NO_pkKey = "PK_DOC_NO_pkKey";
+/**
  * Variable PK_ACT_TYPE_pkKey   used by function zmob_create_sales_act_findAll, for details please see the definition of the functions.
  */
 var  PK_ACT_TYPE_pkKey = "PK_ACT_TYPE_pkKey";
@@ -603,13 +550,17 @@ var  PK_ACT_MAX_pkKey = "PK_ACT_MAX_pkKey";
  */
 var  PK_ORDER_ITEM_pkKey = "PK_ORDER_ITEM_pkKey";
 /**
- * Variable PK_GENERAL_ORDER_TEXT_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, for details please see the definition of the functions.
- */
-var  PK_GENERAL_ORDER_TEXT_pkKey = "PK_GENERAL_ORDER_TEXT_pkKey";
-/**
  * Variable PK_ORDER_PARTNER_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, zmob_order_simulate_findAll, zmob_order_simulate_item_findAll, for details please see the definition of the functions.
  */
 var  PK_ORDER_PARTNER_pkKey = "PK_ORDER_PARTNER_pkKey";
+/**
+ * Variable PK_ORDER_HEADER_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, zmob_order_simulate_findAll, zmob_order_simulate_item_findAll, for details please see the definition of the functions.
+ */
+var  PK_ORDER_HEADER_pkKey = "PK_ORDER_HEADER_pkKey";
+/**
+ * Variable PK_GENERAL_ORDER_TEXT_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, for details please see the definition of the functions.
+ */
+var  PK_GENERAL_ORDER_TEXT_pkKey = "PK_GENERAL_ORDER_TEXT_pkKey";
 /**
  * Variable PK_QUOTATION_TEXT_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, for details please see the definition of the functions.
  */
@@ -618,14 +569,6 @@ var  PK_QUOTATION_TEXT_pkKey = "PK_QUOTATION_TEXT_pkKey";
  * Variable PK_DELIVERY_TEXT_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, for details please see the definition of the functions.
  */
 var  PK_DELIVERY_TEXT_pkKey = "PK_DELIVERY_TEXT_pkKey";
-/**
- * Variable PK_ORDER_HEADER_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, zmob_order_simulate_findAll, zmob_order_simulate_item_findAll, for details please see the definition of the functions.
- */
-var  PK_ORDER_HEADER_pkKey = "PK_ORDER_HEADER_pkKey";
-/**
- * Variable PK_MOB_APP_pkKey   used by function zmob_order_create_findAll, zmob_order_create_peer1_findAll, zmob_order_simulate_findAll, zmob_order_simulate_item_findAll, for details please see the definition of the functions.
- */
-var  PK_MOB_APP_pkKey = "PK_MOB_APP_pkKey";
 /**
  * Variable PK_FIND_ALT_pkKey   used by function zmob_order_product_search_findAll, for details please see the definition of the functions.
  */
@@ -715,45 +658,6 @@ var  PK_TUESDAY_pkKey = "PK_TUESDAY_pkKey";
 /******************MBO OPERATION AND OBJECT QUERY FUNCTIONS************************/
     	 
 /*
- * Global variables for ZMOB_ADD_ATTACHMENT MBO actions
- */
-ZMOB_ADD_ATTACHMENT.findAllAction = "ZMOB_ADD_ATTACHMENT_findAll";
-
- 
- 
-/**
- * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
- * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_add_attachmentObj which is the instance of ZMOB_ADD_ATTACHMENT JavaScript structure.  User needs to set values for personalization key PK_TIMESTAMP_pkKey PK_RECIPIENT_pkKey PK_DOC_NO_pkKey PK_IMAGE_pkKey PK_DOC_TYPE_pkKey PK_GEO_TEXT_pkKey by calling zmob_add_attachmentObj.pks.put function, for examples zmob_add_attachmentObj.pks.put(PK_TIMESTAMP_pkKey,"yourValue") .
- * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
- * @param errorCallback Name of the function to be called if an online request fails.
- */    	  		
-function zmob_add_attachment_findAll(zmob_add_attachmentObj, credInfo ,  errorCallback)
-{
-    var keys = ["PK_TIMESTAMP_pkKey", "PK_RECIPIENT_pkKey", "PK_DOC_NO_pkKey", "PK_IMAGE_pkKey", "PK_DOC_TYPE_pkKey", "PK_GEO_TEXT_pkKey"];
-    var types = ["string", "string", "string", "string", "string", "string"];
-    var objValues = [zmob_add_attachmentObj.pks.PK_TIMESTAMP_pkKey, zmob_add_attachmentObj.pks.PK_RECIPIENT_pkKey, zmob_add_attachmentObj.pks.PK_DOC_NO_pkKey, zmob_add_attachmentObj.pks.PK_IMAGE_pkKey, zmob_add_attachmentObj.pks.PK_DOC_TYPE_pkKey, zmob_add_attachmentObj.pks.PK_GEO_TEXT_pkKey];
-   
-    var workflowMessageToSend = new WorkflowMessage("");
-	workflowMessageToSend.setHeader("");
-	createMessageValues(  workflowMessageToSend.getValues(), keys, types, objValues );
-	workflowMessageToSend.setRequestAction("ZMOB_ADD_ATTACHMENT_findAll");
-	
-	 hwc.doOnlineRequest_CONT( credInfo, 
-				workflowMessageToSend.serializeToString(),
-				workflowMessageToSend.getHasFileMessageValue(),
-				 120, 
-				 0, 
-				"", //errorMessage
-			    errorCallback, 
-			    null,    // TODO: cacheKey
-			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
-		);
-	    
-}	   
-    	 
-/*
  * Global variables for ZMOB_CHANGE_CONTACT MBO actions
  */
 ZMOB_CHANGE_CONTACT.findAllAction = "ZMOB_CHANGE_CONTACT_findAll";
@@ -787,7 +691,7 @@ function zmob_change_contact_findAll(zmob_change_contactObj, credInfo ,  errorCa
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -826,7 +730,7 @@ function zmob_change_customer_findAll(zmob_change_customerObj, credInfo ,  error
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -865,7 +769,7 @@ function zmob_create_contact_findAll(zmob_create_contactObj, credInfo ,  errorCa
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -904,46 +808,7 @@ function zmob_create_customer_findAll(zmob_create_customerObj, credInfo ,  error
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
-		);
-	    
-}	   
-    	 
-/*
- * Global variables for ZMOB_CREATE_DEL_PGI MBO actions
- */
-ZMOB_CREATE_DEL_PGI.findAllAction = "ZMOB_CREATE_DEL_PGI_findAll";
-
- 
- 
-/**
- * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
- * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_create_del_pgiObj which is the instance of ZMOB_CREATE_DEL_PGI JavaScript structure.  User needs to set values for personalization key PK_TIMESTAMP_pkKey PK_RECIPIENT_pkKey PK_ORDER_NO_pkKey PK_IMAGE_pkKey PK_GEO_TEXT_pkKey by calling zmob_create_del_pgiObj.pks.put function, for examples zmob_create_del_pgiObj.pks.put(PK_TIMESTAMP_pkKey,"yourValue") .
- * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
- * @param errorCallback Name of the function to be called if an online request fails.
- */    	  		
-function zmob_create_del_pgi_findAll(zmob_create_del_pgiObj, credInfo ,  errorCallback)
-{
-    var keys = ["PK_TIMESTAMP_pkKey", "PK_RECIPIENT_pkKey", "PK_ORDER_NO_pkKey", "PK_IMAGE_pkKey", "PK_GEO_TEXT_pkKey"];
-    var types = ["string", "string", "string", "string", "string"];
-    var objValues = [zmob_create_del_pgiObj.pks.PK_TIMESTAMP_pkKey, zmob_create_del_pgiObj.pks.PK_RECIPIENT_pkKey, zmob_create_del_pgiObj.pks.PK_ORDER_NO_pkKey, zmob_create_del_pgiObj.pks.PK_IMAGE_pkKey, zmob_create_del_pgiObj.pks.PK_GEO_TEXT_pkKey];
-   
-    var workflowMessageToSend = new WorkflowMessage("");
-	workflowMessageToSend.setHeader("");
-	createMessageValues(  workflowMessageToSend.getValues(), keys, types, objValues );
-	workflowMessageToSend.setRequestAction("ZMOB_CREATE_DEL_PGI_findAll");
-	
-	 hwc.doOnlineRequest_CONT( credInfo, 
-				workflowMessageToSend.serializeToString(),
-				workflowMessageToSend.getHasFileMessageValue(),
-				 120, 
-				 0, 
-				"", //errorMessage
-			    errorCallback, 
-			    null,    // TODO: cacheKey
-			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -982,7 +847,7 @@ function zmob_create_dispute_findAll(zmob_create_disputeObj, credInfo ,  errorCa
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1021,7 +886,7 @@ function zmob_create_sales_act_findAll(zmob_create_sales_actObj, credInfo ,  err
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1060,7 +925,7 @@ function zmob_customer_contact_list_findAll(zmob_customer_contact_listObj, credI
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1099,7 +964,7 @@ function zmob_customer_dispute_list_findAll(zmob_customer_dispute_listObj, credI
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1138,7 +1003,7 @@ function zmob_customer_list_findAll(zmob_customer_listObj, credInfo ,  errorCall
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1178,7 +1043,7 @@ function zmob_customer_recent_act_findAll(zmob_customer_recent_actObj, credInfo 
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1211,7 +1076,7 @@ function zmob_customer_recent_act_findByPrimaryKey(zmob_customer_recent_actObj, 
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1250,7 +1115,7 @@ function zmob_delete_contact_findAll(zmob_delete_contactObj, credInfo ,  errorCa
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1289,7 +1154,7 @@ function zmob_delete_customer_findAll(zmob_delete_customerObj, credInfo ,  error
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1328,7 +1193,7 @@ function zmob_get_customer_address_findAll(zmob_get_customer_addressObj, credInf
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1343,15 +1208,15 @@ ZMOB_ORDER_CREATE.findAllAction = "ZMOB_ORDER_CREATE_findAll";
 /**
  * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
  * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_order_createObj which is the instance of ZMOB_ORDER_CREATE JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_GENERAL_ORDER_TEXT_pkKey PK_ORDER_PARTNER_pkKey PK_QUOTATION_TEXT_pkKey PK_DELIVERY_TEXT_pkKey PK_ORDER_HEADER_pkKey PK_MOB_APP_pkKey by calling zmob_order_createObj.pks.put function, for examples zmob_order_createObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
+ * @param zmob_order_createObj which is the instance of ZMOB_ORDER_CREATE JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey PK_GENERAL_ORDER_TEXT_pkKey PK_QUOTATION_TEXT_pkKey PK_DELIVERY_TEXT_pkKey by calling zmob_order_createObj.pks.put function, for examples zmob_order_createObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
  * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
  * @param errorCallback Name of the function to be called if an online request fails.
  */    	  		
 function zmob_order_create_findAll(zmob_order_createObj, credInfo ,  errorCallback)
 {
-    var keys = ["PK_ORDER_ITEM_pkKey", "PK_GENERAL_ORDER_TEXT_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_QUOTATION_TEXT_pkKey", "PK_DELIVERY_TEXT_pkKey", "PK_ORDER_HEADER_pkKey", "PK_MOB_APP_pkKey"];
-    var types = ["string", "string", "string", "string", "string", "string", "string"];
-    var objValues = [zmob_order_createObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_createObj.pks.PK_GENERAL_ORDER_TEXT_pkKey, zmob_order_createObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_createObj.pks.PK_QUOTATION_TEXT_pkKey, zmob_order_createObj.pks.PK_DELIVERY_TEXT_pkKey, zmob_order_createObj.pks.PK_ORDER_HEADER_pkKey, zmob_order_createObj.pks.PK_MOB_APP_pkKey];
+    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey", "PK_GENERAL_ORDER_TEXT_pkKey", "PK_QUOTATION_TEXT_pkKey", "PK_DELIVERY_TEXT_pkKey"];
+    var types = ["string", "string", "string", "string", "string", "string"];
+    var objValues = [zmob_order_createObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_createObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_createObj.pks.PK_ORDER_HEADER_pkKey, zmob_order_createObj.pks.PK_GENERAL_ORDER_TEXT_pkKey, zmob_order_createObj.pks.PK_QUOTATION_TEXT_pkKey, zmob_order_createObj.pks.PK_DELIVERY_TEXT_pkKey];
    
     var workflowMessageToSend = new WorkflowMessage("");
 	workflowMessageToSend.setHeader("");
@@ -1361,13 +1226,13 @@ function zmob_order_create_findAll(zmob_order_createObj, credInfo ,  errorCallba
 	 hwc.doOnlineRequest_CONT( credInfo, 
 				workflowMessageToSend.serializeToString(),
 				workflowMessageToSend.getHasFileMessageValue(),
-				 90, 
+				 120, 
 				 0, 
 				"", //errorMessage
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1382,15 +1247,15 @@ ZMOB_ORDER_CREATE_peer1.findAllAction = "ZMOB_ORDER_CREATE_peer1_findAll";
 /**
  * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
  * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_order_create_peer1Obj which is the instance of ZMOB_ORDER_CREATE_peer1 JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_GENERAL_ORDER_TEXT_pkKey PK_ORDER_PARTNER_pkKey PK_QUOTATION_TEXT_pkKey PK_DELIVERY_TEXT_pkKey PK_ORDER_HEADER_pkKey PK_MOB_APP_pkKey by calling zmob_order_create_peer1Obj.pks.put function, for examples zmob_order_create_peer1Obj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
+ * @param zmob_order_create_peer1Obj which is the instance of ZMOB_ORDER_CREATE_peer1 JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey PK_GENERAL_ORDER_TEXT_pkKey PK_QUOTATION_TEXT_pkKey PK_DELIVERY_TEXT_pkKey by calling zmob_order_create_peer1Obj.pks.put function, for examples zmob_order_create_peer1Obj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
  * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
  * @param errorCallback Name of the function to be called if an online request fails.
  */    	  		
 function zmob_order_create_peer1_findAll(zmob_order_create_peer1Obj, credInfo ,  errorCallback)
 {
-    var keys = ["PK_ORDER_ITEM_pkKey", "PK_GENERAL_ORDER_TEXT_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_QUOTATION_TEXT_pkKey", "PK_DELIVERY_TEXT_pkKey", "PK_ORDER_HEADER_pkKey", "PK_MOB_APP_pkKey"];
-    var types = ["string", "string", "string", "string", "string", "string", "string"];
-    var objValues = [zmob_order_create_peer1Obj.pks.PK_ORDER_ITEM_pkKey, zmob_order_create_peer1Obj.pks.PK_GENERAL_ORDER_TEXT_pkKey, zmob_order_create_peer1Obj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_create_peer1Obj.pks.PK_QUOTATION_TEXT_pkKey, zmob_order_create_peer1Obj.pks.PK_DELIVERY_TEXT_pkKey, zmob_order_create_peer1Obj.pks.PK_ORDER_HEADER_pkKey, zmob_order_create_peer1Obj.pks.PK_MOB_APP_pkKey];
+    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey", "PK_GENERAL_ORDER_TEXT_pkKey", "PK_QUOTATION_TEXT_pkKey", "PK_DELIVERY_TEXT_pkKey"];
+    var types = ["string", "string", "string", "string", "string", "string"];
+    var objValues = [zmob_order_create_peer1Obj.pks.PK_ORDER_ITEM_pkKey, zmob_order_create_peer1Obj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_create_peer1Obj.pks.PK_ORDER_HEADER_pkKey, zmob_order_create_peer1Obj.pks.PK_GENERAL_ORDER_TEXT_pkKey, zmob_order_create_peer1Obj.pks.PK_QUOTATION_TEXT_pkKey, zmob_order_create_peer1Obj.pks.PK_DELIVERY_TEXT_pkKey];
    
     var workflowMessageToSend = new WorkflowMessage("");
 	workflowMessageToSend.setHeader("");
@@ -1400,13 +1265,13 @@ function zmob_order_create_peer1_findAll(zmob_order_create_peer1Obj, credInfo , 
 	 hwc.doOnlineRequest_CONT( credInfo, 
 				workflowMessageToSend.serializeToString(),
 				workflowMessageToSend.getHasFileMessageValue(),
-				 90, 
+				 120, 
 				 0, 
 				"", //errorMessage
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1445,7 +1310,7 @@ function zmob_order_product_search_findAll(zmob_order_product_searchObj, credInf
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1460,15 +1325,15 @@ ZMOB_ORDER_SIMULATE.findAllAction = "ZMOB_ORDER_SIMULATE_findAll";
 /**
  * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
  * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_order_simulateObj which is the instance of ZMOB_ORDER_SIMULATE JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey PK_MOB_APP_pkKey by calling zmob_order_simulateObj.pks.put function, for examples zmob_order_simulateObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
+ * @param zmob_order_simulateObj which is the instance of ZMOB_ORDER_SIMULATE JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey by calling zmob_order_simulateObj.pks.put function, for examples zmob_order_simulateObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
  * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
  * @param errorCallback Name of the function to be called if an online request fails.
  */    	  		
 function zmob_order_simulate_findAll(zmob_order_simulateObj, credInfo ,  errorCallback)
 {
-    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey", "PK_MOB_APP_pkKey"];
-    var types = ["string", "string", "string", "string"];
-    var objValues = [zmob_order_simulateObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_simulateObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_simulateObj.pks.PK_ORDER_HEADER_pkKey, zmob_order_simulateObj.pks.PK_MOB_APP_pkKey];
+    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey"];
+    var types = ["string", "string", "string"];
+    var objValues = [zmob_order_simulateObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_simulateObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_simulateObj.pks.PK_ORDER_HEADER_pkKey];
    
     var workflowMessageToSend = new WorkflowMessage("");
 	workflowMessageToSend.setHeader("");
@@ -1478,13 +1343,13 @@ function zmob_order_simulate_findAll(zmob_order_simulateObj, credInfo ,  errorCa
 	 hwc.doOnlineRequest_CONT( credInfo, 
 				workflowMessageToSend.serializeToString(),
 				workflowMessageToSend.getHasFileMessageValue(),
-				 90, 
+				 120, 
 				 0, 
 				"", //errorMessage
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1499,15 +1364,15 @@ ZMOB_ORDER_SIMULATE_ITEM.findAllAction = "ZMOB_ORDER_SIMULATE_ITEM_findAll";
 /**
  * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
  * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_order_simulate_itemObj which is the instance of ZMOB_ORDER_SIMULATE_ITEM JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey PK_MOB_APP_pkKey by calling zmob_order_simulate_itemObj.pks.put function, for examples zmob_order_simulate_itemObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
+ * @param zmob_order_simulate_itemObj which is the instance of ZMOB_ORDER_SIMULATE_ITEM JavaScript structure.  User needs to set values for personalization key PK_ORDER_ITEM_pkKey PK_ORDER_PARTNER_pkKey PK_ORDER_HEADER_pkKey by calling zmob_order_simulate_itemObj.pks.put function, for examples zmob_order_simulate_itemObj.pks.put(PK_ORDER_ITEM_pkKey,"yourValue") .
  * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
  * @param errorCallback Name of the function to be called if an online request fails.
  */    	  		
 function zmob_order_simulate_item_findAll(zmob_order_simulate_itemObj, credInfo ,  errorCallback)
 {
-    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey", "PK_MOB_APP_pkKey"];
-    var types = ["string", "string", "string", "string"];
-    var objValues = [zmob_order_simulate_itemObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_simulate_itemObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_simulate_itemObj.pks.PK_ORDER_HEADER_pkKey, zmob_order_simulate_itemObj.pks.PK_MOB_APP_pkKey];
+    var keys = ["PK_ORDER_ITEM_pkKey", "PK_ORDER_PARTNER_pkKey", "PK_ORDER_HEADER_pkKey"];
+    var types = ["string", "string", "string"];
+    var objValues = [zmob_order_simulate_itemObj.pks.PK_ORDER_ITEM_pkKey, zmob_order_simulate_itemObj.pks.PK_ORDER_PARTNER_pkKey, zmob_order_simulate_itemObj.pks.PK_ORDER_HEADER_pkKey];
    
     var workflowMessageToSend = new WorkflowMessage("");
 	workflowMessageToSend.setHeader("");
@@ -1517,13 +1382,13 @@ function zmob_order_simulate_item_findAll(zmob_order_simulate_itemObj, credInfo 
 	 hwc.doOnlineRequest_CONT( credInfo, 
 				workflowMessageToSend.serializeToString(),
 				workflowMessageToSend.getHasFileMessageValue(),
-				 90, 
+				 120, 
 				 0, 
 				"", //errorMessage
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1563,7 +1428,7 @@ function zmob_previous_purchases_findAll(zmob_previous_purchasesObj, credInfo , 
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1596,7 +1461,7 @@ function zmob_previous_purchases_findByPrimaryKey(zmob_previous_purchasesObj, cr
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1641,45 +1506,6 @@ function zmob_validate_account_findAll(zmob_validate_accountObj, credInfo ,  err
 }	   
     	 
 /*
- * Global variables for ZMOB_VAN_BATCH_LIST MBO actions
- */
-ZMOB_VAN_BATCH_LIST.findAllAction = "ZMOB_VAN_BATCH_LIST_findAll";
-
- 
- 
-/**
- * Returns void. This is an object query onlineRequest, therefore workflow message will be sent back to user by the hybrid web container, please handle the result in the function customAfterDataReceived(incomingWorkflowMessage) defined in Custom.js.
- * Please define hwc.processDataMessage function and handle the result in the function. For instance, hwc.processDataMessage = function dataReceived( incomingWorkflowMessage, noUI, loading, fromActivationFlow, dataType) {...}
- * @param zmob_van_batch_listObj which is the instance of ZMOB_VAN_BATCH_LIST JavaScript structure.  
- * @param credInfo, credential info, by default it's empty string. User could set "supusername=username&suppassword=password", for example.
- * @param errorCallback Name of the function to be called if an online request fails.
- */    	  		
-function zmob_van_batch_list_findAll(zmob_van_batch_listObj, credInfo ,  errorCallback)
-{
-    var keys = [];
-    var types = [];
-    var objValues = [];
-   
-    var workflowMessageToSend = new WorkflowMessage("");
-	workflowMessageToSend.setHeader("");
-	createMessageValues(  workflowMessageToSend.getValues(), keys, types, objValues );
-	workflowMessageToSend.setRequestAction("ZMOB_VAN_BATCH_LIST_findAll");
-	
-	 hwc.doOnlineRequest_CONT( credInfo, 
-				workflowMessageToSend.serializeToString(),
-				workflowMessageToSend.getHasFileMessageValue(),
-				 120, 
-				 0, 
-				"", //errorMessage
-			    errorCallback, 
-			    null,    // TODO: cacheKey
-			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
-		);
-	    
-}	   
-    	 
-/*
  * Global variables for ZMOB_VAN_CUSTOMER_DEL MBO actions
  */
 ZMOB_VAN_CUSTOMER_DEL.findAllAction = "ZMOB_VAN_CUSTOMER_DEL_findAll";
@@ -1713,7 +1539,7 @@ function zmob_van_customer_del_findAll(zmob_van_customer_delObj, credInfo ,  err
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1752,7 +1578,7 @@ function zmob_van_customer_list_findAll(zmob_van_customer_listObj, credInfo ,  e
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1792,7 +1618,7 @@ function zmob_van_customer_update_findAll(zmob_van_customer_updateObj, credInfo 
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1825,7 +1651,7 @@ function zmob_van_customer_update_findByPrimaryKey(zmob_van_customer_updateObj, 
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	   
@@ -1864,7 +1690,7 @@ function zmob_van_product_list_findAll(zmob_van_product_listObj, credInfo ,  err
 			    errorCallback, 
 			    null,    // TODO: cacheKey
 			    null,    // TODO: cachePolicy, 
-			    true    //TODO: asynchronous,
+			    null    //TODO: asynchronous,
 		);
 	    
 }	       
