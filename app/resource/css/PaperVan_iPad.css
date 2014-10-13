@@ -273,9 +273,9 @@
 }
 
 /*-------------Cart List---------------------*/
-.myList .x-list-item-body {
-    min-height: 35px;
-    padding: 3px 5px 5px 5px;
+.myList .x-list-item-relative {
+    height: 68px;
+    /*padding: 3px 5px 5px 5px;*/
 }
 
 .cart_input {

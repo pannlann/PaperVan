@@ -8,9 +8,6 @@ Ext.define('PaperVan.view.Customers', {
 		title : 'Customers',
 		navigationBar : {
 			items : [{
-				xtype : 'exitButton',
-				itemId : 'customerExitButton'
-			}, {
 				xtype : 'button',
 				itemId : 'customerContainerOptionButton',
 				ui : 'normal',

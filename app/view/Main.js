@@ -1,6 +1,6 @@
 Ext.define('PaperVan.view.Main', {
 	extend : 'Ext.tab.Panel',
-	requires : ['PaperVan.resource.ExitButton', 'PaperVan.resource.SortPicker', 'PaperVan.resource.PullRefreshPanel'],
+	requires : ['PaperVan.resource.SortPicker', 'PaperVan.resource.PullRefreshPanel'],
 	alias : 'widget.mainPanel',
 	config : {
 		tabBarPosition : 'bottom',

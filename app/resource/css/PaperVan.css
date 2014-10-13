@@ -241,8 +241,8 @@
 }
 /*-------------Cart List---------------------*/
 .myList .x-list-item-body {
-	min-height: 35px;
-	padding: 3px 5px 5px 5px;
+	min-height: 65px;
+	/*padding: 3px 5px 5px 5px;*/
 }
 .cart_input {
 	font-size: 100%;

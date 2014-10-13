@@ -7,9 +7,6 @@ Ext.define('PaperVan.view.Products', {
 				iconCls : 'search',
 				navigationBar : {
 					items : [{
-								xtype : 'exitButton',
-								itemId : 'productExitButton'
-							}, {
 								xtype : 'button',
 								itemId : 'productSortButton',
 								ui : 'normal',

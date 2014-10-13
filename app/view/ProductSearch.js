@@ -17,6 +17,7 @@ Ext.define('PaperVan.view.ProductSearch', {
             xtype : 'selectfield',
             name : 'searchPlant',
             itemId : 'searchPlant',
+				usePicker : false,
             label : 'Plant',
             //						value : lastSavedPlant,
             usePicker : false,
@@ -25,7 +26,7 @@ Ext.define('PaperVan.view.ProductSearch', {
             xtype : 'numberfield',
             itemId : 'searchAtpQty',
             name : 'atpQty',
-            label : 'ATP Qty',
+            label : 'Minimum Stk',
             minValue : 0,
             value : '1'
         }, {
@@ -39,7 +40,7 @@ Ext.define('PaperVan.view.ProductSearch', {
             xtype : 'checkboxfield',
             itemId : 'searchSupZero',
             name : 'supZeroAtp',
-            label : 'Suppress Zero ATP',
+            label : 'Exclude 0 Stk',
             value : 'X',
             checked : true
         }, {

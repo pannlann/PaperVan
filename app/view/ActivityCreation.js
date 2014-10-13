@@ -33,6 +33,7 @@ Ext.define('PaperVan.view.ActivityCreation', {
 			}, {
 				xtype : 'selectfield',
 				label : 'Contact',
+				usePicker : false,
 				itemId : 'availableContactSelect'
 			},{
 				xtype : 'selectfield',

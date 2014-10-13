@@ -7,9 +7,6 @@ Ext.define('PaperVan.view.CartOrder', {
 		padding : '0 0 0 0',
 		navigationBar : {
 			items : [{
-				xtype : 'exitButton',
-				itemId : 'cartExitButton'
-			}, {
 				xtype : 'button',
 				itemId : 'deleteAllButton',
 				ui : 'decline',

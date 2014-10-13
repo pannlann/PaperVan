@@ -1,8 +1,9 @@
 // file to handle constant variables.
-var CUST_SEARCH_PLACE_HOLDER = 'Customer search.....';
+var CUST_SEARCH_PLACE_HOLDER = 'Customer search......';
 var VAN_PRODUCT_SEARCH_PLACE_HOLDER = 'Van product search.....';
 var CUST_SEARCH_ITM_ID = 'custSearch';
 var APP_EXIT_BUTTOM_TEXT = 'Exit';
+var MIN_CHAR_SEARCH = 3;
 var CREDIT_LOW = 0;
 // percent
 var CREDIT_USED_HIGH = 90;
@@ -17,6 +18,8 @@ var MESSAGE_HEIGHT = 47;
 var LIST_IPAD_HEIGHT = 86;
 var LIST_IPHONE_HEIGHT = 76;
 var HEADER_HEIGHT = 26;
+var REQUEST_TIMEOUT = 120000;
+var USER_KEY = 'userKey';
 var PASSWORD_KEY = 'passwordKey';
 var PRODUCT_SEARCH_BAPI = 'ZMOB_ORDER_PRODUCT_SEARCH';
 var ACCOUNT_VALIDATION_BAPI = 'ZMOB_VALIDATE_ACCOUNT';
@@ -514,6 +517,9 @@ var ACTIVITY_TYPE = [{
 }];
 
 var OPPORTUNITY_TYPE = [{
+	text : '',
+	value : ''
+}, {
 	text : 'Flip Publishing',
 	value : '01'
 }, {
@@ -819,15 +825,18 @@ var VAN_NOT_ASSIGNED_HEADING = USR_ACCOUNT_ERROR_HEADING;
 var LINK_ATTACHMENT_HEADING = 'Error';
 var CREATE_IMAGE_HEADING = 'Error';
 var CREATE_NOTE_HEADING = 'Error';
-var DELIVERY_PGI_HEADING = 'Error'; 
+var DELIVERY_PGI_HEADING = 'Error';
 var DELIVERY_CREATION_HEADING = 'Error';
 var ADD_ORDER_ATTACHMENT_HEADING = 'Error';
 var PLANT_NOT_ASSIGNED_HEADING = "Error";
 var DELIVERY_BATCH_SPLIT_HEADING = "Error";
+var CUSTOMER_CONTACT_LIST_HEADING = "Error";
+var RECENT_ACTIVITY_LIST_HEADING = "Error";
+var ERROR_CHANGING_CUSTOMER_HEADING = 'Error';
 
 var NO_SEARCH_RESULT_TEXT = 'Please check the search options.';
 var NO_RESULTS_FOUND_TEXT = 'Please change date range to get more result.';
-var NO_CUST_RESULT_TEXT = 'Please check whether reps number is assigned correctly in SAP.';
+var NO_CUST_RESULT_TEXT = 'No customers found.';
 var NO_SALES_OFFICE_RESULT_TEXT = 'Please check whether sales office is assigned correctly in SAP.';
 var NO_VAN_RESULT_TEXT = 'Please check whether paper van number is assigned correctly in SAP.';
 var ERROR_INPUT_RESULT_TEXT = 'Please contact IT.';
@@ -841,11 +850,23 @@ var VAN_NOT_ASSIGNED_TEXT = "A van number is not assigned in SAP user's account.
 var LINK_ATTACHMENT_TEXT = 'Error when linking attachments. Please contact IT.';
 var CREATE_IMAGE_TEXT = 'Error when creating signature\'s image. Please contact IT.';
 var CREATE_NOTE_TEXT = 'Error when creating recipient\'s note. Please contact IT.';
-var DELIVERY_PGI_TEXT = 'Error when posting goods issue.'; 
+var DELIVERY_PGI_TEXT = 'Error when posting goods issue.';
 var DELIVERY_CREATION_TEXT = 'Error when creating delivery.';
 var ADD_ORDER_ATTACHMENT_TEXT = 'Signature cannot be attached to order.';
 var PLANT_NOT_ASSIGNED_TEXT = "A plant number is not assigned in SAP user's account. Please contact SAP team";
 var DELIVERY_BATCH_SPLIT_TEXT = 'An error occurs when spliting batches. Please change a delivery and manually assign batches';
+var CUSTOMER_CONTACT_LIST_TEXT = 'An error occurs when retriving contact list. Please try again';
+var RECENT_ACTIVITY_LIST_TEXT = 'An error occurs when retriving activity list. Please try again';
+var ERROR_CHANGING_CUSTOMER_TEXT = 'The customer may be locked. Please try again later';
+var ERROR_DELETING_CUSTOMER_TEXT = 'The customer may be locked. Please try again later';
+var CANNOT_DELETE_DOM_CUST_TEXT = 'The trade customer cannot be delete';
+var ERROR_CREATING_ACTIVITY_TEXT = 'An error has occurred. An activity may not be created';
+var ERROR_CREATING_CONTACT_TEXT = 'An error has occurred. The contact may not be created';
+var ERROR_CHANGING_CONTACT_TEXT = 'The contact may be locked by other users. So it cannot be changed at the moment';
+var ERROR_CREATING_DISPUTE_TEXT = 'An error has occurred. A dispute case may not be created';
+var CREATE_CUSTOMER_ERROR_TEXT = 'An error has occurred. The customer may not be created';
+var ERROR_DELETING_CONTACT_TEXT = 'Cannot delete a contact which is linked to sales activity';
+var CONTACT_LINK_SALES_ACT_TEXT = 'Cannot delete a contact which is linked to sales activity';
 
 var TOO_MANY_EXCEPTION = 'TOO_MANY_SEARCH_HITS';
 var INVALID_USER_EXCEPTION = 'INVALID_USER';
@@ -864,11 +885,23 @@ var VAN_NOT_ASSIGNED_EXCEPTION = 'VAN_NOT_ASSIGNED';
 var LINK_ATTACHMENT_EXCEPTION = 'LINK_ATTACHMENT_ERROR';
 var CREATE_IMAGE_EXCEPTION = 'CREATE_IMAGE_ERROR';
 var CREATE_NOTE_EXCEPTION = 'CREATE_NOTE_ERROR';
-var DELIVERY_PGI_EXCEPTION = 'PGI_ERROR'; 
+var DELIVERY_PGI_EXCEPTION = 'PGI_ERROR';
 var DELIVERY_CREATION_EXCEPTION = 'DELIVERY_CREATION_ERROR';
 var ADD_ORDER_ATTACHMENT_EXCEPTION = 'ORDER_ATTACHMENT_EXCEPTION';
 var PLANT_NOT_ASSIGNED_EXCEPTION = 'NO_PLANT_ASSIGNED';
 var DELIVERY_BATCH_SPLIT_EXCEPTION = 'BATCH_SPLIT_ERROR';
+var CUSTOMER_CONTACT_LIST_EXCEPTION = 'CUSTOMER_CONTACT_LIST_ERROR';
+var RECENT_ACTIVITY_LIST_EXCEPTION = 'RECENT_ACTIVITY_LIST_ERROR';
+var ERROR_CHANGING_CUSTOMER_EXCEPTION = 'ERROR_CHANGING_CUSTOMER';
+var ERROR_DELETING_CUSTOMER_EXCEPTION = 'ERROR_DELETING_CUSTOMER';
+var CANNOT_DELETE_DOM_CUST_EXCEPTION = 'CANNOT_DELETE_DOM_CUST';
+var ERROR_CREATING_ACTIVITY_EXCEPTION = 'ERROR_CREATING_SALES_ACTIVITY';
+var ERROR_CREATING_CONTACT_EXCEPTION = 'ERROR_CREATING_CONTACT';
+var ERROR_CHANGING_CONTACT_EXCEPTION = 'ERROR_CHANGING_CONTACT';
+var ERROR_CREATING_DISPUTE_EXCEPTION = 'ERROR_CREATING_DISPUTE';
+var CREATE_CUSTOMER_ERROR_EXCEPTION = 'CREATE_CUSTOMER_ERROR';
+var ERROR_DELETING_CONTACT_EXCEPTION = 'ERROR_DELETING_CONTACT';
+var CONTACT_LINK_SALES_ACT_EXCEPTION = 'CONTACT_LINK_SALES_ACT';
 // // loading message
 var VALIDATE_ACCOUNT_LOADING = 'Validaing user account...';
 var PRODUCT_LOADING = 'Retrieving products...';

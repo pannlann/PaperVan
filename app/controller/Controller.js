@@ -6,7 +6,6 @@ Ext.define('PaperVan.controller.Controller', {
 		refs : {
 			mainPanel : 'mainPanel',
 			customerList : 'customerList',
-			exitButton : 'exitButton',
 			productSearch : 'productSearch',
 			productTab : 'productTab',
 			productResultList : 'productResultList',
@@ -152,10 +151,6 @@ Ext.define('PaperVan.controller.Controller', {
 				initialize : 'onCustListIniialize'
 			},
 
-			exitButton : {
-				tap : 'onExitTap'
-			},
-
 			productSearch : {
 				activate : 'onProductActivate'
 			},
@@ -277,9 +272,9 @@ Ext.define('PaperVan.controller.Controller', {
 				tap : 'onLoginButtonTap'
 			},
 
-			'credentialScreen passwordfield[itemId=passwordCredential]' : {
-				change : 'onLoginButtonTap'
-			},
+			// 'credentialScreen passwordfield[itemId=passwordCredential]' : {
+			// change : 'onLoginButtonTap'
+			// },
 
 			// 'customerTab button[itemId=regionalCustomerButton]' : {
 			// tap : 'onRegionalCustomerButtonTap'
@@ -354,6 +349,7 @@ Ext.define('PaperVan.controller.Controller', {
 	},
 
 	onVanRefreshButtonTap : function(button) {
+		Ext.toast('Refresh product list', 1500);
 		getVanProduct();
 	},
 
@@ -403,7 +399,21 @@ Ext.define('PaperVan.controller.Controller', {
 				allCustomerFlag = '';
 				allVanCustomerFlag = '';
 			}
-			getCustomerList(salesOffice, todayCustomerFlag, allCustomerFlag, allVanCustomerFlag);
+
+			selectedSalesOffice = salesOffice;
+			if (salesOffice == '') {
+				Ext.toast('Retriving customers...', 3000);
+				getCustomerList(salesOffice, todayCustomerFlag, allCustomerFlag, allVanCustomerFlag);
+			} else {
+
+				var queryString = Ext.ComponentQuery.query('#custSearch')[0].getValue();
+				if (queryString.length >= MIN_CHAR_SEARCH) {
+					searchString = queryString;
+					getCustomerList(selectedSalesOffice, '', '', '');
+					searchString = '';
+				}
+				// Ext.toast('Please type at least 3 letters in customer search field', 2000);
+			}
 		}
 	},
 
@@ -411,8 +421,10 @@ Ext.define('PaperVan.controller.Controller', {
 		//console.log('detail option show');
 		if (selectedCustRecord.accountGroup == 'Z001') {
 			Ext.ComponentQuery.query('#deleteCustomerOption')[0].setHidden(true);
+			Ext.ComponentQuery.query('#changeCustomerOption')[0].setHidden(true);
 		} else {
 			Ext.ComponentQuery.query('#deleteCustomerOption')[0].setHidden(false);
+			Ext.ComponentQuery.query('#changeCustomerOption')[0].setHidden(false);
 		}
 	},
 
@@ -525,10 +537,6 @@ Ext.define('PaperVan.controller.Controller', {
 				button[0].setHidden(true);
 			}
 			button = Ext.ComponentQuery.query('#customerDetailButton');
-			if (button.length > 0) {
-				button[0].setHidden(true);
-			}
-			button = Ext.ComponentQuery.query('#customerExitButton');
 			if (button.length > 0) {
 				button[0].setHidden(true);
 			}
@@ -707,23 +715,21 @@ Ext.define('PaperVan.controller.Controller', {
 		var disputeText = Ext.ComponentQuery.query('#disputeCreationTextArea')[0].getValue().trim();
 
 		if (disputeText.length > 0) {
-			if (hwc.isIOS) {
-				// save activity data into memory to be added into activityData later
-				tempDispute = {
-					title : title,
-					status : 'New',
-					referenceDoc : referenceDoc,
-					createdBy : userId,
-					responsible : userId,
-					type : "Dispute Cases",
-				};
-				Ext.Msg.confirm("Confirm", "Do you want to submit a dispute case?", function(buttonId) {
-					if (buttonId === 'yes') {
-						submitDispute(title, category, contact, referenceDoc, claimAmount, disputeText);
-					}
-				}, this // scope of the controller
-				);
-			}
+			// save activity data into memory to be added into activityData later
+			tempDispute = {
+				title : title,
+				status : 'New',
+				referenceDoc : referenceDoc,
+				createdBy : userId,
+				responsible : userId,
+				type : "Dispute Cases",
+			};
+			Ext.Msg.confirm("Confirm", "Do you want to submit a dispute case?", function(buttonId) {
+				if (buttonId === 'yes') {
+					createDispute(title, category, contact, referenceDoc, claimAmount, disputeText);
+				}
+			}, this // scope of the controller
+			);
 		} else {
 			Ext.Msg.alert('Alert', 'Please enter text before submit a case.', function() {
 			});
@@ -732,7 +738,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onActivitySubmit : function(button) {
 		var actDate = Ext.ComponentQuery.query('#activityDate')[0].getValue();
-		var formattedDate = dateFormat(actDate, 'yyyy-mm-dd');
+		var formattedDate = dateFormat(actDate, 'yyyymmdd');
 		var selectedContact = Ext.ComponentQuery.query('#availableContactSelect')[0].getValue();
 		var actText = Ext.ComponentQuery.query('#activityCreationTextArea')[0].getValue().trim();
 		var actType = Ext.ComponentQuery.query('#activityTypeSelect')[0].getValue();
@@ -760,7 +766,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 				Ext.Msg.confirm("Confirm", "Do you want to submit a sales activity?", function(buttonId) {
 					if (buttonId === 'yes') {
-						submitActivity(formattedDate, selectedContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType);
+						createSalesActivity(formattedDate, selectedContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType);
 					}
 				}, this // scope of the controller
 				);
@@ -780,10 +786,8 @@ Ext.define('PaperVan.controller.Controller', {
 		updateActivityStore();
 
 		// show delete all button
-		var button = Ext.ComponentQuery.query('#customerExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
+		var button;
+
 		button = Ext.ComponentQuery.query('#customerContainerOptionButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
@@ -816,10 +820,8 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onVanScheduleUpdateInit : function(customerCreate) {
 		console.log('van update init');
-		var button = Ext.ComponentQuery.query('#customerExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
+		var button;
+
 		button = Ext.ComponentQuery.query('#customerContainerOptionButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
@@ -848,10 +850,8 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onCustomerCreateInit : function(customerCreate) {
 		//console.log('customer create init');
-		var button = Ext.ComponentQuery.query('#customerExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
+		var button;
+
 		button = Ext.ComponentQuery.query('#customerContainerOptionButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
@@ -882,10 +882,7 @@ Ext.define('PaperVan.controller.Controller', {
 		if (vanProductTab.getActiveItem().getItemId() == 'vanProductContainer') {
 
 			// show delete all button
-			var button = Ext.ComponentQuery.query('#vanExitButton');
-			if (button.length > 0) {
-				button[0].setHidden(false);
-			}
+			var button;
 
 			button = Ext.ComponentQuery.query('#vanRefreshButton');
 			if (button.length > 0) {
@@ -909,10 +906,8 @@ Ext.define('PaperVan.controller.Controller', {
 		if (customerTab.getActiveItem().getItemId() == 'customerContainer') {
 			updateCustomerListTitle();
 			// show delete all button
-			var button = Ext.ComponentQuery.query('#customerExitButton');
-			if (button.length > 0) {
-				button[0].setHidden(false);
-			}
+			var button;
+
 			button = Ext.ComponentQuery.query('#customerContainerOptionButton');
 			if (button.length > 0) {
 				button[0].setHidden(false);
@@ -1170,12 +1165,6 @@ Ext.define('PaperVan.controller.Controller', {
 				button[0].setHidden(false);
 			}
 
-			// show exit button
-			button = Ext.ComponentQuery.query('#cartExitButton');
-			if (button.length > 0) {
-				button[0].setHidden(false);
-			}
-
 			// show order confirmation
 			button = Ext.ComponentQuery.query('#checkoutButton');
 			if (button.length > 0) {
@@ -1277,13 +1266,13 @@ Ext.define('PaperVan.controller.Controller', {
 
 		if (productsInCart.items.length == 0) {
 			Ext.Msg.alert('Cart', 'Please add product in the cart.', function() {
-			})
+			});
 		} else if (poValue == '') {
 			Ext.Msg.alert('Cart', 'Please enter PO number.', function() {
 				// move to order header screen
 				var cartTab = Ext.ComponentQuery.query('#cartTab')[0];
 				cartTab.setActiveItem(1);
-			})
+			});
 		} else {
 
 			Ext.Msg.show({
@@ -1303,11 +1292,7 @@ Ext.define('PaperVan.controller.Controller', {
 					} else if (btn == 'w') {
 						isVanOrder = false;
 					}
-					if (hwc.isIOS()) {
-						getOrderConfirmation();
-					} else {
-						showOrderSimulation();
-					}
+					simulateOrder();
 
 				}
 			});
@@ -1330,18 +1315,11 @@ Ext.define('PaperVan.controller.Controller', {
 		if (!isInOrderConfirmationScreen) {
 			if (value.getItemId() != 'customerTab') {
 				if (selectedCust == null) {
-					Ext.Msg.alert('Alert', 'Please select customer before proceeding', function() {
-						// mainContainer.setActiveItem('#customerTab');
-					})
+					Ext.toast('Please select customer before proceeding', 1500);
 					return false;
 				} else if (value.getItemId() == 'vanProductTab' && vanProdResultData.items.length <= 0) {
-					if (!hwc.isWindows()) {
-						getVanProduct();
-					} else {
-						// for testing
-						vanProdResultData = testPrevData;
-						updateVanProductResultStore();
-					}
+					Ext.toast(PRODUCT_LOADING, 1500);
+					getVanProduct();
 				}
 			}
 		} else {
@@ -1352,12 +1330,14 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onLoginButtonTap : function(button) {
 		console.log('login tapped');
-		var userName;
-		var password;
 
 		var usernameField = Ext.ComponentQuery.query('#userIdCredential');
 		if (usernameField.length > 0) {
-			userName = usernameField[0].getValue();
+			userId = usernameField[0].getValue();
+			if (userId != null) {
+				userId = userId.toUpperCase();
+			}
+			sharedStorage.setItem(USER_KEY, userId);
 		}
 
 		var passwordField = Ext.ComponentQuery.query('#passwordCredential');
@@ -1365,7 +1345,7 @@ Ext.define('PaperVan.controller.Controller', {
 			password = passwordField[0].getValue();
 		}
 		console.log('Password: ' + password);
-		validateCredentials(userName, password);
+		validateCredentials();
 	},
 
 	onSortChange : function(picker, value, opts) {
@@ -1428,11 +1408,7 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onFavoriteListActivate : function() {
 
-		// show exit button
-		button = Ext.ComponentQuery.query('#favoriteExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(false);
-		}s
+		var button;
 		// hidden sort button
 		button = Ext.ComponentQuery.query('#favoriteSortButton');
 		if (button.length > 0) {
@@ -1458,21 +1434,10 @@ Ext.define('PaperVan.controller.Controller', {
 				button[0].setHidden(true);
 			}
 
-			// showexit button
-			button = Ext.ComponentQuery.query('#previousPurchaseExitButton');
-			if (button.length > 0) {
-				button[0].setHidden(false);
-			}
 		}
 	},
 
 	onPreviousPurchaseActivate : function() {
-
-		// hidden exit button
-		button = Ext.ComponentQuery.query('#previousPurchaseExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
 
 		// show sort button
 		button = Ext.ComponentQuery.query('#previousPurchaseSortButton');
@@ -1490,19 +1455,8 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onDaysSelected : function(select, newValue, oldValue) {
 		console.log('new value: ' + newValue);
-		if (!hwc.isWindows()) {
-			if (newValue != '0') {
-				getPreviousPurchase(newValue);
-			}
-		} else {
-			// for testing
-			prevProdData = testPrevData;
-			Ext.ComponentQuery.query('previousPurchaseTab')[0].push({
-				xtype : 'previousPurchaseList',
-				title : 'Last ' + days + ' Days'
-			});
-			updatePreviousPurchaseStore();
-
+		if (newValue != '0') {
+			getPreviousPurchase(newValue);
 		}
 	},
 
@@ -1588,31 +1542,18 @@ Ext.define('PaperVan.controller.Controller', {
 
 	onCartItemDoubleTap : function(list, idx, target, record, event) {
 
-		Ext.Msg.confirm("Delete item?", "Do you want to delete " + record.get('prodDesc') + " from the cart?", function(buttonId) {
-			if (buttonId === 'yes') {
+		Ext.Msg.confirm("Delete item?", "Do you want to delete " + record.get('prodDesc') + " from the cart?", function(buttonId, text) {
+			if (buttonId == 'yes') {
 				// // TODO when the delete button is clicked, delete an
 				// // array in productInCart variable
 				deleteItemInCart(idx);
 			}
-		}, this // scope of the controller
-		);
+		}, this);
 	},
 
 	onProductDescActivate : function(list) {
 		// hide delete all button
 		var button = Ext.ComponentQuery.query('#deleteAllButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
-
-		// hide exit button
-		button = Ext.ComponentQuery.query('#cartExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
-
-		// hide exit button
-		button = Ext.ComponentQuery.query('#favoriteExitButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
 		}
@@ -1673,11 +1614,6 @@ Ext.define('PaperVan.controller.Controller', {
 				button[0].setHidden(true);
 			}
 
-			// hide exit button
-			button = Ext.ComponentQuery.query('#vanExitButton');
-			if (button.length > 0) {
-				button[0].setHidden(true);
-			}
 		}
 
 		// set uom in order qty field
@@ -1826,11 +1762,6 @@ Ext.define('PaperVan.controller.Controller', {
 			.query('#previousProductDesc')[0];
 			var allItems = previousProductDescView.items.items;
 			tempData = previousProductDescView.getData();
-
-		} else if (buttonId == 'favoriteAddToCartButton') {
-			var favoriteDescView = Ext.ComponentQuery.query('#favoriteDesc')[0];
-			var allItems = favoriteDescView.items.items;
-			tempData = favoriteDescView.getData();
 		} else if (buttonId == 'vanAddToCartButton') {
 			var vanProductDescView = Ext.ComponentQuery.query('#vanProductDesc')[0];
 			var allItems = vanProductDescView.items.items;
@@ -1879,21 +1810,15 @@ Ext.define('PaperVan.controller.Controller', {
 		// add temp object to productsInCart variable
 		addToCart(tempProduct);
 		updateCartTotal();
-		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been added to the cart.', function() {
-			// return to previous page
-			if (buttonId == 'addToCartButton') {
-				button.up('productTab').pop();
-			} else if (buttonId == 'preAddToCartButton') {
-				button.up('previousPurchaseTab').pop();
-			} else if (buttonId == 'vanAddToCartButton') {
-				button.up('vanProductTab').pop();
-			}
-		});
-
-		// } else {
-		// Ext.Msg.alert('Error', 'Batch number is required.', function() {
-		// });
-		// }
+		Ext.toast(tempProduct.prodDesc + ' has been added to the cart.', 1200);
+		// return to previous page
+		if (buttonId == 'addToCartButton') {
+			button.up('productTab').pop();
+		} else if (buttonId == 'preAddToCartButton') {
+			button.up('previousPurchaseTab').pop();
+		} else if (buttonId == 'vanAddToCartButton') {
+			button.up('vanProductTab').pop();
+		}
 	},
 
 	// when sort button is tapped, show sort type
@@ -1918,10 +1843,7 @@ Ext.define('PaperVan.controller.Controller', {
 	// when product tab active, show exit button and hide sort button
 	onProductActivate : function(view) {
 		console.log('product tab active');
-		var button = Ext.ComponentQuery.query('#productExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(false);
-		}
+		var button;
 
 		button = Ext.ComponentQuery.query('#productSortButton');
 		if (button.length > 0) {
@@ -1935,10 +1857,7 @@ Ext.define('PaperVan.controller.Controller', {
 	// button
 	onVanProductResultActivate : function(list) {
 		console.log('Result list is active');
-		var button = Ext.ComponentQuery.query('#vanExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(false);
-		}
+		var button;
 
 		button = Ext.ComponentQuery.query('#vanRefreshButton');
 		if (button.length > 0) {
@@ -1963,10 +1882,7 @@ Ext.define('PaperVan.controller.Controller', {
 	// button
 	onProductResultActivate : function(list) {
 		console.log('Result list is active');
-		var button = Ext.ComponentQuery.query('#productExitButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
+		var button;
 
 		// hide add button
 		button = Ext.ComponentQuery.query('#addToCartButton');
@@ -1988,18 +1904,7 @@ Ext.define('PaperVan.controller.Controller', {
 		// validate atp qty field before calling search fn
 		var atpField = Ext.ComponentQuery.query('#searchAtpQty')[0];
 		if (validateNumberField(atpField.getValue(), 'ATP Qty must be number!')) {
-
-			if (!hwc.isWindows()) {
-				getProductSearch(button);
-			} else {
-				// for testing
-				prodResultData = testPrevData;
-				Ext.ComponentQuery.query('productTab')[0].push({
-					xtype : 'productResultList'
-				});
-				updateProductResultStore();
-			}
-			// atp field is number then calling search
+			getProductSearch(button);
 		}
 
 	},
@@ -2023,6 +1928,7 @@ Ext.define('PaperVan.controller.Controller', {
 	},
 
 	onCustomerListDoubleTap : function(list, index, target, record) {
+		console.log('double tap customer list');
 		selectedCustRecord = record.getData();
 		selectedCust = record.get('custNo');
 		//		selectedCustomerAddress = record.get('custAddr');
@@ -2066,18 +1972,28 @@ Ext.define('PaperVan.controller.Controller', {
 		queryString = searchField.getValue();
 		console.log(this, 'Please search by: ' + queryString);
 
-		var store = Ext.getStore('customer');
-		store.clearFilter();
+		if (selectedSalesOffice == '') {
+			var store = Ext.getStore('customer');
+			store.clearFilter();
 
-		if (queryString) {
-			var thisRegEx = new RegExp(queryString, "i");
-			store.filterBy(function(record) {
-				if (thisRegEx.test(record.get('custName')) || thisRegEx.test(record.get('custNo'))) {
-					return true;
-				};
-				return false;
-			});
+			if (queryString) {
+				var thisRegEx = new RegExp(queryString, "i");
+				store.filterBy(function(record) {
+					if (thisRegEx.test(record.get('custName')) || thisRegEx.test(record.get('custNo'))) {
+						return true;
+					};
+					return false;
+				});
+			}
+		} else {
+			var queryLength = queryString.length;
+			if (queryLength >= MIN_CHAR_SEARCH) {
+				searchString = queryString;
+				getCustomerList(selectedSalesOffice, '', '', '');
+				searchString = '';
+			}
 		}
+
 	},
 
 	onClearVanSearch : function() {
@@ -2094,133 +2010,36 @@ Ext.define('PaperVan.controller.Controller', {
 
 	init : function() {
 		console.log('Controller initialized');
+		Ext.Ajax.setTimeout(REQUEST_TIMEOUT);
+
 		// user account validation
 		credScreen = Ext.create('PaperVan.view.Credentials');
 		Ext.Viewport.add(credScreen);
 
-		if (hwc.isIOS()) {
-			// get user name from SUP setting
-			userId = hwc.loadSettings().UserName.toUpperCase();
-			// initiate shared storage
-			sharedStorage = new hwc.SharedStorage();
-			// get saved password
-			var passwordCredential = sharedStorage.getItem(PASSWORD_KEY);
-
-			if (passwordCredential == null) {
-				// no password saved then show credential screen
-				showCredentialScreen(userId);
-			} else {
-				validateCredentials(userId, passwordCredential);
-			}
-
-		} else {
-			// test in Chrome
-			//            selectedCust = '105474';
-			userStorageLoc = '1004';
-			//            customerPlant = '3610';
-			customerData = {
-				items : [{
-					custName : 'customer 1',
-					custNo : '200001',
-					creditLimit : 500,
-					creditAvailable : 20,
-					creditUsed : 400,
-					custAddr : '6 Dalmore Dr, Scroresby',
-					creditBlock : 'X',
-					plant : '3610',
-					telNo : '04 1397 7815',
-					p1Pts : 999.50,
-					p1Status : 'P1',
-					accountGroup : 'Z001',
-					sequence : 2,
-					visitPeriod : 'D'
-				}, {
-					custName : 'customer 2',
-					custNo : '200002',
-					creditLimit : 500,
-					creditAvailable : 20,
-					creditUsed : 400,
-					custAddr : '6 Dalmore Dr, Scroresby',
-					creditBlock : 'X',
-					plant : '3610',
-					telNo : '04 1397 7815',
-					p1Pts : 999.50,
-					p1Status : 'P1',
-					accountGroup : 'Z005',
-					sequence : 1,
-					address : '5 shaw street, ashwood, 3147',
-					visitPeriod : 'W',
-					monday : 'X',
-					tuesday : '',
-					wednesday : '',
-					thursday : 'X',
-					friday : '',
-					saturday : '',
-					sunday : '',
-				}]
-			};
-
-			contactData = {
-				items : [{
-					contName : 'Pan J2',
-					contNo : '123456',
-					functions : '02',
-					department : '0002',
-					title : 'Mr.',
-					phone : '04 1397 7815',
-					email : 'pan.jittibophit@spicers.com.au',
-					type : 'Contact',
-					firstName : 'Pan',
-					lastName : 'J2',
-				}, {
-					contName : 'Pan Jittibophit',
-					contNo : '1234567',
-					functions : '03',
-					department : '0003',
-					title : 'Mrs.',
-					phone : '04 1397 7815',
-					email : 'pan.jittibophit@spicers.com.au',
-					type : 'Contact',
-					firstName : 'Pan',
-					lastName : 'Jittibophit',
-				}]
-			};
-
-			availableContact = [{
-				text : 'Pan Jittibophit',
-				value : '145789'
-			}, {
-				text : 'Pan 2',
-				value : '145500'
-			}];
-			isContactReadOnly = false;
-
-			activityData = {
-				items : [{
-					actNo : '10000001',
-					contName : 'Pan Jittibophit',
-					contNo : '123456',
-					fromDate : '20131010',
-					toDate : '20131011',
-					text : 'Optus Coverage Maps currently printed on Dalton Impress Mattt 115 gsm. Optus interested in the environment so rec Revive Silk 115 gsm instead. Nick at Lithocraft to requote as more costly & run fold tests. Sheets supplied.',
-					createdBy : 'PJITTIBO',
-					type : 'Activity',
-					actType : 'Sales Opportunity'
-				}, {
-					actNo : '10000002',
-					contName : 'Pan Jittibophit',
-					contNo : '123456',
-					fromDate : '20131015',
-					toDate : '20131015',
-					text : 'Following up',
-					createdBy : 'PJITTIBO',
-					type : 'Activity',
-					actType : 'Sales Call'
-				}]
-			};
-
-			console.log('customer update');
+		sharedStorage = window.localStorage;
+		// // get user name
+		userId = sharedStorage.getItem(USER_KEY);
+		if (userId != null) {
+			userId = userId.toUpperCase();
 		}
+		// get saved password
+		password = sharedStorage.getItem(PASSWORD_KEY);
+		//
+		if (environment == 'R3D') {
+			serverConnection = 'http://pxdcla26.domain1.local:8080/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
+			// serverConnection = 'http://shop.spicers.com.au:8085/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
+		} else {
+			// prod oData
+			serverConnection = 'http://shop.spicers.com.au:8445/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
+		}
+		oDataBackEnd = serverConnection;
+		if (password == null) {
+			// no password saved then show credential screen
+			showCredentialScreen(userId);
+		} else {
+			validateCredentials();
+		}
+
 	},
 
 	// prepare global variable when app first get loaded
@@ -2534,10 +2353,7 @@ function updateCartTotal() {
 
 function activateCartList() {
 	// show exit button
-	var button = Ext.ComponentQuery.query('#cartExitButton');
-	if (button.length > 0) {
-		button[0].setHidden(false);
-	}
+	var button;
 
 	// show delete all button
 	var button = Ext.ComponentQuery.query('#deleteAllButton');
@@ -2557,149 +2373,134 @@ function showCredentialScreen(userId) {
 	credScreen.show();
 }
 
-function validateCredentials(username, password) {
+function validateCredentials() {
 
-	// save credential
-	hwc.saveLoginCredentials(username, password);
-	
-	Ext.defer(function() {
+	if (mainContainer != null) {
+		mainContainer.setMasked({
+			xtype : 'loadmask',
+			message : VALIDATE_ACCOUNT_LOADING,
+			indicator : true
+		});
+	} else {
+		Ext.toast(VALIDATE_ACCOUNT_LOADING, 3000);
+	}
+	// Ext.toast(VALIDATE_ACCOUNT_LOADING, 1500);
 
-		calledBAPI = ACCOUNT_VALIDATION_BAPI;
-		// call validation function
-		var zaccountValidate = new ZMOB_VALIDATE_ACCOUNT();
+	filters = {};
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
 
-		zmob_validate_account_findAll(zaccountValidate, '', '');
-	}, 1000);
+	callOData(getValidateAccountOData, filterString, successUserValidate, errCallback, null);
+
 }
 
 function getPreviousPurchase(selectedDays) {
 	// set wait time to half second
 	days = selectedDays;
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = PREVIOUS_PUR_BAPI;
-		// new a mbo instance
-		var zprevPur = new ZMOB_PREVIOUS_PURCHASES();
-		// call findAll() function
-		zprevPur.pks.put('PK_DAYS_pkKey', selectedDays);
-		zprevPur.pks.put('PK_CUSTOMER_PREV_pkKey', selectedCust);
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : PREV_PUR_LOADING,
-			indicator : true
-		});
-		zmob_previous_purchases_findAll(zprevPur, '', '');
-	}, 50);
+	searchString = '';
+	filters = [{
+		field : 'inputPrevPur',
+		value : 'X',
+	}, {
+		field : 'inputNumDays',
+		value : selectedDays,
+		type : 'int'
+	}, {
+		field : 'inputCustomer',
+		value : selectedCust,
+	}];
+	var filterString = constructFilter(filters, searchString);
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : PRODUCT_LOADING,
+		indicator : true
+	});
+
+	callOData(getPurchasedProductOData, filterString, successPreviousProductCallback, errCallback, null);
+
 }
 
 function getDisputList() {
-	// set wait time to half second
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = CUSTOMER_DISPUTE_LIST_BAPI;
-		// new a mbo instance
-		var zdisputeList = new ZMOB_CUSTOMER_DISPUTE_LIST();
-		// call findAll() function
-		zdisputeList.pks.put('PK_CUSTOMER_pkKey', selectedCust);
 
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : DISPUTE_LOADING,
-			indicator : true
-		});
-		zmob_customer_dispute_list_findAll(zdisputeList, '', '');
-	}, 50);
+	filters = [{
+		field : 'CustomerNo',
+		value : selectedCust,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getDisputeOData, filterString, successDisputeListCallback, errCallback, null);
+
 }
 
 function getCustomerContactList() {
-	// set wait time to half second
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = CUSTOMER_CONTACT_LIST_BAPI;
-		// new a mbo instance
-		var zcontact = new ZMOB_CUSTOMER_CONTACT_LIST();
-		// call findAll() function
-		zcontact.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : CONTACT_LOADING,
-			indicator : true
-		});
-		zmob_customer_contact_list_findAll(zcontact, '', '');
-	}, 50);
+
+	filters = [{
+		field : 'Customer',
+		value : selectedCust,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getContactOData, filterString, successCustomerContactListCallback, errCallback, null);
 }
 
 function getCustomerRecentActivity() {
-	// set wait time to half second
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = CUSTOMER_RECENT_ACTIVITY_BAPI;
-		// new a mbo instance
-		var zrecentAct = new ZMOB_CUSTOMER_RECENT_ACT();
-		// call findAll() function
-		zrecentAct.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-		zrecentAct.pks.put('PK_ACT_MAX_pkKey', 30);
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : RECENT_ACT_LOADING,
-			indicator : true
-		});
-		zmob_customer_recent_act_findAll(zrecentAct, '', '');
-	}, 50);
+	filters = [{
+		field : 'CustomerNo',
+		value : selectedCust,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getSalesActivityOData, filterString, successCustomerRecentActivityCallback, errCallback, null);
 }
 
 function getCustomerAddress() {
-	// set wait time to half second
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = CUSTOMER_ADDRESS_BAPI;
-		// new a mbo instance
-		var zcustAddr = new ZMOB_GET_CUSTOMER_ADDRESS();
-		// call findAll() function
-		zcustAddr.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : CUSTOMER_ADDRESS_LOADING,
-			indicator : true
-		});
-		zmob_get_customer_address_findAll(zcustAddr, '', '');
-	}, 50);
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSingleCustomerOData, filterString, successCustomerAddress, errCallback, null, selectedCust);
 }
 
 function getCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer) {
 
-	// set wait time to half second
-	Ext.defer(function() {
-		// set calledBAPI
-		calledBAPI = CUSTOMER_LIST_BAPI;
-		// new a mbo instance
-		var zcustomerList = new ZMOB_VAN_CUSTOMER_LIST();
-		// call findAll() function
-		if (salesOffice == '' || salesOffice == null) {
-			salesOffice = '';
-		}
-		zcustomerList.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
-		zcustomerList.pks.put('PK_SALES_OFF_pkKey', salesOffice);
-		zcustomerList.pks.put('PK_TODAY_FLAG_pkKey', todayCustomer);
-		zcustomerList.pks.put('PK_ALL_FLAG_pkKey', allCustomer);
-		zcustomerList.pks.put('PK_ALL_VAN_FLAG_pkKey', allVanCustomer);
-		customerContainerOption.hide();
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : CUSTOMER_LOADING,
-			indicator : true
-		});
-		zmob_van_customer_list_findAll(zcustomerList, '', '');
-	}, 50);
+	// set calledBAPI
+	calledBAPI = CUSTOMER_LIST_BAPI;
+	// call findAll() function
+	if (salesOffice == '' || salesOffice == null) {
+		salesOffice = '';
+	}
+
+	filters = [{
+		field : 'inputVan',
+		value : 'X',
+	}, {
+		field : 'inputSalesOff',
+		value : salesOffice,
+	}, {
+		field : 'inputToday',
+		value : todayCustomer,
+	}, {
+		field : 'inputAll',
+		value : allCustomer,
+	}, {
+		field : 'inputAllVan',
+		value : allVanCustomer
+	}];
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getCustomerOData, filterString, successCustomerCallback, errCallback, null);
 }
 
 function getProductSearch(button) {
 
-	var searchString = Ext.ComponentQuery.query('#searchString')[0].getValue();
+	searchString = Ext.ComponentQuery.query('#searchString')[0].getValue();
 
 	if (searchString == '') {
 		Ext.Msg.alert('Alert', 'Please enter search string!', function() {
-		})
+		});
 	} else {
 
 		var searchAtpQty;
@@ -2722,50 +2523,58 @@ function getProductSearch(button) {
 
 		searchPlant = Ext.ComponentQuery.query('#searchPlant')[0].getValue();
 
-		// set wait time to half second
-		Ext.defer(function() {
-			// set calledBAPI
-			calledBAPI = PRODUCT_SEARCH_BAPI;
-			// new a mbo instance
-			var zproductSearch = new ZMOB_ORDER_PRODUCT_SEARCH();
-			// call findAll() function
-			zproductSearch.pks.put('PK_ATP_QTY_pkKey', searchAtpQty);
-			zproductSearch.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-			zproductSearch.pks.put('PK_FIND_ALT_pkKey', searchAltProduct);
-			zproductSearch.pks.put('PK_FIND_NUM_pkKey', FIND_NUM);
-			zproductSearch.pks.put('PK_MAX_HITS_pkKey', MAX_HITS);
-			zproductSearch.pks.put('PK_STRING_pkKey', searchString);
-			zproductSearch.pks.put('PK_ZERO_pkKey', searchSupZero);
-			zproductSearch.pks.put('PK_PLANT_pkKey', searchPlant);
-			mainContainer.setMasked({
-				xtype : 'loadmask',
-				message : PRODUCT_LOADING,
-				indicator : true
-			});
+		filters = [{
+			field : 'inputTrex',
+			value : 'X',
+		}, {
+			field : 'inputAtpQty',
+			value : searchAtpQty,
+		}, {
+			field : 'inputSupZero',
+			value : searchSupZero,
+		}, {
+			field : 'inputFindAlt',
+			value : searchAltProduct,
+		}, {
+			field : 'inputCustomer',
+			value : selectedCust
+		}, {
+			field : 'inputPlant',
+			value : searchPlant
+		}];
+		var filterString = constructFilter(filters, searchString);
 
-			zmob_order_product_search_findAll(zproductSearch, '', '');
-		}, 50);
+		mainContainer.setMasked({
+			xtype : 'loadmask',
+			message : PRODUCT_LOADING,
+			indicator : true
+		});
+
+		callOData(getProductSearchOData, filterString, successProductSearchCallback, errCallback, null);
+
 	}
 }
 
 function savePasswordCredential() {
-	var passwordField = Ext.ComponentQuery.query('#passwordCredential');
-	if (passwordField.length > 0) {
-		password = passwordField[0].getValue();
-	}
-	hwc.saveLoginCredentials(hwc.loadSettings().UserName.toUpperCase(), password);
+	// var passwordField = Ext.ComponentQuery.query('#passwordCredential');
+	// if (passwordField.length > 0) {
+		// password = passwordField[0].getValue();
+	// }
+	
+	sharedStorage.setItem(USER_KEY, userId);
 	sharedStorage.setItem(PASSWORD_KEY, password);
 }
 
 function showIncorrectPasswordAlert() {
 	Ext.Msg.alert('Alert', 'Incorrect password. Please enter new password.', function() {
-		showCredentialScreen(hwc.loadSettings().UserName.toUpperCase());
+		Ext.ComponentQuery.query('#passwordCredential')[0].setValue('');
+		showCredentialScreen(userId);
 	});
+
 }
 
-function getOrderConfirmation() {
+function simulateOrder() {
 	// set wait time to half second
-	var mobAppType;
 	orderHeader = prepareOrderHeader();
 	orderItem = prepareOrderItem();
 	orderPartner = prepareOrderPartner();
@@ -2780,13 +2589,6 @@ function getOrderConfirmation() {
 	}
 	// set calledBAPI
 	calledBAPI = ORDER_SIMULATE_MESSAGE_BAPI;
-	// // new a mbo instance
-	var zorderSimulateMe = new ZMOB_ORDER_SIMULATE();
-	// // call findAll() function
-	zorderSimulateMe.pks.put('PK_ORDER_HEADER_pkKey', orderHeader);
-	zorderSimulateMe.pks.put('PK_ORDER_ITEM_pkKey', orderItem);
-	zorderSimulateMe.pks.put('PK_ORDER_PARTNER_pkKey', orderPartner);
-	zorderSimulateMe.pks.put('PK_MOB_APP_pkKey', mobAppType);
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -2800,7 +2602,24 @@ function getOrderConfirmation() {
 	orderMessage = {
 		items : []
 	};
-	zmob_order_simulate_findAll(zorderSimulateMe, '', '');
+
+	filters = [{
+		field : 'inputOrderHeader',
+		value : orderHeader,
+	}, {
+		field : 'inputOrderItem',
+		value : orderItem,
+	}, {
+		field : 'inputOrderPartner',
+		value : orderPartner,
+	}, {
+		field : 'inputAppType',
+		value : mobAppType,
+	}];
+
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(simulateOrderMessageOData, filterString, successSimulateOrderMessageCallback, errCallback, null);
 }
 
 function updateCartOrderHeader(record) {
@@ -2855,7 +2674,8 @@ function prepareOrderHeader() {
 	requestedDelDate = getSAPDate(date);
 	quoteValidToDate = getSAPDate(valDate);
 
-	orderHeader = orderType + '|1010|50|00|' + requestedDelDate + '|' + poNumber + '|' + shippingCond + '|' + quoteValidToDate;
+	// orderHeader = orderType + '|1010|50|00|' + requestedDelDate + '|' + poNumber + '|' + shippingCond + '|' + quoteValidToDate;
+	orderHeader = orderType + '%7C1010%7C50%7C00%7C' + requestedDelDate + '%7C' + poNumber + '%7C' + shippingCond + '%7C' + quoteValidToDate;
 	return orderHeader;
 }
 
@@ -2901,10 +2721,10 @@ function prepareOrderItem() {
 			tempManualPr = productsInCart.items[i].manualPr;
 		}
 		if (i != 0) {
-			temp = '|';
+			temp = '%7C';
 		}
-
-		temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
+		// temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
+		temp += productsInCart.items[i].prodNo + '%7C' + productsInCart.items[i].orderQty + '%7C' + productsInCart.items[i].uom + '%7C' + tempManualPr + '%7C' + productsInCart.items[i].jobNumber + '%7C' + storLoc + '%7C' + plant;
 
 		orderItem += temp;
 	};
@@ -2915,7 +2735,9 @@ function prepareOrderItem() {
 function prepareOrderPartner() {
 	//order_partner format is
 	//WE|customerNo|AG|customerNo
-	var orderPartner = 'WE|' + selectedCust + '|AG|' + selectedCust;
+
+	// var orderPartner = 'WE|' + selectedCust + '|AG|' + selectedCust;
+	var orderPartner = 'WE%7C' + selectedCust + '%7CAG%7C' + selectedCust;
 
 	return orderPartner;
 }
@@ -2928,21 +2750,25 @@ function createDelivery(orderNo) {
 	var deliveryTime = "Delivery Time: " + Ext.ComponentQuery.query('#vanConfirmDeliveryTime')[0].getValue();
 	var deliveryGeo = "Geolocation :" + Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].getValue();
 
-	calledBAPI = CREATE_DELIVERY_BAPI;
-	var zcreateDelivery = new ZMOB_CREATE_DEL_PGI();
-	zcreateDelivery.pks.put('PK_ORDER_NO_pkKey', orderNo);
-	zcreateDelivery.pks.put('PK_IMAGE_pkKey', signatureBase64);
-	zcreateDelivery.pks.put('PK_TIMESTAMP_pkKey', deliveryTime);
-	zcreateDelivery.pks.put('PK_GEO_TEXT_pkKey', deliveryGeo);
-	zcreateDelivery.pks.put('PK_RECIPIENT_pkKey', deliveryName);
-
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : CREATE_DELIVERY_LOADING,
 		indicator : true
 	});
 
-	zmob_create_del_pgi_findAll(zcreateDelivery, '', '');
+	deliveryPayload = {
+		'SalesOrderNo' : orderNo,
+		'Signature' : signatureBase64,
+		'Timestamp' : deliveryTime,
+		'Geolocation' : deliveryGeo,
+		'Recipient' : deliveryName,
+	};
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getDeliveryPGIOData, filterString, callCreateDeliveryOData, errCallback, deliveryPayload, null);
+
 }
 
 function addOrderAttachment(orderNo) {
@@ -2954,13 +2780,6 @@ function addOrderAttachment(orderNo) {
 	var deliveryGeo = "Geolocation :" + Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].getValue();
 
 	calledBAPI = ADD_ATTACHMENT_BAPI;
-	var zorderAttachment = new ZMOB_ADD_ATTACHMENT();
-	zorderAttachment.pks.put('PK_DOC_NO_pkKey', orderNo);
-	zorderAttachment.pks.put('PK_IMAGE_pkKey', signatureBase64);
-	zorderAttachment.pks.put('PK_TIMESTAMP_pkKey', deliveryTime);
-	zorderAttachment.pks.put('PK_GEO_TEXT_pkKey', deliveryGeo);
-	zorderAttachment.pks.put('PK_RECIPIENT_pkKey', deliveryName);
-	zorderAttachment.pks.put('PK_DOC_TYPE_pkKey', 'S');
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -2968,12 +2787,25 @@ function addOrderAttachment(orderNo) {
 		indicator : true
 	});
 
-	zmob_add_attachment_findAll(zorderAttachment, '', '');
+	attachmentPayload = {
+		'OrderNo' : orderNo,
+		'Signature' : signatureBase64,
+		'Timestamp' : deliveryTime,
+		'Geolocation' : deliveryGeo,
+		'Recipient' : deliveryName,
+		'DocumentType' : 'S',
+	};
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getAttachmentOData, filterString, callAddAttachmentOData, errCallback, attachmentPayload, null);
+
 }
 
 function createOrder() {
+	calledBAPI = ORDER_CREATE_BAPI;
 	// prepare header text
-	var mobAppType;
 	var quoteComment = Ext.ComponentQuery.query('#quoteCommentField')[0].getValue();
 	var orderComment = Ext.ComponentQuery.query('#orderCommentField')[0].getValue();
 	var delInstruction = Ext.ComponentQuery.query('#delInstructionField')[0].getValue();
@@ -2987,23 +2819,30 @@ function createOrder() {
 		mobAppType = 'SAL';
 	}
 
-	calledBAPI = ORDER_CREATE_BAPI;
-	var zorderCreate = new ZMOB_ORDER_CREATE_peer1();
-	zorderCreate.pks.put('PK_ORDER_HEADER_pkKey', orderHeader);
-	zorderCreate.pks.put('PK_ORDER_ITEM_pkKey', orderItem);
-	zorderCreate.pks.put('PK_ORDER_PARTNER_pkKey', orderPartner);
-	zorderCreate.pks.put('PK_GENERAL_ORDER_TEXT_pkKey', orderComment);
-	zorderCreate.pks.put('PK_DELIVERY_TEXT_pkKey', delInstruction);
-	zorderCreate.pks.put('PK_QUOTATION_TEXT_pkKey', quoteComment);
-	zorderCreate.pks.put('PK_MOB_APP_pkKey', mobAppType);
-
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : ORDER_CREATE_LOADING,
 		indicator : true
 	});
+	var orderHeaderCreate = orderHeader.replace(/%7C/g, '\|');
+	var orderItemCreate = orderItem.replace(/%7C/g, '\|');
+	var orderPartnerCreate = orderPartner.replace(/%7C/g, '\|');
 
-	zmob_order_create_peer1_findAll(zorderCreate, '', '');
+	orderPayload = {
+		'inputOrderHeader' : orderHeaderCreate,
+		'inputOrderItem' : orderItemCreate,
+		'inputOrderPartner' : orderPartnerCreate,
+		'inputAppType' : (mobAppType == null) ? '' : mobAppType.toString(),
+		'orderText' : (orderComment == null) ? '' : orderComment.toString(),
+		'deliveryText' : (delInstruction == null) ? '' : delInstruction.toString(),
+		'quoteText' : (quoteComment == null) ? '' : quoteComment.toString(),
+	};
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(simulateOrderItemOData, filterString, callCreateOrderOData, errCallback, orderPayload, null);
+
 }
 
 function showConfirmDelivery() {
@@ -3030,7 +2869,6 @@ function showConfirmDelivery() {
 }
 
 var getLocationSuccess = function(position) {
-	hwc.log('Latitude: ' + position.coords.latitude + '\n' + 'Longitude: ' + position.coords.longitude + '\n' + 'Altitude: ' + position.coords.altitude + '\n' + 'Accuracy: ' + position.coords.accuracy + '\n' + 'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' + 'Heading: ' + position.coords.heading + '\n' + 'Speed: ' + position.coords.speed + '\n' + 'Timestamp: ' + position.timestamp + '\n', 'DEBUG', false);
 	currentGeoLocation = position.coords.latitude + ', ' + position.coords.longitude;
 	var deliveryGeolocation = Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].setValue(currentGeoLocation);
 };
@@ -3038,7 +2876,6 @@ var getLocationSuccess = function(position) {
 // onError Callback receives a PositionError object
 //
 function getLocationError(error) {
-	hwc.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n', 'ERROR', false);
 	currentGeoLocation = 'Cannot determine location';
 	var deliveryGeolocation = Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].setValue(currentGeoLocation);
 }
@@ -3072,12 +2909,6 @@ function showOrderSimulation() {
 
 	// hide delete all button
 	var button = Ext.ComponentQuery.query('#deleteAllButton');
-	if (button.length > 0) {
-		button[0].setHidden(true);
-	}
-
-	// hide exit button
-	button = Ext.ComponentQuery.query('#cartExitButton');
 	if (button.length > 0) {
 		button[0].setHidden(true);
 	}
@@ -3125,168 +2956,193 @@ function getOrderTotal() {
 	return total;
 }
 
+function deleteCustomer() {
+	calledBAPI = DELETE_CUSTOMER_BAPI;
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSingleCustomerOData, filterString, callDeleteCustomerOData, errCallback, null, selectedCust);
+}
+
 function changeCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
 	// set calledBAPI
 	calledBAPI = CHANGE_CUSTOMER_BAPI;
-	// new a mbo instance
-	var zchangeCust = new ZMOB_CHANGE_CONTACT();
-	// call findAll() function
-	zchangeCust.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zchangeCust.pks.put('PK_NAME1_pkKey', name1);
-	zchangeCust.pks.put('PK_NAME2_pkKey', name2);
-	zchangeCust.pks.put('PK_STREET_pkKey', street);
-	zchangeCust.pks.put('PK_POSTCODE_pkKey', postcode);
-	zchangeCust.pks.put('PK_CITY_pkKey', suburb);
-	zchangeCust.pks.put('PK_REGION_pkKey', region);
-	zchangeCust.pks.put('PK_EMAIL_pkKey', email);
-	zchangeCust.pks.put('PK_TEL_pkKey', tel);
-	zchangeCust.pks.put('PK_FAX_pkKey', fax);
+
+	customerDetailPayload = {
+		'CustomerNo' : selectedCust,
+		'Name1' : (name1 == null) ? '' : name1.toString(),
+		'Name2' : (name2 == null) ? '' : name2.toString(),
+		'Street' : (street == null) ? '' : street.toString(),
+		'PostCode' : (postcode == null) ? '' : postcode.toString(),
+		'City' : (suburb == null) ? '' : suburb.toString(),
+		'Region' : (region == null) ? '' : region.toString(),
+		'Email' : (email == null) ? '' : email.toString(),
+		'Tel' : (tel == null) ? '' : tel.toString(),
+		'Fax' : (fax == null) ? '' : fax.toString()
+	};
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : CUSTOMER_CHANGE_LOADING,
 		indicator : true
 	});
-	zmob_change_customer_findAll(zchangeCust, '', '');
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSingleCustomerOData, filterString, callChangeCustomerOData, errCallback, customerDetailPayload, selectedCust);
 }
 
 function changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
 	// set calledBAPI
 	calledBAPI = UPDATE_VAN_SCHEDULE_BAPI;
 	// new a mbo instance
-	var zvanScheduleUpdate = new ZMOB_VAN_CUSTOMER_UPDATE();
-	// call findAll() function
-	zvanScheduleUpdate.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zvanScheduleUpdate.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
-	zvanScheduleUpdate.pks.put('PK_VISIT_PERIOD_pkKey', visitPeriod);
-	zvanScheduleUpdate.pks.put('PK_MONDAY_pkKey', monday);
-	zvanScheduleUpdate.pks.put('PK_TUESDAY_pkKey', tuesday);
-	zvanScheduleUpdate.pks.put('PK_WEDNESDAY_pkKey', wednesday);
-	zvanScheduleUpdate.pks.put('PK_THURSDAY_pkKey', thursday);
-	zvanScheduleUpdate.pks.put('PK_FRIDAY_pkKey', friday);
-	zvanScheduleUpdate.pks.put('PK_SATURDAY_pkKey', saturday);
-	zvanScheduleUpdate.pks.put('PK_SUNDAY_pkKey', sunday);
+	customerVanSchedulePayload = {
+		'CustomerNo' : selectedCust,
+		'VisitPeriod' : (visitPeriod == null) ? '' : visitPeriod.toString(),
+		'Monday' : (monday == null) ? '' : monday.toString(),
+		'Tuesday' : (tuesday == null) ? '' : tuesday.toString(),
+		'Wednesday' : (wednesday == null) ? '' : wednesday.toString(),
+		'Thursday' : (thursday == null) ? '' : thursday.toString(),
+		'Friday' : (friday == null) ? '' : friday.toString(),
+		'Saturday' : (saturday == null) ? '' : saturday.toString(),
+		'Sunday' : (sunday == null) ? '' : sunday.toString()
+	};
 
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : UPDATE_VAN_SCHEDULE_LOADING,
-		indicator : true
-	});
-	zmob_van_customer_update_findAll(zvanScheduleUpdate, '', '');
+	filters = [{
+		field : 'inputVan',
+		value : 'X',
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getCustomerOData, filterString, callChangeVanScheduleOData, errCallback, customerVanSchedulePayload, selectedCust);
 }
 
 function createCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
 	// set calledBAPI
 	calledBAPI = CREATE_CUSTOMER_BAPI;
-	// new a mbo instance
-	var zcreateCust = new ZMOB_CREATE_CONTACT();
-	// call findAll() function
-	zcreateCust.pks.put('PK_NAME1_pkKey', name1);
-	zcreateCust.pks.put('PK_NAME2_pkKey', name2);
-	zcreateCust.pks.put('PK_STREET_pkKey', street);
-	zcreateCust.pks.put('PK_POSTCODE_pkKey', postcode);
-	zcreateCust.pks.put('PK_CITY_pkKey', suburb);
-	zcreateCust.pks.put('PK_REGION_pkKey', region);
-	zcreateCust.pks.put('PK_EMAIL_pkKey', email);
-	zcreateCust.pks.put('PK_TEL_pkKey', tel);
-	zcreateCust.pks.put('PK_FAX_pkKey', fax);
+
+	customerDetailPayload = {
+		'Name1' : (name1 == null) ? '' : name1.toString(),
+		'Name2' : (name2 == null) ? '' : name2.toString(),
+		'Street' : (street == null) ? '' : street.toString(),
+		'PostCode' : (postcode == null) ? '' : postcode.toString(),
+		'City' : (suburb == null) ? '' : suburb.toString(),
+		'Region' : (region == null) ? '' : region.toString(),
+		'Email' : (email == null) ? '' : email.toString(),
+		'Tel' : (tel == null) ? '' : tel.toString(),
+		'Fax' : (fax == null) ? '' : fax.toString()
+	};
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
-		message : CUSTOMER_CREATE_LOADING,
+		message : CUSTOMER_CHANGE_LOADING,
 		indicator : true
 	});
-	zmob_create_customer_findAll(zcreateCust, '', '');
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSingleCustomerOData, filterString, callCreateCustomerOData, errCallback, customerDetailPayload, null);
 }
 
 function createContact(firstName, lastName, tel, email, title, department, functions) {
 	// set calledBAPI
 	calledBAPI = CREATE_CONTACT_BAPI;
 	// new a mbo instance
-	var zcreateContact = new ZMOB_CREATE_CONTACT();
-	// call findAll() function
-	zcreateContact.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zcreateContact.pks.put('PK_FIRSTNAME_pkKey', firstName);
-	zcreateContact.pks.put('PK_LASTNAME_pkKey', lastName);
-	zcreateContact.pks.put('PK_EMAIL_pkKey', email);
-	zcreateContact.pks.put('PK_TEL_pkKey', tel);
-	zcreateContact.pks.put('PK_CONTACT_TITLE_pkKey', title);
-	zcreateContact.pks.put('PK_DEPARTMENT_pkKey', department);
-	zcreateContact.pks.put('PK_FUNCTION_pkKey', functions);
+
+	contactPayload = {
+		'Customer' : selectedCust,
+		'FirstName' : (firstName == null) ? '' : firstName.toString(),
+		'LastName' : (lastName == null) ? '' : lastName.toString(),
+		'Email' : (email == null) ? '' : email.toString(),
+		'Phone' : (tel == null) ? '' : tel.toString(),
+		'Title' : (title == null) ? '' : title.toString(),
+		'Department' : (department == null) ? '' : department.toString(),
+		'Function' : (functions == null) ? '' : functions.toString(),
+	};
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : CONTACT_CREATE_LOADING,
 		indicator : true
 	});
-	zmob_create_contact_findAll(zcreateContact, '', '');
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getContactOData, filterString, callCreateContactOData, errCallback, contactPayload, null);
+
 }
 
 function changeContact(firstName, lastName, tel, email, title, department, functions) {
 	// set calledBAPI
 	calledBAPI = CHANGE_CONTACT_BAPI;
-	// new a mbo instance
-	var zchangeContact = new ZMOB_CHANGE_CONTACT();
-	// call findAll() function
-	zchangeContact.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zchangeContact.pks.put('PK_CONTACT_pkKey', selectedContact);
-	zchangeContact.pks.put('PK_FIRSTNAME_pkKey', firstName);
-	zchangeContact.pks.put('PK_LASTNAME_pkKey', lastName);
-	zchangeContact.pks.put('PK_EMAIL_pkKey', email);
-	zchangeContact.pks.put('PK_TEL_pkKey', tel);
-	zchangeContact.pks.put('PK_CONTACT_TITLE_pkKey', title);
-	zchangeContact.pks.put('PK_DEPARTMENT_pkKey', department);
-	zchangeContact.pks.put('PK_FUNCTION_pkKey', functions);
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : CONTACT_CHANGE_LOADING,
 		indicator : true
 	});
-	zmob_change_contact_findAll(zchangeContact, '', '');
+
+	contactPayload = {
+		'Customer' : selectedCust,
+		'ContactNo' : selectedContact,
+		'FirstName' : (firstName == null) ? '' : firstName.toString(),
+		'LastName' : (lastName == null) ? '' : lastName.toString(),
+		'Email' : (email == null) ? '' : email.toString(),
+		'Phone' : (tel == null) ? '' : tel.toString(),
+		'Title' : (title == null) ? '' : title.toString(),
+		'Department' : (department == null) ? '' : department.toString(),
+		'Function' : (functions == null) ? '' : functions.toString()
+	};
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : CUSTOMER_CHANGE_LOADING,
+		indicator : true
+	});
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getContactOData, filterString, callChangeContactOData, errCallback, contactPayload, null);
 }
 
 function deleteVanSchedule() {
 	calledBAPI = DELETE_VAN_SCHEDULE_BAPI;
-	var zvanScheduleDelete = new ZMOB_VAN_CUSTOMER_DEL();
-	zvanScheduleDelete.pks.put('PK_USER_pkKey', hwc.loadSettings().UserName.toUpperCase());
-	zvanScheduleDelete.pks.put('PK_CUSTOMER_pkKey', selectedCust);
 
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : DELETE_VAN_SCHEDULE_LOADING,
-		indicator : true
-	});
+	customerVanSchedulePayload = {
+		'CustomerNo' : selectedCust,
+		'inputDeleteFlag' : 'X'
+	};
 
-	zmob_van_customer_del_findAll(zvanScheduleDelete, '', '');
-}
-
-function deleteCustomer() {
-	calledBAPI = DELETE_CUSTOMER_BAPI;
-	var zcustDelete = new ZMOB_DELETE_CUSTOMER();
-	zcustDelete.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : DELETE_CUSTOMER_LOADING,
-		indicator : true
-	});
-
-	zmob_delete_customer_findAll(zcustDelete, '', '');
+	filters = [{
+		field : 'inputVan',
+		value : 'X',
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getCustomerOData, filterString, callDeleteVanScheduleOData, errCallback, customerVanSchedulePayload, selectedCust);
 }
 
 function getVanProduct() {
 	calledBAPI = VAN_PRODUCT_LIST_BAPI;
-	var zvanProduct = new ZMOB_VAN_PRODUCT_LIST();
-	zvanProduct.pks.put('PK_CUSTOMER_pkKey', selectedCust);
 
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : VAN_PRODUCT_LOADING,
-		indicator : true
-	});
+	filters = [{
+		field : 'inputVanProd',
+		value : 'X',
+	}, {
+		field : 'inputCustomer',
+		value : selectedCust,
+	}, {
+		field : 'inputCustPrice',
+		value : '',
+	}];
+	var filterString = constructFilter(filters, searchString);
 
-	zmob_van_product_list_findAll(zvanProduct, '', '');
+	callOData(getVanProductOData, filterString, successVanProductCallback, errCallback, null);
+
 }
 
 function getVanBatch() {
@@ -3307,32 +3163,29 @@ function getVanBatch() {
 
 function deleteContact() {
 	calledBAPI = DELETE_CONTACT_BAPI;
-	var zcontDelete = new ZMOB_DELETE_CONTACT();
-	zcontDelete.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zcontDelete.pks.put('PK_CONTACT_pkKey', selectedContact);
+	Ext.toast('Deleting the contact...', 1500);
 
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : DELETE_CONTACT_LOADING,
-		indicator : true
-	});
-
-	zmob_delete_contact_findAll(zcontDelete, '', '');
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getContactOData, filterString, callDeleteContactOData, errCallback, null, selectedContact);
 }
 
-function submitDispute(title, category, contact, referenceDoc, claimAmount, text) {
+function createDispute(title, category, contact, referenceDoc, claimAmount, text) {
 
 	text = removeSpecialCharacter(text);
 
 	calledBAPI = DISPUTE_CREATION_BAPI;
-	var zdisCreate = new ZMOB_CREATE_DISPUTE();
-	zdisCreate.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zdisCreate.pks.put('PK_TITLE_pkKey', title);
-	zdisCreate.pks.put('PK_CATEGORY_pkKey', category);
-	zdisCreate.pks.put('PK_CONTACT_pkKey', contact);
-	zdisCreate.pks.put('PK_REF_pkKey', referenceDoc);
-	zdisCreate.pks.put('PK_CLAIM_AMOUNT_pkKey', claimAmount);
-	zdisCreate.pks.put('PK_DIST_TEXT_pkKey', text);
+
+	disputePayload = {
+		'CustomerNo' : selectedCust,
+		'CaseTitle' : (title == null) ? '' : title.toString(),
+		'Category' : (category == null) ? '' : category.toString(),
+		'ContactNo' : (contact == null) ? '' : contact.toString(),
+		'ReferenceDoc' : (referenceDoc == null) ? '' : referenceDoc.toString(),
+		'ClaimAmount' : (claimAmount == null) ? '' : claimAmount.toString(),
+		'CaseText' : (text == null) ? '' : text.toString()
+	};
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -3340,10 +3193,13 @@ function submitDispute(title, category, contact, referenceDoc, claimAmount, text
 		indicator : true
 	});
 
-	zmob_create_dispute_findAll(zdisCreate, '', '');
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getDisputeOData, filterString, callCreateDisputeOData, errCallback, disputePayload, null);
 }
 
-function submitActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
+function createSalesActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
 
 	// reset opportunity type if it is not an opportunity
 	if (actType != 'Z001') {
@@ -3353,19 +3209,21 @@ function submitActivity(actDate, actContact, actText, actType, actReason, actOut
 	actText = removeSpecialCharacter(actText);
 
 	calledBAPI = ACTIVITY_CREATION_BAPI;
-	var zactCreate = new ZMOB_CREATE_SALES_ACT();
-	zactCreate.pks.put('PK_CUSTOMER_pkKey', selectedCust);
-	zactCreate.pks.put('PK_CONTACT_pkKey', actContact);
-	zactCreate.pks.put('PK_DATE_pkKey', actDate);
-	zactCreate.pks.put('PK_ACT_TEXT_pkKey', actText);
-	zactCreate.pks.put('PK_ACT_TYPE_pkKey', actType);
-	zactCreate.pks.put('PK_REASON_pkKey', actReason);
-	zactCreate.pks.put('PK_OUTCOME_pkKey', actOutcome);
-	zactCreate.pks.put('PK_VOLUME_pkKey', actVol);
-	zactCreate.pks.put('PK_QTY_pkKey', actQty);
-	zactCreate.pks.put('PK_AMOUNT_pkKey', actAmount);
-	zactCreate.pks.put('PK_DOC_NO_pkKey', actSalesDoc);
-	zactCreate.pks.put('PK_DESC_1_pkKey', actOppType);
+
+	activityPayload = {
+		'CustomerNo' : selectedCust,
+		'ContactNo' : (actContact == null) ? '' : actContact.toString(),
+		'ToDate' : (actDate == null) ? '' : actDate.toString(),
+		'ActText' : (actText == null) ? '' : actText.toString(),
+		'ActType' : (actType == null) ? '' : actType.toString(),
+		'ActReason' : (actReason == null) ? '' : actReason.toString(),
+		'ActOutcome' : (actOutcome == null) ? '' : actOutcome.toString(),
+		'Volume' : (actVol == null) ? '' : actVol.toString(),
+		'Quantity' : (actQty == null) ? '' : actQty.toString(),
+		'Amount' : (actAmount == null) ? '' : actAmount.toString(),
+		'SalesDoc' : (actSalesDoc == null) ? '' : actSalesDoc.toString(),
+		'OpportunityType' : (actOppType == null) ? '' : actOppType.toString()
+	};
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -3373,7 +3231,11 @@ function submitActivity(actDate, actContact, actText, actType, actReason, actOut
 		indicator : true
 	});
 
-	zmob_create_sales_act_findAll(zactCreate, '', '');
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSalesActivityOData, filterString, callCreateSalesActivityOData, errCallback, activityPayload, null);
+
 }
 
 function refreshData(successful) {
@@ -3556,15 +3418,13 @@ function is_email(email) {
 
 function removeSpecialCharacter(inText) {
 	var outText;
-	inText = inText.replace('\"', '\'');
+	inText = inText.replace(/"/g, '\'');
 	inText = inText.replace(/[`~!^;:]/gi, '');
-	inText = inText.replace('\{', '\(');
-	inText = inText.replace('\}', '\)');
-	inText = inText.replace('\<', '\(');
-	inText = inText.replace('\>', '\)');
+	inText = inText.replace(/{/g, '\(');
+	inText = inText.replace(/}/g, '\)');
+	inText = inText.replace(/</g, '\(');
+	inText = inText.replace(/>/g, '\)');
 
-	outText = hwc.unescapeValue(inText);
-	;
 	return outText;
 }
 
@@ -3576,24 +3436,24 @@ function positionText(functions) {
 
 function getCustomerDetail() {
 	if (selectedCust != null) {
-		// call R3 BAPI to get list of contacts
-		if (hwc.isIOS()) {
-			getCustomerContactList();
-		} else {
-			//call customer main view
-			console.log('customer detail');
-			var customerTab = Ext.ComponentQuery.query('customerTab')[0];
+		// call R3 BAPI to get list of contacts, disputes and customer address
+		// if (hwc.isIOS()) {
+		Ext.toast('Please wait while loading customer information', 2000);
+		getCustomerContactList();
+		getCustomerRecentActivity();
+		getDisputList();
+		getCustomerAddress();
+		//call customer main view
+		var customerTab = Ext.ComponentQuery.query('customerTab')[0];
 
-			customerTab.push({
-				xtype : 'customerMain',
-				id : 'customerMain',
-				title : 'Customer Detail'
-			});
-		}
+		customerTab.push({
+			xtype : 'customerMain',
+			id : 'customerMain',
+			title : 'Customer Detail'
+		});
 
 	} else {
-		Ext.Msg.alert('Alert', 'Please select customer before proceeding', function() {
-		});
+		Ext.toast('Please select customer before proceeding', 1500);
 	}
 }
 
@@ -3656,3 +3516,29 @@ function setProdDescBatchOption(itemId, prodNo) {
 	batchSelect.setOptions(productBatch);
 	batchSelect.setHidden(false);
 }
+
+function constructFilter(filters, searchString) {
+	var filterString = '?$format=json';
+	// var filterString = '';
+
+	if (searchString != null && searchString != '') {
+		filterString += '&search=' + searchString;
+	}
+
+	for (var i = 0; i < filters.length; i++) {
+		if (i != 0) {
+			filterString += ' and ';
+		} else {
+			filterString += '&$filter=';
+		}
+
+		if (filters[i].type == 'int') {
+			// if value is integer, don't put ' in the filter string
+			filterString += filters[i].field + ' eq ' + filters[i].value;
+		} else {
+			filterString += filters[i].field + ' eq ' + "'" + filters[i].value + "'";
+		}
+	};
+	return filterString;
+}
+

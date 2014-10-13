@@ -26,4 +26,4 @@ Ext.define('PaperVan.view.CartList', {
 			type : 'cart'
 		}
 	}
-})
+});

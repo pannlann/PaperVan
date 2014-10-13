@@ -28,6 +28,7 @@ Ext.define('PaperVan.view.DisputeCreation', {
 				xtype : 'selectfield',
 				label : 'Contact',
 				itemId : 'availableDisputeSelect',
+				usePicker : false,
 			}, {
 				xtype : 'textfield',
 				label : 'Ref. Doc.',

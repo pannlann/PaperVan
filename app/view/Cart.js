@@ -4,7 +4,7 @@ Ext.define('PaperVan.view.Cart', {
     config : {
         itemId : 'cartTab',
         indicator : false,
-        iconCls : 'organize',
+        iconCls : 'shop',
         title : 'Cart',
         badgeText : productsInCart.items.length,
         items : [{

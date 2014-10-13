@@ -7,9 +7,6 @@ Ext.define('PaperVan.view.PreviousPurchase', {
 				title : 'Prod.Hist.',
 				navigationBar : {
 					items : [{
-								xtype : 'exitButton',
-								itemId : 'previousPurchaseExitButton'
-							}, {
 								xtype : 'button',
 								itemId : 'previousPurchaseSortButton',
 								ui : 'normal',

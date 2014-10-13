@@ -4,12 +4,9 @@ Ext.define('PaperVan.view.VanProducts', {
 	config : {
 		itemId : 'vanProductTab',
 		title : 'Van',
-		iconCls : 'star',
+		iconCls : 'van',
 		navigationBar : {
 			items : [{
-				xtype : 'exitButton',
-				itemId : 'vanExitButton'
-			}, {
 				xtype : 'button',
 				itemId : 'vanRefreshButton',
 				iconCls : 'refresh',

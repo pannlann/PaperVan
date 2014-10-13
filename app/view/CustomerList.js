@@ -6,8 +6,9 @@ Ext.define('PaperVan.view.CustomerList', {
 		grouped : true,
 		indexBar : true,
 		flex : 3,
-		refreshHeightOnUpdate : false,
-		// variableHeights : false,
+		refreshHeightOnUpdate : true,
+		variableHeights : true,
+		itemHeight : 60,
 		itemTpl : [
 				'<tpl if="creditAvailable &lt;= CREDIT_LOW  || creditBlock == CREDIT_BLOCK">',
 				'<b><div class="cust_list_name" id="red">{custName}</div></b><br></tpl>',

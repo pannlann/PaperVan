@@ -23,32 +23,32 @@ Ext.define('PaperVan.view.VanScheduleUpdate', {
 				itemId : 'vanRoutineMon',
 				label : 'Monday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineTue',
 				label : 'Tuesday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineWed',
 				label : 'Wednesday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineThu',
 				label : 'Thursday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineFri',
 				label : 'Friday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineSat',
 				label : 'Saturday',
 				value : 'X'
-			},{
+			}, {
 				xtype : 'checkboxfield',
 				itemId : 'vanRoutineSun',
 				label : 'Sunday',
@@ -58,7 +58,7 @@ Ext.define('PaperVan.view.VanScheduleUpdate', {
 				itemId : 'vanScheduleUpdateButton',
 				text : 'Update Schedule',
 				ui : 'action'
-			// }, {
+				// }, {
 				// xtype : 'button',
 				// itemId : 'vanScheduleDeleteButton',
 				// text : 'Delete Schedule',

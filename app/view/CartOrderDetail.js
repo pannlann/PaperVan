@@ -58,13 +58,6 @@ Ext.define('PaperVan.view.CartOrderDetail', {
 			label : 'Plant',
 			usePicker : false,
 			options : DEFAULT_PLANTS
-		// }, {
-			// xtype : 'selectfield',
-			// name : 'storageLoc',
-			// itemId : 'storageLoc',
-			// usePicker : false,
-			// label : 'Storage Location'
-			//            options : DEFAULT_STORAGE_LOC
 		}, {
 			xtype : 'textareafield',
 			label : 'Quote Comments',

@@ -1,47 +1,38 @@
 Ext.define('PaperVan.view.Credentials', {
-			extend : 'Ext.Panel',
-			xtype : 'credentialScreen',
-			config : {
-				draggable : true,
-				floating : true,
-				hideOnMaskTap : false,
-				modal : true,
-				width : '100%',
-				top : '20%',
-				hidden : true,
-				defaults : {
-					style : 'font-size: 100%'
-				},
-				items : [{
-							xtype : 'titlebar',
-							docked : 'top',
-							title : 'Credentials',
-							items : [{
-										xtype : 'button',
-										text : 'Login',
-										itemId : 'loginButton',
-										ui : 'action',
-										align : 'right'
-									}, {
-										xtype : 'exitButton',
-										text : 'Exit',
-										ui : 'decline',
-										align : 'left'
-									}]
-						}, {
-							xtype : 'textfield',
-							label : 'SAP Username',
-							itemId : 'userIdCredential',
-							labelWidth : '45%',
-							readOnly : true
-						}, {
-							xtype : 'passwordfield',
-							label : 'Password',
-							itemId : 'passwordCredential',
-							labelWidth : '45%',
-							placeHolder : 'SAP password'
-						}
-
-				]
-			}
-		});
+	extend : 'Ext.Panel',
+	xtype : 'credentialScreen',
+	config : {
+		draggable : true,
+		floating : true,
+		hideOnMaskTap : false,
+		modal : true,
+		width : '100%',
+		top : '20%',
+		hidden : true,
+		defaults : {
+			style : 'font-size: 100%'
+		},
+		items : [{
+			xtype : 'titlebar',
+			docked : 'top',
+			title : 'Credentials',
+			items : [{
+				xtype : 'button',
+				text : 'Login',
+				itemId : 'loginButton',
+				ui : 'action',
+				align : 'right'
+			}]
+		}, {
+			xtype : 'textfield',
+			label : 'SAP Username',
+			itemId : 'userIdCredential',
+			labelWidth : '45%',
+		}, {
+			xtype : 'passwordfield',
+			label : 'Password',
+			itemId : 'passwordCredential',
+			labelWidth : '45%',
+		}]
+	}
+}); 
