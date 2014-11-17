@@ -3,13 +3,14 @@ includeCss();
 
 Ext.Loader.setConfig({
 	enable : true,
+    disableCaching : false,
 	paths : {
-		'PaperVan' : 'app'
+		'PaperVan' : 'app',
+		'Ext' : 'touch'
 	}
 });
 
-// Ext.require(['PaperVan.view.Main', 'PaperVan.resource.SignatureField']);
-Ext.require([ 'PaperVan.resource.SignatureField']);
+Ext.require([ 'PaperVan.resource.SignatureField', 'PaperVan.resource.SelectArea']);
 Ext.application({
 
 	name : 'PaperVan',
@@ -19,10 +20,14 @@ Ext.application({
 			 'OrderConfirmation', 'OrderMessageList', 'OrderItemList', 'CustomerContainer', 'CustomerMain', 'CustomerDetail', 
 			 'CustomerContactChange', 'CustomerContact', 'CustomerRecentActivity', 'ActivityCreation', 'ActivityDisplay', 'DisputeCreation',
 			 'CustomerDispute', 'CustomerContainerOption', 'CustomerDetailOption', 'CustomerContactCreate', 'CustomerCreate', 'CustomerChange',
-			 'VanProducts', 'VanProductResultList', 'VanProductContainer', 'VanScheduleUpdate', 'VanConfirmDelivery'],
+			 'VanProducts', 'VanProductResultList', 'VanProductContainer', 'VanScheduleUpdate', 'VanConfirmDelivery',
+			 'ProductDescHist','ProductDescMain', 'ProductAtpList'],
 	stores : ['CustomerStore', 'ProductResultStore', 'CartStore', 'PreviousPurchaseStore', 'OrderMessageStore',
-			  'OrderItemStore', 'ContactStore', 'ActivityStore', 'DisputeStore', 'VanProductResultStore'],
-	models : ['CustomerModel', 'ContactModel', 'ActivityModel', 'DisputeModel', 'ProductResultModel', 'OrderMessageModel'],
+			  'OrderItemStore', 'ContactStore', 'ActivityStore', 'DisputeStore', 'VanProductResultStore',
+			  'SearchProductSalesHistoryStore','PreviousProductSalesHistoryStore','VanProductSalesHistoryStore',
+			  , 'SearchProductAtpStore', 'PreviousProductAtpStore', 'VanProductAtpStore'],
+	models : ['CustomerModel', 'ContactModel', 'ActivityModel', 'DisputeModel', 'ProductResultModel',
+				'OrderMessageModel', 'ProductSalesHistoryModel', 'AtpModel'],
 	launch : function() {
 		console.log('launch');
 		Ext.event.publisher.TouchGesture.prototype.isNotPreventable = /^(select|a|input|textarea)$/i;

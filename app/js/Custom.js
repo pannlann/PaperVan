@@ -12,30 +12,6 @@ var errCallback = function(error) {
 		} else if (error.timedout == true) {
 			mainContainer.unmask();
 			reportErrorMessage(TIMEOUT_EXCEPTION, function() {
-				switch (calledBAPI) {
-					case ORDER_CREATE_BAPI :
-						break;
-					case ACTIVITY_CREATION_BAPI :
-						break;
-					case DISPUTE_CREATION_BAPI :
-						break;
-					case CHANGE_CONTACT_BAPI :
-						break;
-					case CREATE_CONTACT_BAPI :
-						break;
-					case CREATE_CUSTOMER_BAPI :
-						break;
-					case CHANGE_CUSTOMER_BAPI :
-						break;
-					case DELETE_CUSTOMER_BAPI :
-						break;
-					case DELETE_CONTACT_BAPI :
-						break;
-					case UPDATE_VAN_SCHEDULE_BAPI:
-						break;
-					default :
-						break;
-				}
 			});
 		} else {
 			mainContainer.unmask();
@@ -52,16 +28,18 @@ function includeCss() {
 	// Setup criteria for css
 	var cssfile;
 
-	if (hwc.isIPad() || hwc.isWindows()) {
+	if (isIPad() || isDesktop()) {
 		cssfile = "PaperVan_iPad.css";
 		fieldLabelWidth = '30%';
 		signatureWidth = 500;
 		signatureHeight = 400;
+		customerListItemHeight = 90;
 	} else {
 		cssfile = "PaperVan.css";
 		fieldLabelWidth = '50%';
 		signatureWidth = 300;
 		signatureHeight = 200;
+		customerListItemHeight = 80;
 	}
 
 	var headID = document.getElementsByTagName("head")[0];
@@ -163,6 +141,12 @@ function reportErrorMessage(errorString, callbackFunction) {
 		alertDetail = CONTACT_LINK_SALES_ACT_TEXT;
 	} else if (errorString.indexOf(DELETE_VAN_SCHEDULE_EXCEPTION) >= 0) {
 		alertDetail = DELETE_VAN_SCHEDULE_TEXT;
+	} else if (errorString.indexOf(NO_MORE_PRODUCT_HISTORY_EXCEPTION) >= 0) {
+		alertDetail = NO_MORE_PRODUCT_HISTORY_TEXT;
+	} else if (errorString.indexOf(MATERIAL_PLANT_NOT_FOUND_EXCEPTION) >= 0) {
+		alertDetail = MATERIAL_PLANT_NOT_FOUND_TEXT;
+	} else if (errorString.indexOf(GR_INB_ERROR_EXCEPTION) >= 0) {
+		alertDetail = GR_INB_ERROR_TEXT;
 	} else {
 		alertHeader = "Unknown error";
 		alertDetail = "Please contact IT";
@@ -174,4 +158,16 @@ function reportErrorMessage(errorString, callbackFunction) {
 		Ext.Msg.alert(alertHeader, alertDetail, callbackFunction);
 	}
 
+}
+
+function isIPad() {
+	if (Ext.os.deviceType != 'Phone' && Ext.os.is.iOS) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function isDesktop() {
+	return (Ext.os.deviceType == 'Desktop');
 }

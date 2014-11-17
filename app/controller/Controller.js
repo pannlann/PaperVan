@@ -16,7 +16,6 @@ Ext.define('PaperVan.controller.Controller', {
 			cartOrder : 'cartOrder',
 			previousPurchaseList : 'previousPurchaseList',
 			previousPurchaseTab : 'previousPurchaseTab',
-			favoriteList : 'favoriteList',
 			orderMessageList : 'orderMessageList',
 			orderItemList : 'orderItemList',
 			customerMain : 'customerMain',
@@ -32,8 +31,12 @@ Ext.define('PaperVan.controller.Controller', {
 			vanProductTab : 'vanProductTab',
 			vanProductResultList : 'vanProductResultList',
 			vanScheduleUpdate : 'vanScheduleUpdate',
+			productDescMain : 'productDescMain',
 		},
 		control : {
+			productDescMain : {
+				activate : 'onProductDescMainActivate'
+			},
 
 			'vanProductTab button[itemId=vanAddToCartButton]' : {
 				tap : 'onAddToCartTap'
@@ -255,19 +258,6 @@ Ext.define('PaperVan.controller.Controller', {
 				back : 'onPreviousPruchaseBack'
 			},
 
-			'favoriteTab button[itemId=favoriteSortButton]' : {
-				tap : 'onSortTap'
-			},
-
-			favoriteList : {
-				activate : 'onFavoriteListActivate',
-				select : 'onFavoriteListSelect'
-			},
-
-			'favoriteTab button[itemId=favoriteAddToCartButton]' : {
-				tap : 'onAddToCartTap'
-			},
-
 			'credentialScreen button[itemId=loginButton]' : {
 				tap : 'onLoginButtonTap'
 			},
@@ -279,6 +269,9 @@ Ext.define('PaperVan.controller.Controller', {
 			// 'customerTab button[itemId=regionalCustomerButton]' : {
 			// tap : 'onRegionalCustomerButtonTap'
 			// },
+			'customerTab button[itemId=camera]' : {
+				tap : 'onCamera'
+			},
 			'customerTab button[itemId=customerContainerOptionButton]' : {
 				tap : 'onCustomerContainerOptionButtonTap'
 			},
@@ -321,6 +314,17 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
+	onCamera : function(button) {
+		// if(Ext.os.is)
+		if (Ext.os.is.WindowsPhone) {
+			window.cordova.plugins.barcodeScanner.scan(readBarcodeSuccess, readBarcodeFail);
+			Ext.Function.defer(function() {
+				window.cordova.plugins.barcodeScanner.scan(readBarcodeSuccess, readBarcodeFail);
+			}, 500);
+		} else {
+			cordova.plugins.barcodeScanner.scan(readBarcodeSuccess, readBarcodeFail);
+		}
+	},
 
 	onVanScheduleUpdateButtonTap : function(button) {
 		var visitPeriod = Ext.ComponentQuery.query('#vanRoutineSelect')[0].getValue();
@@ -347,21 +351,17 @@ Ext.define('PaperVan.controller.Controller', {
 	onVanScheduleDeleteButtonTap : function(button) {
 		deleteVanSchedule();
 	},
-
 	onVanRefreshButtonTap : function(button) {
 		Ext.toast('Refresh product list', 1500);
 		getVanProduct();
 	},
-
 	onTextAreaBlur : function(textArea) {
 		textArea.parent.parent.getScrollable().getScroller().setDisabled(false);
 
 	},
-
 	onTextAreaFocus : function(textArea) {
 		textArea.parent.parent.getScrollable().getScroller().setDisabled(true);
 	},
-
 	onDeleteCustomerOptionTap : function(button) {
 		customerDetailOption.hide();
 		Ext.Msg.confirm("Confirm", "Do you want to delete a customer?", function(buttonId) {
@@ -371,7 +371,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}, this // scope of the controller
 		);
 	},
-
 	onRefreshCustomerOptionSelectChange : function(select, newValue, oldValue) {
 		if (newValue != '') {
 			var salesOffice;
@@ -416,7 +415,6 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
-
 	onCustomerDetailOptionShow : function(option) {
 		//console.log('detail option show');
 		if (selectedCustRecord.accountGroup == 'Z001') {
@@ -427,7 +425,6 @@ Ext.define('PaperVan.controller.Controller', {
 			Ext.ComponentQuery.query('#changeCustomerOption')[0].setHidden(false);
 		}
 	},
-
 	onCustomerContainerOptionButtonTap : function(button) {
 		customerContainerOption.show();
 	},
@@ -437,7 +434,6 @@ Ext.define('PaperVan.controller.Controller', {
 	onCustomerDisputeInit : function(list) {
 		updateDisputeStore();
 	},
-
 	onActivityTypeChange : function(select, newValue, oldValue) {
 		// automatically update reason
 		var reason;
@@ -463,7 +459,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 		reasonSelect.setValue(reason);
 	},
-
 	onActivityCreationInit : function() {
 		// update contact select field in activity creation screens
 		var availableContactField = Ext.ComponentQuery.query('#availableContactSelect')[0];
@@ -471,14 +466,12 @@ Ext.define('PaperVan.controller.Controller', {
 		availableContactField.setReadOnly(isContactReadOnly);
 
 	},
-
 	onDisputeCreationInit : function() {
 		// update contact select field in dispute creation screens
 		var availableDisputeField = Ext.ComponentQuery.query('#availableDisputeSelect')[0];
 		availableDisputeField.setOptions(availableContact);
 		availableDisputeField.setReadOnly(isContactReadOnly);
 	},
-
 	onUpdateVanScheduleButtonTap : function(button) {
 		console.log('onUpdateVanScheduleButton');
 
@@ -550,7 +543,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onChangeCustomerButtonTap : function(button) {
 
 		customerDetailOption.hide();
@@ -577,7 +569,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onCreateCustomerButtonTap : function(button) {
 		customerContainerOption.hide();
 		var customerTab = Ext.ComponentQuery.query('customerTab')[0];
@@ -585,7 +576,6 @@ Ext.define('PaperVan.controller.Controller', {
 			xtype : 'customerCreate',
 		});
 	},
-
 	onCreateDisputeButtonTap : function(button) {
 		customerDetailOption.hide();
 		var title = 'Create Dispute Case';
@@ -601,7 +591,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onCreateContactOptionTap : function(button) {
 		customerDetailOption.hide();
 		var title = 'Create Contact';
@@ -618,7 +607,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onCreateActivityButtonTap : function(button) {
 		customerDetailOption.hide();
 		var title = 'Create Activity';
@@ -635,7 +623,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onContactTab : function(list, index, target, record, event) {
 		console.log('contact tab');
 		if (event.target.className == 'hold' || event.target.className == 'cont_phone') {
@@ -682,7 +669,6 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
-
 	onRecentActTab : function(list, index, target, record) {
 		tempActivityText = record.getData().text;
 		var customerTab = Ext.ComponentQuery.query('customerTab')[0];
@@ -705,7 +691,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onDisputeCreationSubmit : function(button) {
 		var title = Ext.ComponentQuery.query('#disputeTitle')[0].getValue();
 		var category = Ext.ComponentQuery.query('#disputeTypeSelect')[0].getValue();
@@ -735,7 +720,6 @@ Ext.define('PaperVan.controller.Controller', {
 			});
 		}
 	},
-
 	onActivitySubmit : function(button) {
 		var actDate = Ext.ComponentQuery.query('#activityDate')[0].getValue();
 		var formattedDate = dateFormat(actDate, 'yyyymmdd');
@@ -751,32 +735,29 @@ Ext.define('PaperVan.controller.Controller', {
 		var actAmount = Ext.ComponentQuery.query('#amountOpportunity')[0].getValue();
 		var actSalesDoc = Ext.ComponentQuery.query('#salesDocNo')[0].getValue();
 		if (actText.length > 0) {
-			if (hwc.isIOS) {
-				// save activity data into memory to be added into activityData later
-				tempActivity = {
-					actType : actTypeText,
-					contName : Ext.ComponentQuery.query('#availableContactSelect')[0].getComponent().getValue(),
-					contNo : selectedContact,
-					createdBy : userId,
-					fromDate : dateFormat(actDate, 'yyyymmdd'),
-					text : actText,
-					toDate : dateFormat(actDate, 'yyyymmdd'),
-					type : "Recent Activity",
-				};
+			// save activity data into memory to be added into activityData later
+			tempActivity = {
+				actType : actTypeText,
+				contName : Ext.ComponentQuery.query('#availableContactSelect')[0].getComponent().getValue(),
+				contNo : selectedContact,
+				createdBy : userId,
+				fromDate : dateFormat(actDate, 'yyyymmdd'),
+				text : actText,
+				toDate : dateFormat(actDate, 'yyyymmdd'),
+				type : "Recent Activity",
+			};
 
-				Ext.Msg.confirm("Confirm", "Do you want to submit a sales activity?", function(buttonId) {
-					if (buttonId === 'yes') {
-						createSalesActivity(formattedDate, selectedContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType);
-					}
-				}, this // scope of the controller
-				);
-			}
+			Ext.Msg.confirm("Confirm", "Do you want to submit a sales activity?", function(buttonId) {
+				if (buttonId === 'yes') {
+					createSalesActivity(formattedDate, selectedContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType);
+				}
+			}, this // scope of the controller
+			);
 		} else {
 			Ext.Msg.alert('Alert', 'Please enter text before submit an activity.', function() {
 			});
 		}
 	},
-
 	onCustomerMainActivate : function(view) {
 
 		// set customer general detail
@@ -817,7 +798,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onVanScheduleUpdateInit : function(customerCreate) {
 		console.log('van update init');
 		var button;
@@ -847,7 +827,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onCustomerCreateInit : function(customerCreate) {
 		//console.log('customer create init');
 		var button;
@@ -877,7 +856,6 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
-
 	onVanProductTabBack : function(vanProductTab) {
 		if (vanProductTab.getActiveItem().getItemId() == 'vanProductContainer') {
 
@@ -900,7 +878,6 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
-
 	onCustomerTabBack : function(customerTab) {
 		console.log('back to custTab');
 		if (customerTab.getActiveItem().getItemId() == 'customerContainer') {
@@ -939,7 +916,6 @@ Ext.define('PaperVan.controller.Controller', {
 
 		}
 	},
-
 	onCreateCustomerSubmit : function(button) {
 		var name1 = Ext.ComponentQuery.query('#customerCrName1')[0].getValue();
 		var name2 = Ext.ComponentQuery.query('#customerCrName2')[0].getValue();
@@ -997,7 +973,6 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
-
 	onChangeCustomerSubmit : function(button) {
 		var name1 = Ext.ComponentQuery.query('#customerChName1')[0].getValue();
 		var name2 = Ext.ComponentQuery.query('#customerChName2')[0].getValue();
@@ -1046,7 +1021,6 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
-
 	onCreateContactSubmit : function(button) {
 		var firstName = Ext.ComponentQuery.query('#contactCrFirstText')[0].getValue();
 		var lastName = Ext.ComponentQuery.query('#contactCrLastText')[0].getValue();
@@ -1083,7 +1057,6 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
-
 	onChangeContactSubmit : function(button) {
 		var firstName = Ext.ComponentQuery.query('#contactChFirstText')[0].getValue();
 		var lastName = Ext.ComponentQuery.query('#contactChLastText')[0].getValue();
@@ -1108,16 +1081,13 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
-
 	onCustomerDetailButtonTap : function(button) {
 		getCustomerDetail();
 	},
-
 	onSignatureConfirmButtonTap : function() {
 		// open up signature capturing screen
 		showConfirmDelivery();
 	},
-
 	onCreateOrderButtonTap : function() {
 		if (isVanOrder) {
 			//check print name, check and signature first
@@ -1142,7 +1112,6 @@ Ext.define('PaperVan.controller.Controller', {
 			createOrder();
 		}
 	},
-
 	onCartOrderBack : function(cartOrder) {
 		console.log('back to cartOrder');
 
@@ -1183,7 +1152,6 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
-
 	onOrderConfirmationActivate : function() {
 		// set height of orderConfirmationScreen
 		var messageStoreCount = orderMessage.items.length;
@@ -1200,7 +1168,7 @@ Ext.define('PaperVan.controller.Controller', {
 			this.getOrderMessageList().element.setHeight(tempHeight);
 		}
 		if (orderItemStoreCount > 0) {
-			if (hwc.isIPad()) {
+			if (isIPad() || isDesktop()) {
 				tempHeight = (orderItemStoreCount * LIST_IPAD_HEIGHT ) + HEADER_HEIGHT;
 			} else {
 				tempHeight = (orderItemStoreCount * LIST_IPHONE_HEIGHT) + HEADER_HEIGHT;
@@ -1230,7 +1198,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onOrderTypeChange : function(select, newValue, oldValue) {
 		var validToDate = Ext.ComponentQuery.query('#validToDate')[0];
 		var createOrderButton = Ext.ComponentQuery.query('#createOrderButton')[0];
@@ -1255,11 +1222,9 @@ Ext.define('PaperVan.controller.Controller', {
 			checkoutButton.setText('Quote Confirmation');
 		}
 	},
-
 	onDeliveringPlantChange : function(select, newValue, oldValue) {
 		//updateCartStorageLoc(newValue);
 	},
-
 	onOrderConfirmation : function() {
 		console.log('order confirmation clicked');
 		var poValue = Ext.ComponentQuery.query('#poNumber')[0].getValue();
@@ -1299,16 +1264,11 @@ Ext.define('PaperVan.controller.Controller', {
 
 		}
 	},
-
 	onCustListIniialize : function() {
 		console.log('customer List is init');
 		//save initi group to memory for later use
 		customerGrouper = Ext.getStore('customer').getGrouper();
-		if (hwc.isWindows) {
-			updateCustomerStore();
-		}
 	},
-
 	onChangeTab : function(mainPanel, value, oldValue) {
 		console.log('tab changes: ' + value.getItemId());
 
@@ -1318,7 +1278,7 @@ Ext.define('PaperVan.controller.Controller', {
 					Ext.toast('Please select customer before proceeding', 1500);
 					return false;
 				} else if (value.getItemId() == 'vanProductTab' && vanProdResultData.items.length <= 0) {
-					Ext.toast(PRODUCT_LOADING, 1500);
+					Ext.toast(PRODUCT_LOADING, 10000);
 					getVanProduct();
 				}
 			}
@@ -1327,7 +1287,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onLoginButtonTap : function(button) {
 		console.log('login tapped');
 
@@ -1337,7 +1296,10 @@ Ext.define('PaperVan.controller.Controller', {
 			if (userId != null) {
 				userId = userId.toUpperCase();
 			}
-			sharedStorage.setItem(USER_KEY, userId);
+
+			if (sharedStorage != null) {
+				sharedStorage.setItem(USER_KEY, userId);
+			}
 		}
 
 		var passwordField = Ext.ComponentQuery.query('#passwordCredential');
@@ -1347,7 +1309,6 @@ Ext.define('PaperVan.controller.Controller', {
 		console.log('Password: ' + password);
 		validateCredentials();
 	},
-
 	onSortChange : function(picker, value, opts) {
 		var sortBy = picker.getValue()['sortBy'];
 		console.log('sort by: ' + sortBy);
@@ -1357,8 +1318,6 @@ Ext.define('PaperVan.controller.Controller', {
 				var store = Ext.getStore('productResult');
 			} else if (pickerId == 'previousPurchase') {
 				var store = Ext.getStore('previousPurchase');
-			} else if (pickerId == 'favorite') {
-				var store = Ext.getStore('favorite');
 			} else if (pickerId == 'vanProduct') {
 				var store = Ext.getStore('vanProductResult');
 			}
@@ -1388,41 +1347,6 @@ Ext.define('PaperVan.controller.Controller', {
 			picker.destroy();
 		}
 	},
-
-	// when product is selected then save product record in
-	// selectedProduct variable
-	// and display product description
-	onFavoriteListSelect : function(list, record) {
-
-		// save select record
-		selectedProduct = record.getData();
-
-		// call Product Description screen
-		list.up('favoriteTab').push({
-			xtype : 'productDesc',
-			data : selectedProduct,
-			id : 'favoriteDesc',
-			title : selectedProduct.prodDesc
-		});
-	},
-
-	onFavoriteListActivate : function() {
-
-		var button;
-		// hidden sort button
-		button = Ext.ComponentQuery.query('#favoriteSortButton');
-		if (button.length > 0) {
-			button[0].setHidden(false);
-		}
-
-		// hide add button
-		button = Ext.ComponentQuery.query('#favoriteAddToCartButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
-
-	},
-
 	onPreviousPruchaseBack : function(view) {
 		var activeItems = view.getActiveItem();
 
@@ -1436,7 +1360,6 @@ Ext.define('PaperVan.controller.Controller', {
 
 		}
 	},
-
 	onPreviousPurchaseActivate : function() {
 
 		// show sort button
@@ -1452,14 +1375,12 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onDaysSelected : function(select, newValue, oldValue) {
 		console.log('new value: ' + newValue);
 		if (newValue != '0') {
 			getPreviousPurchase(newValue);
 		}
 	},
-
 	onCartTabShow : function() {
 		var cartList = Ext.ComponentQuery.query('cartList');
 		if (cartList.length > 0) {
@@ -1469,7 +1390,6 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
-
 	onCartListActivate : function(component, newItem, oldItem) {
 
 		console.log('cartList is active');
@@ -1477,7 +1397,6 @@ Ext.define('PaperVan.controller.Controller', {
 		updateCartTotal();
 
 	},
-
 	onDeleteAllTap : function(button) {
 		Ext.Msg.confirm("Delete all?", "Do you want to delete all products in the cart?", function(buttonId) {
 			if (buttonId === 'yes') {
@@ -1539,7 +1458,6 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
-
 	onCartItemDoubleTap : function(list, idx, target, record, event) {
 
 		Ext.Msg.confirm("Delete item?", "Do you want to delete " + record.get('prodDesc') + " from the cart?", function(buttonId, text) {
@@ -1550,8 +1468,123 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}, this);
 	},
+	onProductDescMainActivate : function(carousel) {
+		console.log('onProductDescMainActivate');
+		var carouselId = carousel.getId();
+		var productDesc;
+		var productHist;
+		var productAtp;
+		var productDescId;
+		var productHistId;
+		var productAtpId;
+		var productHistStoreType;
+		var productAtpStoreType;
+		var hideLoadMoreButton = false;
+		// assign id to different views
+		if (carouselId == 'vanProductDescMain') {
+			productDescId = 'vanProductDesc';
+			productHistId = 'vanProductDescHist';
+			productAtpId = 'vanProductDescAtp';
 
+			productHistStoreType = 'vanProductSalesHistory';
+			productAtpStoreType = 'vanProductAtp';
+			if (vanProdSalesHistoryData.items.length < 20) {
+				hideLoadMoreButton = true;
+			}
+		} else if (carouselId == 'searchProductDescMain') {
+			productDescId = 'searchProductDesc';
+			productHistId = 'searchProductDescHist';
+			productAtpId = 'searchProductDescAtp';
+
+			productHistStoreType = 'searchProductSalesHistory';
+			productAtpStoreType = 'searchProductAtp';
+			if (searchProdSalesHistoryData.items.length < 20) {
+				hideLoadMoreButton = true;
+			}
+		} else if (carouselId == 'previousProductDescMain') {
+			productDescId = 'previousProductDesc';
+			productHistId = 'previousProductDescHist';
+			productAtpId = 'previousProductDescAtp';
+
+			productHistStoreType = 'preProductSalesHistory';
+			productAtpStoreType = 'previousProductAtp';
+			if (preProdSalesHistoryData.items.length < 20) {
+				hideLoadMoreButton = true;
+			}
+		}
+		// create product description view
+		productDesc = Ext.create('PaperVan.view.ProductDesc', {
+			data : selectedProduct,
+			id : productDescId,
+			title : selectedProduct.prodDesc
+		});
+
+		// create product ATP view
+		productAtp = Ext.create('PaperVan.view.ProductAtpList', {
+			id : productAtpId,
+			title : 'Product ATP',
+			store : {
+				type : productAtpStoreType
+			}
+		});
+
+		// only add customer price button at van product tab
+		if (carouselId == 'vanProductDescMain') {
+			customerPriceButton = Ext.create('Ext.Button', {
+				itemId : carouselId,
+				docked : 'bottom',
+				text : 'Get customer price',
+				ui : 'action',
+				handler : function() {
+					console.log('button load customer price');
+					Ext.toast("Loading customer price", 10000);
+					getCustomerPrice(selectedProduct.prodNo, selectedCustRecord.custNo, selectedCustRecord.plant, this.getItemId());
+				}
+			});
+			productDesc.add([customerPriceButton]);
+		}
+		// create product history view
+		productHist = Ext.create('PaperVan.view.ProductDescHist', {
+			id : productHistId,
+			title : 'Product History',
+			store : {
+				type : productHistStoreType
+			},
+			items : [{
+				xtype : 'button',
+				itemId : carouselId,
+				hidden : hideLoadMoreButton,
+				scrollDock : 'bottom',
+				docked : 'bottom',
+				text : 'Load more history',
+				handler : function() {
+					var selectedMaterial;
+					var skip;
+					console.log('button load more');
+					switch (this.getItemId()) {
+						case 'vanProductDescMain':
+							selectedMaterial = vanProdSalesHistoryData.items[0].material;
+							skip = vanProdSalesHistoryData.items.length;
+							break;
+						case 'searchProductDescMain':
+							selectedMaterial = searchProdSalesHistoryData.items[0].material;
+							skip = searchProdSalesHistoryData.items.length;
+							break;
+						case 'previousProductDescMain':
+							selectedMaterial = preProdSalesHistoryData.items[0].material;
+							skip = preProdSalesHistoryData.items.length;
+							break;
+					};
+					Ext.toast("Loading history", 1500);
+					getProductSalesHistoryList(selectedMaterial, skip, this.getItemId());
+				}
+			}]
+		});
+
+		carousel.add([productDesc, productHist, productAtp]);
+	},
 	onProductDescActivate : function(list) {
+		console.log('onProductDescActivate');
 		// hide delete all button
 		var button = Ext.ComponentQuery.query('#deleteAllButton');
 		if (button.length > 0) {
@@ -1566,12 +1599,6 @@ Ext.define('PaperVan.controller.Controller', {
 
 		// hide sort button
 		button = Ext.ComponentQuery.query('#previousPurchaseSortButton');
-		if (button.length > 0) {
-			button[0].setHidden(true);
-		}
-
-		// hide sort button
-		button = Ext.ComponentQuery.query('#favoriteSortButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
 		}
@@ -1635,13 +1662,20 @@ Ext.define('PaperVan.controller.Controller', {
 		selectedProduct = record.getData();
 
 		// call Product Description screen
+		// list.up('previousPurchaseTab').push({
+		// xtype : 'productDesc',
+		// data : selectedProduct,
+		// id : 'previousProductDesc',
+		// title : selectedProduct.prodDesc
+		// });
 		list.up('previousPurchaseTab').push({
-			xtype : 'productDesc',
-			data : selectedProduct,
-			id : 'previousProductDesc',
+			xtype : 'productDescMain',
+			id : 'previousProductDescMain',
 			title : selectedProduct.prodDesc
 		});
-
+		getProductSalesHistoryList(selectedProduct.prodNo, 0, 'previousProductDescMain');
+		// get ATP based on customer plant
+		getProductAtpList(selectedProduct.prodNo, selectedCustRecord.plant);
 	},
 
 	// when product is selected then save product record in
@@ -1653,14 +1687,15 @@ Ext.define('PaperVan.controller.Controller', {
 		selectedProduct = record.getData();
 		console.log('product result list is select at: ' + selectedProduct.prodNo);
 
-		// call Product Description screen
 		list.up('productTab').push({
-			xtype : 'productDesc',
-			data : selectedProduct,
-			id : 'searchProductDesc',
+			xtype : 'productDescMain',
+			id : 'searchProductDescMain',
 			title : selectedProduct.prodDesc
 		});
-
+		getProductSalesHistoryList(selectedProduct.prodNo, 0, 'searchProductDescMain');
+		// get ATP from selected plant in search product screen
+		var searchPlant = Ext.ComponentQuery.query('#searchPlant')[0].getValue();
+		getProductAtpList(selectedProduct.prodNo, searchPlant);
 	},
 
 	// when product is selected then save product record in
@@ -1673,14 +1708,20 @@ Ext.define('PaperVan.controller.Controller', {
 		console.log('van product result list is select at: ' + selectedProduct.prodNo);
 
 		// call Product Description screen
+		// list.up('vanProductTab').push({
+		// xtype : 'productDesc',
+		// data : selectedProduct,
+		// id : 'vanProductDesc',
+		// title : selectedProduct.prodDesc
+		// });
 		list.up('vanProductTab').push({
-			xtype : 'productDesc',
-			data : selectedProduct,
-			id : 'vanProductDesc',
+			xtype : 'productDescMain',
+			id : 'vanProductDescMain',
 			title : selectedProduct.prodDesc
 		});
-		// setProdDescBatchOption('#vanProductDesc', selectedProduct.prodNo);
-
+		getProductSalesHistoryList(selectedProduct.prodNo, 0, 'vanProductDescMain');
+		// get ATP based on customer plant
+		getProductAtpList(selectedProduct.prodNo, selectedCustRecord.plant);
 	},
 
 	// when done button is tapped, add update cart item
@@ -1706,39 +1747,13 @@ Ext.define('PaperVan.controller.Controller', {
 				tempProduct.manualPr = allItems[i].getValue();
 			}
 
-			// set batchNumber
-			// if (allItems[i].getItemId() == 'batchNumber') {
-			// tempProduct.batch = allItems[i].getValue();
-			// }
 		}
 
-		// if (tempProduct.batch == '') {
-		// var relatedBatch = vanBatchResultData.items.findAll({
-		// prodNo : tempProduct.prodNo
-		// });
-		// // there is one batch available for selected product
-		// if (relatedBatch.length == 1) {
-		// // assign batch automatically
-		// tempProduct.batch = relatedBatch[0].batch;
-		// } else if (relatedBatch.length > 1) {
-		// // more than one batches available but user didn't pick any
-		// requiredBatch = true;
-		// }
-		// }
-
-		// if (!requiredBatch) {
-		// add temp object to productsInCart variable
 		updateToCart(tempProduct);
 		updateCartTotal();
-		Ext.Msg.alert('Cart', tempProduct.prodDesc + ' has been updated.', function() {
-			// return to previous page
-			button.up('cartOrder').pop();
-		});
-
-		// } else {
-		// Ext.Msg.alert('Warning', 'Batch number is required.', function() {
-		// });
-		// }
+		button.up('cartOrder').pop();
+		Ext.toast(tempProduct.prodDesc + ' has been updated.', 1500);
+		// return to previous page
 
 	},
 
@@ -1830,8 +1845,6 @@ Ext.define('PaperVan.controller.Controller', {
 			picker.setItemId('productSearch');
 		} else if (buttonId == 'previousPurchaseSortButton') {
 			picker.setItemId('previousPurchase');
-		} else if (buttonId == 'favoriteSortButton') {
-			picker.setItemId('favorite');
 		} else if (buttonId == 'vanSortButton') {
 			picker.setItemId('vanProduct');
 		}
@@ -1926,7 +1939,6 @@ Ext.define('PaperVan.controller.Controller', {
 		);
 
 	},
-
 	onCustomerListDoubleTap : function(list, index, target, record) {
 		console.log('double tap customer list');
 		selectedCustRecord = record.getData();
@@ -1947,8 +1959,8 @@ Ext.define('PaperVan.controller.Controller', {
 		//	selectedCustomerAddress = record.get('custAddr');
 		updateCartOrderHeader(record);
 		updateProductSearch(record);
+		getShiptoList();
 	},
-
 	onVanSearchKeyUp : function(searchField) {
 		queryString = searchField.getValue();
 		console.log(this, 'Please search van by: ' + queryString);
@@ -1967,7 +1979,6 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onSearchKeyUp : function(searchField) {
 		queryString = searchField.getValue();
 		console.log(this, 'Please search by: ' + queryString);
@@ -1995,20 +2006,17 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	onClearVanSearch : function() {
 		console.log('Clear icon is tapped');
 		var store = Ext.getStore('vanProductResult');
 		store.clearFilter();
 	},
-
 	onClearSearch : function() {
 		console.log('Clear icon is tapped');
 		var store = Ext.getStore('customer');
 		store.clearFilter();
 	},
-
-	init : function() {
+	onActivate : function() {
 		console.log('Controller initialized');
 		Ext.Ajax.setTimeout(REQUEST_TIMEOUT);
 
@@ -2018,19 +2026,29 @@ Ext.define('PaperVan.controller.Controller', {
 
 		sharedStorage = window.localStorage;
 		// // get user name
-		userId = sharedStorage.getItem(USER_KEY);
+		if (sharedStorage != null) {
+			userId = sharedStorage.getItem(USER_KEY);
+		} else {
+			// test
+			userId = 'PJITTIBO';
+		}
+
 		if (userId != null) {
 			userId = userId.toUpperCase();
 		}
 		// get saved password
-		password = sharedStorage.getItem(PASSWORD_KEY);
+		if (sharedStorage != null) {
+			password = sharedStorage.getItem(PASSWORD_KEY);
+		} else {
+			password = "SAP@1982";
+		}
 		//
 		if (environment == 'R3D') {
-			serverConnection = 'http://pxdcla26.domain1.local:8080/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
-			// serverConnection = 'http://shop.spicers.com.au:8085/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
+			serverConnection = 'http://shop.spicers.com.au:8085/sap/opu/odata/sap/ZGW_SPICERS_CORE_NEW_SRV/';
+			//			serverConnection = 'http://pxdcla26.domain1.local:8000/sap/opu/odata/sap/ZGW_SPICERS_CORE_NEW_SRV/';
 		} else {
 			// prod oData
-			serverConnection = 'http://shop.spicers.com.au:8445/gateway/odata/SAP/ZGW_SPICERS_CORE_NEW_SRV/';
+			serverConnection = 'http://shop.spicers.com.au:8445/sap/opu/odata/sap/ZGW_SPICERS_CORE_NEW_SRV/';
 		}
 		oDataBackEnd = serverConnection;
 		if (password == null) {
@@ -2041,12 +2059,11 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 
 	},
-
 	// prepare global variable when app first get loaded
-	onActivate : function() {
-		console.log('Main container is active');
-
-	}
+	// onActivate : function() {
+	// console.log('Main container is active');
+	//
+	// }
 });
 
 function refreshPanel(fullRefreshPanel) {
@@ -2092,7 +2109,7 @@ function number(nStr) {
 
 function validateNumberField(value, errorMessage) {
 	if (value == null) {
-		Ext.Msg.alert('Alert', errorMessage, Ext.emptyFn);
+		Ext.toast(errorMessage, 1500);
 		return false;
 	} else {
 		return true;
@@ -2124,6 +2141,14 @@ function addToCart(product) {
 }
 
 function updateCustPrice(product) {
+	// Update product in my stock
+	for (var i = 0; i < vanProdResultData.items.length; i++) {
+		if (product.prodNo == vanProdResultData.items[i].prodNo) {
+			vanProdResultData.items[i].custPr = product.custPr;
+			updateVanProductResultStore();
+			break;
+		}
+	}
 
 	// Update product in cart
 	for (var i = 0; i < productsInCart.items.length; i++) {
@@ -2148,15 +2173,6 @@ function updateCustPrice(product) {
 		if (product.prodNo == prevProdData.items[i].prodNo) {
 			prevProdData.items[i].custPr = product.custPr;
 			updatePreviousPurchaseStore();
-			break;
-		}
-	}
-
-	// Update favorite
-	for (var i = 0; i < favoriteData.items.length; i++) {
-		if (product.prodNo == favoriteData.items[i].prodNo) {
-			favoriteData.items[i].custPr = product.custPr;
-			updateFavoriteStore();
 			break;
 		}
 	}
@@ -2282,6 +2298,36 @@ function updateProductResultStore() {
 	}
 }
 
+function updateProductAtpStore() {
+	var store = Ext.getStore('searchProductAtp');
+	if (store != null) {
+		store.setData(searchProdAtpData);
+	}
+	store = Ext.getStore('previousProductAtp');
+	if (store != null) {
+		store.setData(previousProdAtpData);
+	}
+	store = Ext.getStore('vanProductAtp');
+	if (store != null) {
+		store.setData(vanProdAtpData);
+	}
+}
+
+function updateProductSalesHistoryStore() {
+	var store = Ext.getStore('searchProductSalesHistory');
+	if (store != null) {
+		store.setData(searchProdSalesHistoryData);
+	}
+	store = Ext.getStore('preProductSalesHistory');
+	if (store != null) {
+		store.setData(preProdSalesHistoryData);
+	}
+	store = Ext.getStore('vanProductSalesHistory');
+	if (store != null) {
+		store.setData(vanProdSalesHistoryData);
+	}
+}
+
 // update previousPurchaseStore
 function updatePreviousPurchaseStore() {
 	var store = Ext.getStore('previousPurchase');
@@ -2382,7 +2428,7 @@ function validateCredentials() {
 			indicator : true
 		});
 	} else {
-		Ext.toast(VALIDATE_ACCOUNT_LOADING, 3000);
+		Ext.toast(VALIDATE_ACCOUNT_LOADING, 20000);
 	}
 	// Ext.toast(VALIDATE_ACCOUNT_LOADING, 1500);
 
@@ -2434,6 +2480,78 @@ function getDisputList() {
 
 }
 
+function getCustomerPrice(materialNo, customerNo, plant, viewID) {
+	productHistoryViewID = viewID;
+
+	filters = [{
+		field : 'Customer',
+		value : customerNo,
+	}, {
+		field : 'Material',
+		value : materialNo,
+	}, {
+		field : 'Plant',
+		value : plant,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getCustomerPriceOData, filterString, successCustomerPriceCallback, errCallback, null);
+}
+
+function getProductAtpList(materialNo, plant) {
+
+	filters = [{
+		field : 'Material',
+		value : materialNo,
+	}, {
+		field : 'Plant',
+		value : plant,
+	}];
+
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getStockAtpOData, filterString, successProductAtpListCallback, errCallback, null);
+}
+
+function getProductSalesHistoryList(materialNo, skippedRecords, viewID) {
+	productHistoryViewID = viewID;
+
+	filters = [{
+		field : 'Customer',
+		value : selectedCust,
+	}, {
+		field : 'Material',
+		value : materialNo,
+	}, {
+		field : 'skip',
+		value : skippedRecords,
+	}];
+	// set skip flag variable
+	if (skippedRecords > 0) {
+		isSkipProductSalesHistory = true;
+	} else {
+		isSkipProductSalesHistory = false;
+	}
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getProductSalesHistoryOData, filterString, successProductSalesHistoryCallback, errCallback, null);
+}
+
+function getShiptoList() {
+	filters = [{
+		field : 'Customer',
+		value : selectedCust,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getShiptoOData, filterString, successShiptoListCallback, errCallback, null);
+
+}
+
 function getCustomerContactList() {
 
 	filters = [{
@@ -2464,13 +2582,37 @@ function getCustomerAddress() {
 	callOData(getSingleCustomerOData, filterString, successCustomerAddress, errCallback, null, selectedCust);
 }
 
+function getOpenInboundDelivery(plant, sloc) {
+	filters = [{
+		field : 'Plant',
+		value : plant,
+	}, {
+		field : 'Sloc',
+		value : sloc,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getOpenInboundDeliveryOData, filterString, successOpenInboundDeliveryList, errCallback, null);
+}
+
 function getCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer) {
 
-	// set calledBAPI
-	calledBAPI = CUSTOMER_LIST_BAPI;
 	// call findAll() function
 	if (salesOffice == '' || salesOffice == null) {
 		salesOffice = '';
+	}
+
+	if (todayCustomer == '' || todayCustomer == null) {
+		todayCustomer = '';
+	}
+
+	if (allCustomer == '' || allCustomer == null) {
+		allCustomer = '';
+	}
+
+	if (allVanCustomer == '' || allVanCustomer == null) {
+		allVanCustomer = '';
 	}
 
 	filters = [{
@@ -2487,8 +2629,9 @@ function getCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer
 		value : allCustomer,
 	}, {
 		field : 'inputAllVan',
-		value : allVanCustomer
+		value : allVanCustomer,
 	}];
+
 	var filterString = constructFilter(filters, searchString);
 
 	callOData(getCustomerOData, filterString, successCustomerCallback, errCallback, null);
@@ -2537,7 +2680,7 @@ function getProductSearch(button) {
 			value : searchAltProduct,
 		}, {
 			field : 'inputCustomer',
-			value : selectedCust
+			value : (searchPlant == '') ? '' : selectedCust,
 		}, {
 			field : 'inputPlant',
 			value : searchPlant
@@ -2556,13 +2699,10 @@ function getProductSearch(button) {
 }
 
 function savePasswordCredential() {
-	// var passwordField = Ext.ComponentQuery.query('#passwordCredential');
-	// if (passwordField.length > 0) {
-		// password = passwordField[0].getValue();
-	// }
-	
-	sharedStorage.setItem(USER_KEY, userId);
-	sharedStorage.setItem(PASSWORD_KEY, password);
+	if (sharedStorage != null) {
+		sharedStorage.setItem(USER_KEY, userId);
+		sharedStorage.setItem(PASSWORD_KEY, password);
+	}
 }
 
 function showIncorrectPasswordAlert() {
@@ -2587,8 +2727,6 @@ function simulateOrder() {
 	} else {
 		mobAppType = 'SAL';
 	}
-	// set calledBAPI
-	calledBAPI = ORDER_SIMULATE_MESSAGE_BAPI;
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -2625,8 +2763,6 @@ function simulateOrder() {
 function updateCartOrderHeader(record) {
 	customerPlant = record.get('plant');
 	updateCartPlant(customerPlant);
-	//updateCartStorageLoc(customerPlant);
-	//updateShippingAddr(record.get('custAddr'));
 }
 
 function updateProductSearch(record) {
@@ -2638,25 +2774,6 @@ function updateCartPlant(plant) {
 	var deliveringPlantField = Ext.ComponentQuery.query('#deliveringPlant')[0];
 	deliveringPlantField.setValue(plant);
 }
-
-function updateShippingAddr(address) {
-	var shippingAdrField = Ext.ComponentQuery.query('#shippingAdr')[0];
-	shippingAdrField.setValue(address);
-}
-
-// function updateCartStorageLoc(plant) {
-// for (var i = 0; i < STORAGE_LOC.length; i++) {
-// if (STORAGE_LOC[i].value == plant) {
-// storageLocOptions = STORAGE_LOC[i].items;
-// break;
-// }
-// }
-// var storageLocField = Ext.ComponentQuery.query('#storageLoc')[0];
-// storageLocField.setOptions(storageLocOptions);
-// if (userStorageLoc != '') {
-// storageLocField.setValue(userStorageLoc);
-// }
-// }
 
 function prepareOrderHeader() {
 	//order_header_in format is
@@ -2737,7 +2854,8 @@ function prepareOrderPartner() {
 	//WE|customerNo|AG|customerNo
 
 	// var orderPartner = 'WE|' + selectedCust + '|AG|' + selectedCust;
-	var orderPartner = 'WE%7C' + selectedCust + '%7CAG%7C' + selectedCust;
+	var selectedShipto = Ext.ComponentQuery.query('#shiptoParty')[0].getValue();
+	var orderPartner = 'WE%7C' + selectedShipto + '%7CAG%7C' + selectedCust;
 
 	return orderPartner;
 }
@@ -2779,8 +2897,6 @@ function addOrderAttachment(orderNo) {
 	var deliveryTime = "Delivery Time: " + Ext.ComponentQuery.query('#vanConfirmDeliveryTime')[0].getValue();
 	var deliveryGeo = "Geolocation :" + Ext.ComponentQuery.query('#vanConfirmDeliveryGeo')[0].getValue();
 
-	calledBAPI = ADD_ATTACHMENT_BAPI;
-
 	mainContainer.setMasked({
 		xtype : 'loadmask',
 		message : ADD_ATTACHMENT_LOADING,
@@ -2804,7 +2920,7 @@ function addOrderAttachment(orderNo) {
 }
 
 function createOrder() {
-	calledBAPI = ORDER_CREATE_BAPI;
+	var inputSample;
 	// prepare header text
 	var quoteComment = Ext.ComponentQuery.query('#quoteCommentField')[0].getValue();
 	var orderComment = Ext.ComponentQuery.query('#orderCommentField')[0].getValue();
@@ -2817,6 +2933,13 @@ function createOrder() {
 		mobAppType = 'VAN';
 	} else {
 		mobAppType = 'SAL';
+	}
+
+	var sampleOrder = Ext.ComponentQuery.query('#sampleOrder')[0].getValue();
+	if (sampleOrder == 1) {
+		inputSample = 'X';
+	} else {
+		inputSample = '';
 	}
 
 	mainContainer.setMasked({
@@ -2836,6 +2959,7 @@ function createOrder() {
 		'orderText' : (orderComment == null) ? '' : orderComment.toString(),
 		'deliveryText' : (delInstruction == null) ? '' : delInstruction.toString(),
 		'quoteText' : (quoteComment == null) ? '' : quoteComment.toString(),
+		'inputSample' : inputSample,
 	};
 
 	filters = [];
@@ -2957,16 +3081,24 @@ function getOrderTotal() {
 }
 
 function deleteCustomer() {
-	calledBAPI = DELETE_CUSTOMER_BAPI;
 	filters = [];
 	searchString = '';
 	var filterString = constructFilter(filters, searchString);
 	callOData(getSingleCustomerOData, filterString, callDeleteCustomerOData, errCallback, null, selectedCust);
 }
 
+function postGoodReceiptOpenInboundDelivery() {
+
+	if (openInboundDeliveryData.length > 0) {
+		openInboundDeliveryPayload = {
+			'DeliveryNo' : openInboundDeliveryData[0]
+		};
+		var filterString = '';
+		callOData(grInboundDeliveryOData, filterString, successGoodReciptOpenInboundDelivery, errCallback, openInboundDeliveryPayload, openInboundDeliveryData[0]);
+	}
+}
+
 function changeCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
-	// set calledBAPI
-	calledBAPI = CHANGE_CUSTOMER_BAPI;
 
 	customerDetailPayload = {
 		'CustomerNo' : selectedCust,
@@ -2994,8 +3126,6 @@ function changeCustomer(name1, name2, street, postcode, suburb, region, email, t
 }
 
 function changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
-	// set calledBAPI
-	calledBAPI = UPDATE_VAN_SCHEDULE_BAPI;
 	// new a mbo instance
 	customerVanSchedulePayload = {
 		'CustomerNo' : selectedCust,
@@ -3019,8 +3149,6 @@ function changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, fr
 }
 
 function createCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
-	// set calledBAPI
-	calledBAPI = CREATE_CUSTOMER_BAPI;
 
 	customerDetailPayload = {
 		'Name1' : (name1 == null) ? '' : name1.toString(),
@@ -3047,9 +3175,6 @@ function createCustomer(name1, name2, street, postcode, suburb, region, email, t
 }
 
 function createContact(firstName, lastName, tel, email, title, department, functions) {
-	// set calledBAPI
-	calledBAPI = CREATE_CONTACT_BAPI;
-	// new a mbo instance
 
 	contactPayload = {
 		'Customer' : selectedCust,
@@ -3076,8 +3201,6 @@ function createContact(firstName, lastName, tel, email, title, department, funct
 }
 
 function changeContact(firstName, lastName, tel, email, title, department, functions) {
-	// set calledBAPI
-	calledBAPI = CHANGE_CONTACT_BAPI;
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
@@ -3097,12 +3220,6 @@ function changeContact(firstName, lastName, tel, email, title, department, funct
 		'Function' : (functions == null) ? '' : functions.toString()
 	};
 
-	mainContainer.setMasked({
-		xtype : 'loadmask',
-		message : CUSTOMER_CHANGE_LOADING,
-		indicator : true
-	});
-
 	filters = [];
 	searchString = '';
 	var filterString = constructFilter(filters, searchString);
@@ -3110,7 +3227,6 @@ function changeContact(firstName, lastName, tel, email, title, department, funct
 }
 
 function deleteVanSchedule() {
-	calledBAPI = DELETE_VAN_SCHEDULE_BAPI;
 
 	customerVanSchedulePayload = {
 		'CustomerNo' : selectedCust,
@@ -3127,7 +3243,6 @@ function deleteVanSchedule() {
 }
 
 function getVanProduct() {
-	calledBAPI = VAN_PRODUCT_LIST_BAPI;
 
 	filters = [{
 		field : 'inputVanProd',
@@ -3145,24 +3260,7 @@ function getVanProduct() {
 
 }
 
-function getVanBatch() {
-
-	Ext.defer(function() {
-		calledBAPI = VAN_BATCH_LIST_BAPI;
-		var zvanBatch = new ZMOB_VAN_BATCH_LIST();
-
-		mainContainer.setMasked({
-			xtype : 'loadmask',
-			message : VAN_BATCH_LOADING,
-			indicator : true
-		});
-
-		zmob_van_batch_list_findAll(zvanBatch, '', '');
-	}, 500);
-}
-
 function deleteContact() {
-	calledBAPI = DELETE_CONTACT_BAPI;
 	Ext.toast('Deleting the contact...', 1500);
 
 	filters = [];
@@ -3174,8 +3272,6 @@ function deleteContact() {
 function createDispute(title, category, contact, referenceDoc, claimAmount, text) {
 
 	text = removeSpecialCharacter(text);
-
-	calledBAPI = DISPUTE_CREATION_BAPI;
 
 	disputePayload = {
 		'CustomerNo' : selectedCust,
@@ -3207,8 +3303,6 @@ function createSalesActivity(actDate, actContact, actText, actType, actReason, a
 	}
 
 	actText = removeSpecialCharacter(actText);
-
-	calledBAPI = ACTIVITY_CREATION_BAPI;
 
 	activityPayload = {
 		'CustomerNo' : selectedCust,
@@ -3437,7 +3531,6 @@ function positionText(functions) {
 function getCustomerDetail() {
 	if (selectedCust != null) {
 		// call R3 BAPI to get list of contacts, disputes and customer address
-		// if (hwc.isIOS()) {
 		Ext.toast('Please wait while loading customer information', 2000);
 		getCustomerContactList();
 		getCustomerRecentActivity();
@@ -3526,19 +3619,34 @@ function constructFilter(filters, searchString) {
 	}
 
 	for (var i = 0; i < filters.length; i++) {
-		if (i != 0) {
-			filterString += ' and ';
-		} else {
-			filterString += '&$filter=';
+		// construct filters
+		if (filters[i].field != 'skip' && filters[i].field != 'top') {
+			if (i != 0) {
+				filterString += ' and ';
+			} else {
+				filterString += '&$filter=';
+			}
+			if (filters[i].type == 'int') {
+				// if value is integer, don't put ' in the filter string
+				filterString += filters[i].field + ' eq ' + filters[i].value;
+			} else {
+				filterString += filters[i].field + ' eq ' + "'" + filters[i].value + "'";
+			}
 		}
 
-		if (filters[i].type == 'int') {
-			// if value is integer, don't put ' in the filter string
-			filterString += filters[i].field + ' eq ' + filters[i].value;
-		} else {
-			filterString += filters[i].field + ' eq ' + "'" + filters[i].value + "'";
+		// construct skip and top
+		if (filters[i].field == 'skip' || filters[i].field == 'top') {
+			filterString += '&$' + filters[i].field + '=' + filters[i].value;
 		}
 	};
 	return filterString;
 }
 
+function readBarcodeSuccess(result) {
+	Ext.toast("Barcode is: " + result.text);
+	Ext.toast("Barcode format: " + result.format);
+}
+
+function readBarcodeFail(error) {
+	Ext.toast(error);
+}

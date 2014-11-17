@@ -4792,6 +4792,17 @@ body.x-desktop {
   content: "X";
 }
 
+.x-tab .x-button-icon.camera:before,
+.x-button .x-button-icon.camera:before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-family: "Pictos";
+  content: "V";
+}
 /* line 343, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/base/mixins/_Class.scss */
 .x-tab .x-button-icon.refresh:before,
 .x-button .x-button-icon.refresh:before {
@@ -6011,6 +6022,9 @@ body.x-desktop {
 .x-toast .x-toast-text {
   padding: 6px 0;
   line-height: 1.4em;
+  /*Pan customer change to toast background*/
+  background: black;
+  color: white;  
 }
 
 /* line 87, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_MessageBox.scss */

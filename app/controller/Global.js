@@ -10,8 +10,8 @@ var signatureHeight;
 var selectedContact;
 var lastSavedPlant = '3610';
 var sharedStorage;
-var calledBAPI;
 var userStorageLoc;
+var userPlant;
 var storageLocOptions;
 var customerPlant;
 var isVanOrder;
@@ -20,7 +20,9 @@ var customerGrouper;
 var filters;
 var searchString;
 var selectedSalesOffice = '';
+var customerListItemHeight;
 var xcsrftoken;
+var openInboundDeliveryPayload;
 var customerDetailPayload;
 var contactPayload;
 var customerVanSchedulePayload;
@@ -32,6 +34,27 @@ var deliveryPayload;
 var environment = 'R3D';
 var oDataBackEnd;
 var serverConnection;
+var isSkipProductSalesHistory;
+var productHistoryViewID;
+var openInboundDeliveryData = [];
+var vanProdSalesHistoryData = {
+	items : []
+};
+var searchProdSalesHistoryData = {
+	items : []
+};
+var preProdSalesHistoryData = {
+	items : []
+};
+var searchProdAtpData = {
+	items : []
+};
+var previousProdAtpData = {
+	items : []
+};
+var vanProdAtpData = {
+	items : []
+};
 var vanBatchResultData = {
 	items : []
 };
@@ -97,3 +120,4 @@ var selectedCustRecord;
 var prevProdData = {
 	items : []
 };
+var shiptoData = []; 

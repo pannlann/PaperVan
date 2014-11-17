@@ -1,6 +1,43 @@
 // this file contains connection to backend system
+var getOpenInboundDeliveryOData = {
+	entitySet : 'InboundDeliveryCollection',
+	method : 'GET',
+	field : ['Plant', 'Sloc'],
+	search : false,
+	singleRead : false
+};
+var getStockAtpOData = {
+	entitySet : 'StockAtpCollection',
+	method : 'GET',
+	field : ['Material', 'Plant'],
+	search : false,
+	singleRead : false
+};
+var getShiptoOData = {
+	entitySet : 'ShiptoCollection',
+	method : 'GET',
+	field : ['Customer'],
+	search : false,
+	singleRead : false
+};
 
-// variable to determine test or prod environment
+var getCustomerPriceOData = {
+	entitySet : 'PriceCollection',
+	method : 'GET',
+	field : ['Material', 'Customer', 'Plant'],
+	search : false,
+	singleRead : false
+};
+
+var getProductSalesHistoryOData = {
+	entitySet : 'ProductSalesHistoryCollection',
+	method : 'GET',
+	field : ['Material', 'Customer'],
+	search : false,
+	singleRead : false,
+	cancelPreRequest : true
+};
+
 var getProductSearchOData = {
 	entitySet : 'ProductCollection',
 	method : 'GET',
@@ -17,7 +54,7 @@ var getValidateAccountOData = {
 	search : false,
 	singleRead : false,
 	cancelPreRequest : false,
-	timeout : 5000
+	timeout : 20000
 };
 
 var getCustomerOData = {
@@ -153,6 +190,14 @@ var createCustomerOData = {
 	entitySet : 'CustomerDetailCollection',
 	method : 'POST',
 	field : ['Name1', 'Name2', 'Street', 'PostCode', 'City', 'Region', 'Email', 'Tel', 'Fax'],
+	search : false,
+	cancelPreRequest : false
+};
+
+var grInboundDeliveryOData = {
+	entitySet : 'InboundDeliveryCollection',
+	method : 'PUT',
+	field : ['DeliveryNo'],
 	search : false,
 	cancelPreRequest : false
 };
@@ -433,20 +478,21 @@ function successCreateContact(response) {
 
 	mainContainer.unmask();
 
-	Ext.toast('The contact ' + contactNumber + ' has been created successfully.', 1500);
-	// update contactData
-	tempNewContact.contNo = contactNumber;
-	contactData.items.splice(0, 0, tempNewContact);
-	updateContactStore();
-	// update available contacts dropdown
-	var contactItem = {};
-	contactItem.text = tempNewContact.contName;
-	contactItem.value = tempNewContact.contNo;
-	availableContact.push(contactItem);
+	Ext.Msg.alert('Contact', 'The contact ' + contactNumber + ' has been created successfully.', function() {
+		// update contactData
+		tempNewContact.contNo = contactNumber;
+		contactData.items.splice(0, 0, tempNewContact);
+		updateContactStore();
+		// update available contacts dropdown
+		var contactItem = {};
+		contactItem.text = tempNewContact.contName;
+		contactItem.value = tempNewContact.contNo;
+		availableContact.push(contactItem);
 
-	tempNewContact = {};
-	customerTabPop();
-	updateContactStore();
+		tempNewContact = {};
+		customerTabPop();
+		updateContactStore();
+	});
 }
 
 function successCreateCustomer(response) {
@@ -457,15 +503,16 @@ function successCreateCustomer(response) {
 
 	mainContainer.unmask();
 
-	Ext.toast('The customer ' + customerNumber + ' has been created successfully.', 1500);
-	tempNewCustomer.custNo = customerNumber;
-	customerData.items.splice(0, 0, tempNewCustomer);
-	updateCustomerStore();
-	tempNewCustomer = {};
-	customerTabPop();
-	updateCustomerStore();
-	selectedCust = customerNumber;
-	moveToSelectedCustomer();
+	Ext.Msg.alert('Customer', 'The customer ' + customerNumber + ' has been created successfully.', function() {
+		tempNewCustomer.custNo = customerNumber;
+		customerData.items.splice(0, 0, tempNewCustomer);
+		updateCustomerStore();
+		tempNewCustomer = {};
+		customerTabPop();
+		updateCustomerStore();
+		selectedCust = customerNumber;
+		moveToSelectedCustomer();
+	});
 }
 
 function successCreateDeliveryCallback(response) {
@@ -559,6 +606,34 @@ function successCreateDeliveryCallback(response) {
 	}
 }
 
+function successGoodReciptOpenInboundDelivery(response) {
+	// remove inb with successful GR
+	openInboundDeliveryData.pop();
+	if (openInboundDeliveryData.length > 0) {
+		postGoodReceiptOpenInboundDelivery();
+	}
+}
+
+function successOpenInboundDeliveryList(response) {
+	xcsrftoken = response.getResponseHeader('x-csrf-token');
+
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		// there are open inbound delivery
+		openInboundDeliveryData = [];
+		for (var i = 0; i < noOfItems; i++) {
+			var theItems = items[i];
+
+			openInboundDeliveryData.push(theItems.DeliveryNo);
+		}
+	}
+	if (openInboundDeliveryData.length > 0) {
+		postGoodReceiptOpenInboundDelivery();
+	}
+}
+
 function successCustomerCallback(response) {
 	var items = JSON.parse(response.responseText).d.results;
 
@@ -634,13 +709,14 @@ function successCreateDispute(response) {
 
 	mainContainer.unmask();
 
-	Ext.toast('Dispute', 'The case ' + disputeNumber + ' has been created successfully.', 1500);
-	tempDispute.caseNo = disputeNumber;
-	disputeData.items.splice(0, 0, tempDispute);
-	tempDispute = {};
-	clearDisputeView();
-	customerTabPop();
-	updateDisputeStore();
+	Ext.Msg.alert('Dispute', 'The case ' + disputeNumber + ' has been created successfully.', function() {
+		tempDispute.caseNo = disputeNumber;
+		disputeData.items.splice(0, 0, tempDispute);
+		tempDispute = {};
+		clearDisputeView();
+		customerTabPop();
+		updateDisputeStore();
+	});
 }
 
 function successCreateOrderCallback(response) {
@@ -684,15 +760,16 @@ function successCreateSalesActivity(response) {
 
 	mainContainer.unmask();
 
-	Ext.toast('The activity ' + activityNumber + ' has been created successfully.', 1500);
-	tempActivity.actNo = activityNumber;
-	activityData.items.splice(0, 0, tempActivity);
-	updateActivityStore();
-	tempActivity = {};
-	clearActivityText();
-	mainContainer.unmask();
-	customerTabPop();
-	updateActivityStore();
+	Ext.Msg.alert('Activity', 'The activity ' + activityNumber + ' has been created successfully.', function() {
+		tempActivity.actNo = activityNumber;
+		activityData.items.splice(0, 0, tempActivity);
+		updateActivityStore();
+		tempActivity = {};
+		clearActivityText();
+		mainContainer.unmask();
+		customerTabPop();
+		updateActivityStore();
+	});
 }
 
 function successDeleteVanSchedule(response) {
@@ -701,6 +778,26 @@ function successDeleteVanSchedule(response) {
 	updateRecentVanScheduleDelete();
 	customerTabPop();
 	updateCustomerStore();
+}
+
+function successShiptoListCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	shiptoData = [];
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		// reset product Result
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+
+			myitem.value = theItems.ShiptoNo.replace(/^0+/, '');
+			myitem.text = theItems.Address;
+
+			shiptoData.push(myitem);
+		}
+	}
+	Ext.ComponentQuery.query('#shiptoParty')[0].setOptions(shiptoData);
 }
 
 function successCustomerContactListCallback(response) {
@@ -873,6 +970,149 @@ function successVanProductCallback(response) {
 	}
 }
 
+function successCustomerPriceCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+			selectedProduct.custPr = theItems.CustPrice;
+
+			updateCustPrice(selectedProduct);
+
+			switch (productHistoryViewID) {
+				case 'vanProductDescMain':
+					Ext.ComponentQuery.query('#vanProductDesc')[0].setData(selectedProduct);
+					break;
+				case 'searchProductDescMain':
+					Ext.ComponentQuery.query('#searchProductDesc')[0].setData(selectedProduct);
+					break;
+				case 'previousProductDescMain':
+					Ext.ComponentQuery.query('#previousProductDesc')[0].setData(selectedProduct);
+					break;
+			};
+			// update cart total becase of new customer price
+			updateCartTotal();
+		}
+	}
+}
+
+function successProductAtpListCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		// reset product Result
+
+		switch (productHistoryViewID) {
+			case 'vanProductDescMain':
+				vanProdAtpData = {
+					items : []
+				};
+				break;
+			case 'searchProductDescMain':
+				searchProdAtpData = {
+					items : []
+				};
+				break;
+			case 'previousProductDescMain':
+				previousProdAtpData = {
+					items : []
+				};
+				break;
+		}
+
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+			myitem.atpQty = theItems.AtpQty;
+			myitem.date = theItems.Date;
+
+			switch (productHistoryViewID) {
+				case 'vanProductDescMain':
+					vanProdAtpData.items.push(myitem);
+					break;
+				case 'searchProductDescMain':
+					searchProdAtpData.items.push(myitem);
+					break;
+				case 'previousProductDescMain':
+					previousProdAtpData.items.push(myitem);
+					break;
+			};
+		}
+		updateProductAtpStore();
+	}
+}
+
+function successProductSalesHistoryCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		if (!isSkipProductSalesHistory) {
+			// reset product Result
+
+			switch (productHistoryViewID) {
+				case 'vanProductDescMain':
+					vanProdSalesHistoryData = {
+						items : []
+					};
+					break;
+				case 'searchProductDescMain':
+					searchProdSalesHistoryData = {
+						items : []
+					};
+					break;
+				case 'previousProductDescMain':
+					preProdSalesHistoryData = {
+						items : []
+					};
+					break;
+			};
+		}
+
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+			myitem.salesOrder = theItems.SalesOrderNo.replace(/^0+/, '');
+			;
+			myitem.item = theItems.ItmNumber.replace(/^0+/, '');
+			myitem.date = theItems.Date;
+			myitem.orderType = theItems.OrderType;
+			myitem.isManualPrice = theItems.ManualPriceFlag;
+			myitem.netPrice = theItems.NetPrice;
+			myitem.qty = theItems.Qty;
+			// for traffic light purpose
+			myitem.marginPercent = theItems.MarginPercent;
+			myitem.createBy = theItems.CreatedBy;
+			myitem.poNumber = theItems.PoNumber;
+			myitem.material = theItems.Material.replace(/^0+/, '');
+
+			switch (productHistoryViewID) {
+				case 'vanProductDescMain':
+					vanProdSalesHistoryData.items.push(myitem);
+					break;
+				case 'searchProductDescMain':
+					searchProdSalesHistoryData.items.push(myitem);
+					break;
+				case 'previousProductDescMain':
+					preProdSalesHistoryData.items.push(myitem);
+					break;
+			};
+		}
+		updateProductSalesHistoryStore();
+	} else {
+		// only show error message when select load more option
+		if (isSkipProductSalesHistory) {
+			reportErrorMessage(NO_MORE_PRODUCT_HISTORY_EXCEPTION, function() {
+			});
+		}
+	}
+}
+
 function successProductSearchCallback(response) {
 	var items = JSON.parse(response.responseText).d.results;
 
@@ -988,16 +1228,18 @@ function successUserValidate(response) {
 	var items = JSON.parse(response.responseText).d;
 	//get storage location
 	userStorageLoc = items.results[0].StorLoc;
-
+	userPlant = items.results[0].Plant;
 	// validate successfully
 	savePasswordCredential();
 	if (!credScreen.getHidden()) {
 		credScreen.hide();
 	}
 	mainContainer.unmask();
-	Ext.toast(CUSTOMER_LOADING, 1500);
+	Ext.toast(CUSTOMER_LOADING, 3000);
 	getCustomerList('', 'X', '', '');
 	updateCustomerListTitle();
+	// get open inbound
+	getOpenInboundDelivery(userPlant, userStorageLoc);
 }
 
 function successSimulateOrderMessageCallback(response) {

@@ -8,6 +8,14 @@ Ext.define('PaperVan.view.Customers', {
 		title : 'Customers',
 		navigationBar : {
 			items : [{
+				// xtype : 'button',
+				// itemId : 'camera',
+				// ui : 'normal',
+				// iconCls : 'camera',
+				// iconMask : true,
+				// align : '',
+				// hidden : false
+			// }, {
 				xtype : 'button',
 				itemId : 'customerContainerOptionButton',
 				ui : 'normal',

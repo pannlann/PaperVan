@@ -8,6 +8,7 @@ Ext.define('PaperVan.view.ProductDesc', {
 		defaults : {
 			style : 'border-width: 1px 0px 0px 0px;border-style: groove;'
 		},
+		
 		// plugins : [{
 		// xtype : 'pullRefreshPanel',
 		// pullRefreshText : 'Refresh customer price!',
@@ -39,15 +40,6 @@ Ext.define('PaperVan.view.ProductDesc', {
 					value : 1,
 					labelWidth : '50%'
 				}
-		// , {
-		// xtype : 'checkboxfield',
-		// docked : 'bottom',
-		// name : 'favProduct',
-		// label : 'Marked as Favorite',
-		// value : 'X',
-		// checked : false,
-		// labelWidth : '50%'
-		// }
 		],
 		tpl : [
 				'<div class="prd_desc_header">Product summary</div>',
@@ -76,6 +68,7 @@ Ext.define('PaperVan.view.ProductDesc', {
 				'<div class="prd_desc_header"">Others</div>',
 				'<div class="prd_desc_message">Message: <b>{message}</b></div>',
 				'<div class="prd_desc_cust_purch">Customer Purch.: <b>{isCustPurch}</b></div>',
-				'<div class="prd_desc_obs">Obsolete / Aged: <b>{isObs}</b></div>']
+				'<div class="prd_desc_obs">Obsolete / Aged: <b>{isObs}</b></div>'],
+				
 	}
 });

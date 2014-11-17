@@ -2,11 +2,12 @@ Ext.define('PaperVan.view.Credentials', {
 	extend : 'Ext.Panel',
 	xtype : 'credentialScreen',
 	config : {
-		draggable : true,
+		// draggable : true,
 		floating : true,
 		hideOnMaskTap : false,
 		modal : true,
 		width : '100%',
+		//height : '20%',
 		top : '20%',
 		hidden : true,
 		defaults : {
@@ -27,6 +28,8 @@ Ext.define('PaperVan.view.Credentials', {
 			xtype : 'textfield',
 			label : 'SAP Username',
 			itemId : 'userIdCredential',
+			autoComplete : false,
+			autoCorrect : false,
 			labelWidth : '45%',
 		}, {
 			xtype : 'passwordfield',

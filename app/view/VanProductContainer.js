@@ -3,7 +3,7 @@ Ext.define('PaperVan.view.VanProductContainer', {
 	xtype : 'vanProductContainer',
 	config : {
 		itemId : 'vanProductContainer',
-		title : 'Van Products',
+		title : 'My Stock',
 		layout : {
 			type : 'vbox',
 			pack : 'center'

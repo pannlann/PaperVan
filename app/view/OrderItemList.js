@@ -10,7 +10,7 @@ Ext.define('PaperVan.view.OrderItemList', {
 		itemTpl : [
                 '<b><div class="order_item_name">{prodDesc}</div></b><br>',
                 '<table style="width:100%">',
-                '<tpl if="hwc.isIPad()">',
+                '<tpl if="isIPad() || isDesktop()">',
                 '<tr>',
                 '<td style="width:20%" class="order_item">Item: <b>{item}</b></td>',
                 '<td style="width:20%" class="order_item">Product: <b>{prod}</b></td>',
@@ -19,7 +19,7 @@ Ext.define('PaperVan.view.OrderItemList', {
                 '<td style="width:20%" class="order_item">Net: <b>{[number(values.netValue)]} {currency}</b></td>',
                 '</tr>',
                 '</tpl>',
-                '<tpl if="!hwc.isIPad()">',
+                '<tpl if="!isIPad() && !isDesktop()">',
                 '<tr>',
                 '<td style="width:35%" class="order_item">Item: <b>{item}</b></td>',
                 '<td style="width:40%" class="order_item">Prd: <b>{prod}</b></td>',

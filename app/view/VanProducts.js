@@ -3,7 +3,7 @@ Ext.define('PaperVan.view.VanProducts', {
 	xtype : 'vanProductTab',
 	config : {
 		itemId : 'vanProductTab',
-		title : 'Van',
+		title : 'My Stock',
 		iconCls : 'van',
 		navigationBar : {
 			items : [{

@@ -14,16 +14,16 @@ Ext.define('PaperVan.view.PreviousPurchaseList', {
 				'<tpl if="atpQty &lt; ATP_HIGH && atpQty &gt; ATP_LOW">',
 				'<b><div class="prd_result_name" id="yellow_no_idx">{prodDesc}</div></b><br></tpl>',
 				'<table style="width:100%">',
-				'<tpl if="hwc.isIPad()">',
+				'<tpl if="isIPad() || isDesktop()">',
 				'<tr>',
 				'<td style="width:25%" class="prd_result_no">#<b>{prodNo}</b></td>',
 				'<td style="width:35%" class="prd_result_lpr_val">Price: <b>{[number(values.custPr)]}/{uom}</b></td>',
 				'<td style="width:25%" class="prd_result_atp_val">ATP Qty: <b>{[number(values.atpQty)]}</b></td>',
-				'<td style="width:10" class="prd_result_atp_val">Trans. Cnt: <b>{[number(values.count)]}</b></td>',
+				'<td style="width:10" class="prd_result_atp_val">Purch. Qty: <b>{[number(values.count)]}</b></td>',
 				'</tr>',
 				'</tr>',
 				'</tpl>',
-				'<tpl if="!hwc.isIPad()">',
+				'<tpl if="!isIPad() && !isDesktop()">',
 				'<tr>',
 				'<td style="width:20%" class="prd_result_no">#<b>{prodNo}</b></td>',
 				'<td style="width:45%" class="prd_result_lpr_val">Price: <b>{[number(values.custPr)]}/{uom}</b></td>',
@@ -32,10 +32,10 @@ Ext.define('PaperVan.view.PreviousPurchaseList', {
 				'<tr>',
 				'<td></td>',
 				'<td></td>',
-				'<td class="prd_result_atp_val">Trans. Cnt: <b>{[number(values.count)]}</b></td>',
+				'<td class="prd_result_atp_val">Purch. Qty: <b>{[number(values.count)]}</b></td>',
 				'</tr>', '</tpl>', '</table>'],
 		store : {
 			type : 'previousPurchase'
 		}
 	}
-})
+});

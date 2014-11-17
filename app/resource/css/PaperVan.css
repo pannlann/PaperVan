@@ -277,3 +277,12 @@
 	width: 100%;
 	display: inline-block;
 }
+
+.sales_hist_text {
+	font-size: 0.6em;
+	text-align: left;
+}
+.sales_hist_po{
+	font-size: 0.7em;
+	text-align: left;
+}

@@ -18,4 +18,4 @@ Ext.define('PaperVan.view.OrderMessageList', {
             type : 'message'
         }
     }
-})
+});

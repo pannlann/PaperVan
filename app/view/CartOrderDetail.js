@@ -23,6 +23,12 @@ Ext.define('PaperVan.view.CartOrderDetail', {
 			label : 'Order Type',
 			usePicker : false,
 			options : DEFAULT_ORDER_TYPE
+		},{
+			xtype : 'togglefield',
+			name : 'sampleOrder',
+			itemId : 'sampleOrder',
+			label : 'Sample Order',
+			value : 0,
 		}, {
 			xtype : 'datepickerfield',
 			name : 'validToDate',
@@ -58,6 +64,11 @@ Ext.define('PaperVan.view.CartOrderDetail', {
 			label : 'Plant',
 			usePicker : false,
 			options : DEFAULT_PLANTS
+		}, {
+			xtype : 'selectareafield',
+			name : 'shiptoParty',
+			itemId : 'shiptoParty',
+			label : 'Ship-to',
 		}, {
 			xtype : 'textareafield',
 			label : 'Quote Comments',
