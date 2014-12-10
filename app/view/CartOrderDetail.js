@@ -23,7 +23,7 @@ Ext.define('PaperVan.view.CartOrderDetail', {
 			label : 'Order Type',
 			usePicker : false,
 			options : DEFAULT_ORDER_TYPE
-		},{
+		}, {
 			xtype : 'togglefield',
 			name : 'sampleOrder',
 			itemId : 'sampleOrder',
@@ -37,13 +37,21 @@ Ext.define('PaperVan.view.CartOrderDetail', {
 			dateFormat : 'd/m/Y',
 			value : getDefaultRequestedValToDate(),
 			hidden : true,
+			picker : {
+				yearFrom : parseInt(getCurrentYear()),
+				yearTo : parseInt(getMaxYear())
+			},
 		}, {
 			xtype : 'datepickerfield',
 			name : 'deliveryDate',
 			itemId : 'deliveryDate',
 			label : 'Delivery Date',
 			dateFormat : 'd/m/Y',
-			value : getDefaultRequestedDelDate()
+			value : getDefaultRequestedDelDate(),
+			picker : {
+				yearFrom : parseInt(getCurrentYear()),
+				yearTo : parseInt(getMaxYear())
+			},
 		}, {
 			xtype : 'textfield',
 			name : 'poNumber',

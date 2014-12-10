@@ -46,14 +46,29 @@ Ext.define('PaperVan.view.CartOrder', {
 			hidden : true
 		}, {
 			xtype : 'textfield',
+			label : 'Gross Total (AUD)',
+			itemId : 'cartGrossTotal',
+			value : '0',
+			readOnly : true,
+			docked : 'bottom',
+			labelWidth : '50%',
+		}, {
+			xtype : 'textfield',
+			label : 'GST',
+			itemId : 'cartGSTTotal',
+			value : '0',
+			readOnly : true,
+			docked : 'bottom',
+			labelWidth : '50%',
+		}, {
+			xtype : 'textfield',
 			name : 'total',
-			label : 'Total (AUD)',
+			label : 'Net Total',
 			itemId : 'cartTotal',
 			value : '0',
 			readOnly : true,
 			docked : 'bottom',
 			labelWidth : '50%'
-			// style : 'font-size: 80%;'
 		}]
 	}
 });

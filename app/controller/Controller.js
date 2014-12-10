@@ -142,11 +142,11 @@ Ext.define('PaperVan.controller.Controller', {
 			},
 			'mainPanel searchfield[itemId=custSearch]' : {
 				clearicontap : 'onClearSearch',
-				keyup : 'onSearchKeyUp'
+				//	keyup : 'onSearchKeyUp'
 			},
 			'mainPanel searchfield[itemId=vanProductSearch]' : {
 				clearicontap : 'onClearVanSearch',
-				keyup : 'onVanSearchKeyUp'
+				//	keyup : 'onVanSearchKeyUp'
 			},
 			customerList : {
 				select : 'onCustomerListSelect',
@@ -399,17 +399,24 @@ Ext.define('PaperVan.controller.Controller', {
 				allVanCustomerFlag = '';
 			}
 
+			customerContainerOption.setHidden(true);
 			selectedSalesOffice = salesOffice;
 			if (salesOffice == '') {
 				Ext.toast('Retriving customers...', 3000);
 				getCustomerList(salesOffice, todayCustomerFlag, allCustomerFlag, allVanCustomerFlag);
 			} else {
+				var custSearchField = Ext.ComponentQuery.query('#custSearch')[0];
 
 				var queryString = Ext.ComponentQuery.query('#custSearch')[0].getValue();
 				if (queryString.length >= MIN_CHAR_SEARCH) {
 					searchString = queryString;
 					getCustomerList(selectedSalesOffice, '', '', '');
 					searchString = '';
+				} else {
+					// move curdor to search string
+					Ext.defer(function() {
+						custSearchField.focus();
+					}, 300);
 				}
 				// Ext.toast('Please type at least 3 letters in customer search field', 2000);
 			}
@@ -443,7 +450,6 @@ Ext.define('PaperVan.controller.Controller', {
 		if (newValue == salesOpp) {
 			reason = ACTIVITY_REASON.findAll({ text: 'Annual Reports' })[0].value;
 			// unhide opportunity related fields
-			Ext.ComponentQuery.query('#opportunityTypeSelect')[0].setHidden(false);
 			Ext.ComponentQuery.query('#volOpportunity')[0].setHidden(false);
 			Ext.ComponentQuery.query('#qtyOpportunity')[0].setHidden(false);
 			Ext.ComponentQuery.query('#amountOpportunity')[0].setHidden(false);
@@ -451,7 +457,6 @@ Ext.define('PaperVan.controller.Controller', {
 		} else {
 			reason = ACTIVITY_REASON.findAll({ text: 'Regular Sales Call' })[0].value;
 			// hide opportunity related fields
-			Ext.ComponentQuery.query('#opportunityTypeSelect')[0].setHidden(true);
 			Ext.ComponentQuery.query('#volOpportunity')[0].setHidden(true);
 			Ext.ComponentQuery.query('#qtyOpportunity')[0].setHidden(true);
 			Ext.ComponentQuery.query('#amountOpportunity')[0].setHidden(true);
@@ -465,6 +470,9 @@ Ext.define('PaperVan.controller.Controller', {
 		availableContactField.setOptions(availableContact);
 		availableContactField.setReadOnly(isContactReadOnly);
 
+		// update activity subtype
+		var activitySubTypeSelect = Ext.ComponentQuery.query('#opportunityTypeSelect')[0];
+		activitySubTypeSelect.setOptions(activitySubTypeList);
 	},
 	onDisputeCreationInit : function() {
 		// update contact select field in dispute creation screens
@@ -2381,9 +2389,10 @@ function updateCartTotal() {
 	for (var i = 0; i < productsInCart.items.length; i++) {
 		if (productsInCart.items[i].manualPr != null) {
 			totalPrice = totalPrice + productsInCart.items[i].manualPr * productsInCart.items[i].orderQty;
-		} else if (productsInCart.items[i].custPr != null) {
+		} else if (productsInCart.items[i].custPr != null && productsInCart.items[i].custPr != 0) {
 			totalPrice = totalPrice + productsInCart.items[i].custPr * productsInCart.items[i].orderQty;
-		} else {
+		} else if (productsInCart.items[i].listPr != null) {
+			totalPrice = totalPrice + productsInCart.items[i].listPr * productsInCart.items[i].orderQty;
 			// customer price will always be available
 			// totalPrice = totalPrice + productsInCart.items[i].listPr *
 			// productsInCart.items[i].orderQty;
@@ -2394,6 +2403,19 @@ function updateCartTotal() {
 	if (totalField.length > 0) {
 		totalField[0].setValue(number(totalPrice));
 	}
+
+	var gstField = Ext.ComponentQuery.query('#cartGSTTotal');
+	var gstValue = totalPrice * 0.1;
+	if (gstField.length > 0) {
+		gstField[0].setValue(number(gstValue));
+	}
+
+	var grossTotalField = Ext.ComponentQuery.query('#cartGrossTotal');
+	var grossValue = totalPrice + gstValue;
+	if (grossTotalField.length > 0) {
+		grossTotalField[0].setValue(number(grossValue));
+	}
+
 	return totalPrice;
 }
 
@@ -2550,6 +2572,14 @@ function getShiptoList() {
 
 	callOData(getShiptoOData, filterString, successShiptoListCallback, errCallback, null);
 
+}
+
+function getActivitySubTypes() {
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getActivitySubTypeOData, filterString, successActivitySubTypesCallback, errCallback, null);
 }
 
 function getCustomerContactList() {
@@ -2783,6 +2813,20 @@ function prepareOrderHeader() {
 	var quoteValidToDate;
 
 	var orderType = Ext.ComponentQuery.query('#orderType')[0].getValue().trim();
+	// if it's a van order then change to non-wm order type
+	if (isVanOrder) {
+		switch (orderType) {
+			case 'ZSTK' :
+				orderType = 'ZZST';
+				break;
+			case 'ZMCF' :
+				orderType = 'ZZCF';
+				break;
+			default :
+				break;
+		}
+	}
+
 	var date = Ext.ComponentQuery.query('#deliveryDate')[0].getValue();
 	var valDate = Ext.ComponentQuery.query('#validToDate')[0].getValue();
 	var poNumber = Ext.ComponentQuery.query('#poNumber')[0].getValue().trim();
@@ -3065,9 +3109,17 @@ function showOrderSimulation() {
 		// show createOrder button
 
 		var totalField = Ext.ComponentQuery.query('#cartTotal');
+		var totalValue = getOrderTotal();
 		if (totalField.length > 0) {
-			totalField[0].setValue(number(getOrderTotal()));
+			totalField[0].setValue(number(totalValue));
 		}
+		var gstField = Ext.ComponentQuery.query('#cartGSTTotal');
+		var gstValue = totalValue * 0.1;
+		gstField[0].setValue(number(gstValue));
+
+		var grossTotalField = Ext.ComponentQuery.query('#cartGrossTotal');
+		var grossValue = totalValue + gstValue;
+		grossTotalField[0].setValue(number(grossValue));
 	}
 
 }
@@ -3164,7 +3216,7 @@ function createCustomer(name1, name2, street, postcode, suburb, region, email, t
 
 	mainContainer.setMasked({
 		xtype : 'loadmask',
-		message : CUSTOMER_CHANGE_LOADING,
+		message : CUSTOMER_CREATE_LOADING,
 		indicator : true
 	});
 
@@ -3297,10 +3349,6 @@ function createDispute(title, category, contact, referenceDoc, claimAmount, text
 
 function createSalesActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
 
-	// reset opportunity type if it is not an opportunity
-	if (actType != 'Z001') {
-		actOppType = '';
-	}
 
 	actText = removeSpecialCharacter(actText);
 
@@ -3518,7 +3566,7 @@ function removeSpecialCharacter(inText) {
 	inText = inText.replace(/}/g, '\)');
 	inText = inText.replace(/</g, '\(');
 	inText = inText.replace(/>/g, '\)');
-
+	outText = inText;
 	return outText;
 }
 
@@ -3649,4 +3697,46 @@ function readBarcodeSuccess(result) {
 
 function readBarcodeFail(error) {
 	Ext.toast(error);
+}
+
+function onCustomerKeySearch() {
+	var queryString = Ext.ComponentQuery.query('#custSearch')[0].getValue();
+	if (selectedSalesOffice == '') {
+		var store = Ext.getStore('customer');
+		store.clearFilter();
+
+		if (queryString) {
+			var thisRegEx = new RegExp(queryString, "i");
+			store.filterBy(function(record) {
+				if (thisRegEx.test(record.get('custName')) || thisRegEx.test(record.get('custNo'))) {
+					return true;
+				};
+				return false;
+			});
+		}
+	} else {
+		var queryLength = queryString.length;
+		if (queryLength >= MIN_CHAR_SEARCH) {
+			searchString = queryString;
+			getCustomerList(selectedSalesOffice);
+			searchString = '';
+		}
+	}
+}
+
+function onVanProductSearch() {
+	var queryString = Ext.ComponentQuery.query('#vanProductSearch')[0].getValue();
+
+	var store = Ext.getStore('vanProductResult');
+	store.clearFilter();
+
+	if (queryString) {
+		var thisRegEx = new RegExp(queryString, "i");
+		store.filterBy(function(record) {
+			if (thisRegEx.test(record.get('prodDesc')) || thisRegEx.test(record.get('prodNo'))) {
+				return true;
+			};
+			return false;
+		});
+	}
 }

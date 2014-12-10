@@ -13,7 +13,7 @@ Ext.define('PaperVan.view.CustomerContainerOption', {
 		items : [{
 			xtype : 'fieldset',
 			title : 'More Options',
-			instructions : 'Please note that it will take a minute to retrieve regional customers',
+			// instructions : 'Please note that it will take a minute to retrieve regional customers',
 			items : [{
 				xtype : 'selectfield',
 				itemId : 'refreshCustomerOptionSelect',

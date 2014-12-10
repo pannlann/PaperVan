@@ -10,8 +10,22 @@ Ext.define('PaperVan.view.VanProductContainer', {
 		},
 		items : [{
 			xtype : 'searchfield',
+			autoCorrect : false,
+			autoComplete : false,
+			autoCapitalize : false,
 			placeHolder : VAN_PRODUCT_SEARCH_PLACE_HOLDER,
-			itemId : 'vanProductSearch'
+			itemId : 'vanProductSearch',
+			listeners : {
+				scope : this,
+				'initialize' : function() {
+					vanProdSearchTask = Ext.create('Ext.util.DelayedTask', function() {
+						onVanProductSearch();
+					});
+				},
+				'keyup' : function(field) {
+					vanProdSearchTask.delay(600);
+				}
+			}
 		}, {
 			xtype : 'vanProductResultList'
 		}]

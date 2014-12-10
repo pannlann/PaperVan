@@ -1,14 +1,14 @@
 var errCallback = function(error) {
 	mainContainer.unmask();
 	if (error.statusText != 'transaction aborted') {
-		if (error.request.options.url.indexOf(getValidateAccountOData.entitySet) > 0) {
-			// unauthorised username and password
-			showIncorrectPasswordAlert();
-		} else if (error.status == 0 && error.stausText == '' && error.responseText == '') {
+		if (error.status == 0 && error.stausText == null && error.responseText == '') {
 			// no internet connection
 			mainContainer.unmask();
 			reportErrorMessage(CONNECTION_LOST_EXCEPTION, function() {
 			});
+		} else if (error.request.options.url.indexOf(getValidateAccountOData.entitySet) > 0) {
+			// unauthorised username and password
+			showIncorrectPasswordAlert();
 		} else if (error.timedout == true) {
 			mainContainer.unmask();
 			reportErrorMessage(TIMEOUT_EXCEPTION, function() {
@@ -170,4 +170,12 @@ function isIPad() {
 
 function isDesktop() {
 	return (Ext.os.deviceType == 'Desktop');
+}
+
+function getCurrentYear() {
+	return new Date().getFullYear();
+}
+
+function getMaxYear() {
+	return new Date().getFullYear() + 2;
 }

@@ -11,7 +11,21 @@ Ext.define('PaperVan.view.CustomerContainer', {
 		items : [{
 			xtype : 'searchfield',
 			placeHolder : CUST_SEARCH_PLACE_HOLDER,
-			itemId : 'custSearch'
+			autoCorrect : false,
+			autoComplete : false,
+			autoCapitalize : false,
+			itemId : 'custSearch',
+			listeners : {
+				scope : this,
+				'initialize' : function() {
+					custSearchTask = Ext.create('Ext.util.DelayedTask', function() {
+						onCustomerKeySearch();
+					});
+				},
+				'keyup' : function(field) {
+					custSearchTask.delay(600);
+				}
+			}
 		}, {
 			xtype : 'customerList'
 		}]

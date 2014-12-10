@@ -15,38 +15,40 @@ Ext.define('PaperVan.view.ActivityCreation', {
 				xtype : 'selectfield',
 				label : 'Type',
 				itemId : 'activityTypeSelect',
-				options: ACTIVITY_TYPE,
+				options : ACTIVITY_TYPE,
 				usePicker : false,
-			},{
+			}, {
 				xtype : 'selectfield',
-				label : 'Opp. Type',
+				label : 'Sub-Type',
 				itemId : 'opportunityTypeSelect',
-				options: OPPORTUNITY_TYPE,
-				hidden : true,
 				usePicker : false,
 			}, {
 				xtype : 'datepickerfield',
 				label : 'To Date',
 				itemId : 'activityDate',
 				value : new Date(),
-				dateFormat : 'd/m/Y'
+				dateFormat : 'd/m/Y',
+				picker : {
+					yearFrom : parseInt(getCurrentYear()),
+					yearTo : parseInt(getMaxYear())
+				},
 			}, {
 				xtype : 'selectfield',
 				label : 'Contact',
 				usePicker : false,
 				itemId : 'availableContactSelect'
-			},{
+			}, {
 				xtype : 'selectfield',
 				label : 'Reason',
 				itemId : 'activityReasonSelect',
 				usePicker : false,
-				options: ACTIVITY_REASON
-			},{
+				options : ACTIVITY_REASON
+			}, {
 				xtype : 'selectfield',
 				label : 'Outcome',
 				itemId : 'activityOutcomeSelect',
 				usePicker : false,
-				options: ACTIVITY_OUTCOME
+				options : ACTIVITY_OUTCOME
 			}, {
 				xtype : 'numberfield',
 				label : 'Volume',

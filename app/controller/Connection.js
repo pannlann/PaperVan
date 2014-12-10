@@ -1,4 +1,12 @@
 // this file contains connection to backend system
+var getActivitySubTypeOData = {
+	entitySet : 'ActivitySubTypeCollection',
+	method : 'GET',
+	field : [],
+	search : false,
+	singleRead : false
+};
+
 var getOpenInboundDeliveryOData = {
 	entitySet : 'InboundDeliveryCollection',
 	method : 'GET',
@@ -526,73 +534,6 @@ function successCreateDeliveryCallback(response) {
 			refreshData(true);
 			mainContainer.unmask();
 		});
-	} else if (status != 'S' && deliveryNo != '') {
-		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery ' + deliveryNo + ' may not sucessfully post good issue. Please PGI manually.', function() {
-			refreshData(true);
-			mainContainer.unmask();
-		});
-	} else {
-		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery is not. Please create delivery and PGI manually.', function() {
-			refreshData(true);
-			mainContainer.unmask();
-		});
-	}
-}
-
-function successCreateContact(response) {
-
-	var items = JSON.parse(response.responseText).d;
-
-	contactNumber = items.ContactNo.replace(/^0+/, '');
-
-	mainContainer.unmask();
-
-	Ext.toast('The contact ' + contactNumber + ' has been created successfully.', 1500);
-	// update contactData
-	tempNewContact.contNo = contactNumber;
-	contactData.items.splice(0, 0, tempNewContact);
-	updateContactStore();
-	// update available contacts dropdown
-	var contactItem = {};
-	contactItem.text = tempNewContact.contName;
-	contactItem.value = tempNewContact.contNo;
-	availableContact.push(contactItem);
-
-	tempNewContact = {};
-	customerTabPop();
-	updateContactStore();
-}
-
-function successCreateCustomer(response) {
-
-	var items = JSON.parse(response.responseText).d;
-
-	customerNumber = items.CustomerNo.replace(/^0+/, '');
-
-	mainContainer.unmask();
-
-	Ext.toast('The customer ' + customerNumber + ' has been created successfully.', 1500);
-	tempNewCustomer.custNo = customerNumber;
-	customerData.items.splice(0, 0, tempNewCustomer);
-	updateCustomerStore();
-	tempNewCustomer = {};
-	customerTabPop();
-	updateCustomerStore();
-	selectedCust = customerNumber;
-	moveToSelectedCustomer();
-}
-
-function successCreateDeliveryCallback(response) {
-	var items = JSON.parse(response.responseText).d;
-
-	var status = items.ReturnStatus;
-	var deliveryNo = items.DeliveryNo.replace(/^0+/, '');
-
-	if (status == 'S') {
-		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' and delivery ' + deliveryNo + ' has been created successfully', function() {
-			refreshData(true);
-			mainContainer.unmask();
-		});
 	} else if (status == 'E' && deliveryNo != '') {
 		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery ' + deliveryNo + ' may not sucessfully post good issue. Please PGI manually.', function() {
 			refreshData(true);
@@ -699,6 +640,9 @@ function successCustomerAddress(response) {
 
 	selectedCustRecord.custAddr = selectedCustAddr.street + ', ' + selectedCustAddr.city + ' ' + selectedCustAddr.region + ' ' + selectedCustAddr.postcode;
 
+	// set customer general detail
+	var customerDetailView = Ext.ComponentQuery.query('customerDetail')[0];
+	customerDetailView.setData(selectedCustRecord);
 }
 
 function successCreateDispute(response) {
@@ -1240,6 +1184,30 @@ function successUserValidate(response) {
 	updateCustomerListTitle();
 	// get open inbound
 	getOpenInboundDelivery(userPlant, userStorageLoc);
+	getActivitySubTypes();
+}
+
+function successActivitySubTypesCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		// reset product Result
+		activitySubTypeList = [];
+		for (var i = 0; i < noOfItems; i++) {
+			if (i == 0) {
+				activitySubTypeList.push({
+					text : '',
+					value : ''
+				});
+			}
+			var myitem = {};
+			var theItems = items[i];
+			myitem.value = theItems.Key;
+			myitem.text = theItems.Text;
+			activitySubTypeList.push(myitem);
+		}
+	}
 }
 
 function successSimulateOrderMessageCallback(response) {

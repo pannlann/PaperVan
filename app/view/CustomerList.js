@@ -4,7 +4,7 @@ Ext.define('PaperVan.view.CustomerList', {
 	config : {
 		title : 'Customers',
 		grouped : true,
-		indexBar : true,
+		// indexBar : true,
 		flex : 3,
 		refreshHeightOnUpdate : true,
 		variableHeights : true,
