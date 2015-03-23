@@ -20,8 +20,8 @@ Ext.define('PaperVan.view.CartList', {
 				'</tr>',
 				'</table>',
 				'<div class="cart_no"># {prodNo}</div>',
-				'<tpl if="manualPr &gt; 0"><div class="cust_list_crlim_text">${manualPr}/{uom} </div></tpl>',
-				'<tpl if="manualPr &lt;= 0"><div class="cust_list_crlim_text">${custPr}/{uom} </div></tpl>'],
+				'<tpl if="manualPr &gt; 0"><div class="cust_list_crlim_text">${manualPr}/{[showUom(values.uom,values.orderUom)]}</div></tpl>',
+				'<tpl if="manualPr &lt;= 0"><div class="cust_list_crlim_text">${custPr}/{[showUom(values.uom,values.orderUom)]}</div></tpl>'],
 		store : {
 			type : 'cart'
 		}

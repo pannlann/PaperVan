@@ -23,27 +23,30 @@ Ext.define('PaperVan.view.CartOrder', {
 			}]
 		},
 		items : [{
-			xtype : 'cartList'
+			xtype : 'cartList',
 		}, {
 			xtype : 'button',
 			itemId : 'checkoutButton',
 			ui : 'action',
 			text : 'Order Confirmation',
-			docked : 'bottom'
+			docked : 'bottom',
+			style : 'font-size: 80%;'
 		}, {
 			xtype : 'button',
 			itemId : 'createOrderButton',
 			ui : 'action',
 			text : 'Place Order Now',
 			docked : 'bottom',
-			hidden : true
+			hidden : true,
+			style : 'font-size: 80%;'
 		}, {
 			xtype : 'button',
 			itemId : 'signatureConfirmButton',
 			ui : 'action',
 			text : 'Signature Confirmaion',
 			docked : 'bottom',
-			hidden : true
+			hidden : true,
+			style : 'font-size: 80%;',
 		}, {
 			xtype : 'textfield',
 			label : 'Gross Total (AUD)',
@@ -52,6 +55,7 @@ Ext.define('PaperVan.view.CartOrder', {
 			readOnly : true,
 			docked : 'bottom',
 			labelWidth : '50%',
+			style : 'border-width: 1px 0px 0px 0px;border-style: groove; font-size: 80%;',
 		}, {
 			xtype : 'textfield',
 			label : 'GST',
@@ -60,6 +64,7 @@ Ext.define('PaperVan.view.CartOrder', {
 			readOnly : true,
 			docked : 'bottom',
 			labelWidth : '50%',
+			style : 'border-width: 1px 0px 0px 0px;border-style: groove; font-size: 80%;',
 		}, {
 			xtype : 'textfield',
 			name : 'total',
@@ -68,7 +73,8 @@ Ext.define('PaperVan.view.CartOrder', {
 			value : '0',
 			readOnly : true,
 			docked : 'bottom',
-			labelWidth : '50%'
+			labelWidth : '50%',
+			style : 'border-width: 1px 0px 0px 0px;border-style: groove; font-size: 80%;',
 		}]
 	}
 });

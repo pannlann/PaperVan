@@ -7,12 +7,19 @@ Ext.define('PaperVan.view.VanProducts', {
 		iconCls : 'van',
 		navigationBar : {
 			items : [{
+				// xtype : 'button',
+				// itemId : 'vanRefreshButton',
+				// iconCls : 'refresh',
+				// iconMask : true,
+				// ui : 'normal',
+				// align : 'right',
 				xtype : 'button',
-				itemId : 'vanRefreshButton',
-				iconCls : 'refresh',
-				iconMask : true,
+				itemId : 'vanOptionButton',
 				ui : 'normal',
+				iconCls : 'more',
+				iconMask : true,
 				align : 'right',
+				hidden : false
 			}, {
 				xtype : 'button',
 				itemId : 'vanSortButton',

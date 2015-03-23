@@ -10,6 +10,14 @@ Ext.define('PaperVan.view.CustomerCreate', {
 			defaults : {
 				style : 'border-width: 2px 1px 0px 1px; border-style: groove; font-size: 80%;',
 				labelWidth : '40%',
+				listeners : {
+					focus : function(comp, e, eopts) {
+						if (Ext.os.name == 'WindowsPhone') {
+							var ost = comp.element.dom.offsetTop;
+							this.getParent().getParent().getScrollable().getScroller().scrollTo(0, ost);
+						}
+					}
+				}
 			},
 			// defaults : {
 			// labelWidth : fieldLabelWidth,

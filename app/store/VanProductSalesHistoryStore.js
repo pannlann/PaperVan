@@ -7,6 +7,10 @@ Ext.define('PaperVan.store.VanProductSalesHistoryStore', {
 		autoLoad : true,
 		model : 'PaperVan.model.ProductSalesHistoryModel',
 		data : vanProdSalesHistoryData,
+		sorters : [{
+			property : 'date',
+			direction : 'DESC'
+		}],
 		grouper : {
 			groupFn : function(record) {
 				return 'Product History';

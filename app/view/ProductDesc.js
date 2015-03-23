@@ -6,7 +6,8 @@ Ext.define('PaperVan.view.ProductDesc', {
 		style : 'background-color:rgb(238, 238, 238);',
 		scrollable : true,
 		defaults : {
-			style : 'border-width: 1px 0px 0px 0px;border-style: groove;'
+			style : 'border-width: 1px 0px 0px 0px;border-style: groove; font-size: 80%;',
+			labelWidth : '50%'
 		},
 		
 		// plugins : [{
@@ -24,21 +25,26 @@ Ext.define('PaperVan.view.ProductDesc', {
 					itemId : 'jobNumber',
 					label : 'Job Number',
 					placeHolder : 'End customer ref no',
-					labelWidth : '50%'
 				}, {
 					xtype : 'numberfield',
 					docked : 'bottom',
 					itemId : 'manualPr',
+					label : 'Manual Price',
 					name : 'manualPr',
-					labelWidth : '50%'
+				}, {
+					xtype : 'selectfield',
+					docked : 'bottom',
+					label : 'UoM',
+					usePicker : true,
+					itemId : 'uomSelect',
 				}, {
 					xtype : 'numberfield',
 					docked : 'bottom',
 					itemId : 'orderQty',
+					label : 'Order Qty',
 					name : 'orderQty',
 					minValue : 0,
 					value : 1,
-					labelWidth : '50%'
 				}
 		],
 		tpl : [

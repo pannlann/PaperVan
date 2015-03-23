@@ -4121,10 +4121,12 @@ body {
   font-size: 104%;
 }
 
+/** Change by PAN  for wp */
 /* line 13, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
 body.x-android.x-phone {
-  font-size: 116%;
+  font-size: 146%;
 }
+
 
 /* line 17, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
 body.x-ios.x-phone {
@@ -4134,6 +4136,11 @@ body.x-ios.x-phone {
 /* line 21, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
 body.x-desktop {
   font-size: 114%;
+}
+
+/** Added by PAN for tablet*/
+body.x-ios.x-tablet {
+    font-size: 130%
 }
 
 /* line 25, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
@@ -4283,29 +4290,6 @@ html, body {
   -webkit-text-stroke: 1px transparent;
 }
 
-/* line 9, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
-body {
-  font-size: 104%;
-}
-
-/* line 13, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
-body.x-android.x-phone {
-  font-size: 116%;
-}
-
-/*manually added by Pan*/
-body.x-ios.x-tablet {
-    font-size: 130%
-}
-/* line 17, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
-body.x-ios.x-phone {
-  font-size: 114%;
-}
-
-/* line 21, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
-body.x-desktop {
-  font-size: 114%;
-}
 
 /* line 25, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Class.scss */
 .x-layout-card-item {
@@ -4434,11 +4418,11 @@ body.x-desktop {
   line-height: 1.3em;
 }
 
+/** Change by PAN */
 /* line 90, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Button.scss */
 .x-ie .x-toolbar .x-button .x-button-icon::before {
-  font-size: .6em;
-  line-height: 1em;
-}
+  /*font-size: 1em;
+  line-height: 1em;*/}
 
 /* line 96, /home/teamcity/buildAgent/work/856564e37705b5b7/touch/resources/themes/stylesheets/sencha-touch/default/src/_Button.scss */
 .x-button-small, .x-button.x-button-action-small, .x-button.x-button-confirm-small, .x-button.x-button-decline-small,

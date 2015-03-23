@@ -1,4 +1,5 @@
 // file to handle global variables.
+var environment = 'R3D';
 var noItemInCart = 1;
 var mobAppType;
 var mainContainer;
@@ -7,6 +8,7 @@ var selectedCust;
 var selectedCustAddr = {};
 var signatureWidth;
 var signatureHeight;
+var selectedSalesAct;
 var selectedContact;
 var lastSavedPlant = '3610';
 var sharedStorage;
@@ -25,6 +27,7 @@ var searchString;
 var selectedSalesOffice = '';
 var customerListItemHeight;
 var xcsrftoken;
+var emailPDFPayload;
 var openInboundDeliveryPayload;
 var customerDetailPayload;
 var contactPayload;
@@ -34,11 +37,16 @@ var orderPayload;
 var disputePayload;
 var attachmentPayload;
 var deliveryPayload;
-var environment = 'R3D';
+var vanReplPayload;
+var updateVanReplKey;
 var oDataBackEnd;
 var serverConnection;
 var isSkipProductSalesHistory;
 var productHistoryViewID;
+var vanVanReplData;
+var searchVanReplData;
+var preVanReplData;
+var currentTab = 'customerTab';
 var openInboundDeliveryData = [];
 var vanProdSalesHistoryData = {
 	items : []
@@ -75,6 +83,7 @@ var isInOrderConfirmationScreen = false;
 var activityNumber;
 var disputeNumber;
 var orderNumber;
+var deliveryNo;
 var orderHeader;
 var orderItem;
 var orderPartner;
@@ -93,6 +102,7 @@ var fieldLabelWidth;
 //********************* options ***********************
 var customerContainerOption;
 var customerDetailOption;
+var vanProductOption;
 
 // Selected product in format of
 // items : {}

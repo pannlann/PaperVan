@@ -1,8 +1,24 @@
 // this file contains connection to backend system
+var getVanReplOData = {
+	entitySet : 'VanReplenishmentCollection',
+	method : 'GET',
+	field : ['Material', 'Plant', 'Sloc'],
+	search : false,
+	singleRead : false
+};
+
 var getActivitySubTypeOData = {
 	entitySet : 'ActivitySubTypeCollection',
 	method : 'GET',
 	field : [],
+	search : false,
+	singleRead : false
+};
+
+var getMaterialUomOData = {
+	entitySet : 'MaterialUomCollection',
+	method : 'GET',
+	field : ['Material'],
 	search : false,
 	singleRead : false
 };
@@ -118,6 +134,14 @@ var createOrderOData = {
 	cancelPreRequest : false
 };
 
+var createVanReplOData = {
+	entitySet : 'VanReplenishmentCollection',
+	method : 'POST',
+	field : ['Plant', 'Sloc'],
+	search : false,
+	cancelPreRequest : false
+};
+
 var getContactOData = {
 	entitySet : 'ContactCollection',
 	method : 'GET',
@@ -149,6 +173,14 @@ var getSalesActivityOData = {
 var createSalesActivityOData = {
 	entitySet : 'SalesActivityCollection',
 	method : 'POST',
+	field : ['CustomerNo', 'ContactNo', 'ToDate', 'ActText', 'ActType', 'ActReason', 'ActOutcome', 'Volume', 'Quantity', 'Amount', 'SalesDoc', 'OpportunityType'],
+	search : false,
+	cancelPreRequest : false
+};
+
+var changeSalesActivityOData = {
+	entitySet : 'SalesActivityCollection',
+	method : 'PUT',
 	field : ['CustomerNo', 'ContactNo', 'ToDate', 'ActText', 'ActType', 'ActReason', 'ActOutcome', 'Volume', 'Quantity', 'Amount', 'SalesDoc', 'OpportunityType'],
 	search : false,
 	cancelPreRequest : false
@@ -218,6 +250,14 @@ var changeCustomerOData = {
 	cancelPreRequest : false
 };
 
+var updateVanReplOData = {
+	entitySet : 'VanReplenishmentCollection',
+	method : 'PUT',
+	field : ['Material', 'Plant', 'Sloc', 'MinStk', 'MaxStk'],
+	search : false,
+	cancelPreRequest : false
+};
+
 var deleteVanScheduleOData = {
 	entitySet : 'CustomerCollection',
 	method : 'PUT',
@@ -275,6 +315,28 @@ var getAttachmentOData = {
 	cancelPreRequest : false
 };
 
+var getEmailPDFOData = {
+	entitySet : 'EmailPDFCollection',
+	method : 'GET',
+	field : [],
+	search : false,
+	cancelPreRequest : false
+};
+
+var createEmailPDFOData = {
+	entitySet : 'EmailPDFCollection',
+	method : 'POST',
+	field : ['Delivery', 'EmailDel', 'EmailInvoice'],
+	search : false,
+	cancelPreRequest : false
+};
+
+function callCreateEmailPDFOData(response) {
+	xcsrftoken = response.getResponseHeader('x-csrf-token');
+	filterString = '';
+	callOData(createEmailPDFOData, filterString, successCreateEmailPDFCallback, errCallback, emailPDFPayload, null);
+}
+
 function callAddAttachmentOData(response) {
 	xcsrftoken = response.getResponseHeader('x-csrf-token');
 	filterString = '';
@@ -293,6 +355,12 @@ function callChangeCustomerOData(response) {
 	callOData(changeCustomerOData, filterString, successChangeCustomer, errCallback, customerDetailPayload, selectedCust);
 }
 
+function callUpdateVanReplOData(response) {
+	xcsrftoken = response.getResponseHeader('x-csrf-token');
+	filterString = '';
+	callOData(updateVanReplOData, filterString, successUpdateVanRepl, errCallback, vanReplPayload, updateVanReplKey);
+}
+
 function callDeleteVanScheduleOData(response) {
 	xcsrftoken = response.getResponseHeader('x-csrf-token');
 	filterString = '';
@@ -309,6 +377,18 @@ function callDeleteContactOData(response) {
 	xcsrftoken = response.getResponseHeader('x-csrf-token');
 	filterString = '';
 	callOData(deleteContactOData, filterString, successDeleteContact, errCallback, null, selectedContact);
+}
+
+function callCreateVanReplOData(response) {
+	xcsrftoken = response.getResponseHeader('x-csrf-token');
+	filterString = '';
+	callOData(createVanReplOData, filterString, successCreateVanRepl, errCallback, vanReplPayload, null);
+}
+
+function callChangeSalesActivityOData(response) {
+	xcsrftoken = response.getResponseHeader('x-csrf-token');
+	filterString = '';
+	callOData(changeSalesActivityOData, filterString, successChangeSalesActivity, errCallback, activityPayload, selectedSalesAct);
 }
 
 function callCreateSalesActivityOData(response) {
@@ -353,12 +433,30 @@ function callCreateCustomerOData(response) {
 	callOData(createCustomerOData, filterString, successCreateCustomer, errCallback, customerDetailPayload, null);
 }
 
+function convertoDataKeyString(key) {
+	var keyString = '';
+	if ( typeof key == 'object') {
+		for (var i = 0; i < key.length; i++) {
+			if (i != 0) {
+				keyString += ',';
+			}
+			keyString += key[i].KeyField + "='" + key[i].Value + "'";
+		};
+		keyString = "(" + keyString + ")";
+	} else {
+		keyString = "('" + key + "')";
+	}
+	return keyString;
+}
+
 function callOData(oDataService, filterString, successCallback, errorCallback, payload, key) {
 	// construct URL
 	var url;
+	var keyString;
 	if (oDataService.singleRead == true || oDataService.method == 'PUT' || oDataService.method == 'DELETE') {
 		// contruct URL for single read and POST request
-		url = oDataBackEnd + oDataService.entitySet + "('" + key + "')" + filterString;
+		keyString = convertoDataKeyString(key);
+		url = oDataBackEnd + oDataService.entitySet + keyString + filterString;
 	} else {
 		url = oDataBackEnd + oDataService.entitySet + filterString;
 	}
@@ -429,6 +527,37 @@ function successChangeCustomer(response) {
 
 }
 
+function successUpdateVanRepl(response) {
+	var itemId = '#';
+	var tabId;
+	mainContainer.unmask();
+	Ext.toast('Replenishment stock qty is update succesfully.', 3000);
+
+	itemId = itemId + productHistoryViewID;
+	var productDescMain = Ext.ComponentQuery.query(itemId)[0];
+
+	switch (productHistoryViewID) {
+		case 'vanProductDescMain':
+			tabId = 'vanProductTab';
+			break;
+		case 'searchProductDescMain':
+			tabId = 'productTab';
+			break;
+		case 'previousProductDescMain':
+			tabId = 'previousPurchaseTab';
+			break;
+	};
+	productDescMain.up(tabId).pop();
+}
+
+function successChangeSalesActivity(response) {
+	getCustomerRecentActivity();
+	mainContainer.unmask();
+	Ext.toast('The activity ' + selectedSalesAct + ' has been updated successfully.', 2000);
+	customerTabPop();
+
+}
+
 function successChangeContact(response) {
 
 	mainContainer.unmask();
@@ -451,6 +580,13 @@ function successAddAttachmentCallback(response) {
 		reportErrorMessage(ADD_ORDER_ATTACHMENT_EXCEPTION, function() {
 		});
 	}
+}
+
+function successCreateEmailPDFCallback(response) {
+	//var items = JSON.parse(response.responseText).d;
+
+	mainContainer.unmask();
+	Ext.toast('PFDs with DN and invoice will be sent to you shortly.', 2500);
 }
 
 function successChangeVanSchedule(response) {
@@ -527,12 +663,18 @@ function successCreateDeliveryCallback(response) {
 	var items = JSON.parse(response.responseText).d;
 
 	var status = items.ReturnStatus;
-	var deliveryNo = items.DeliveryNo.replace(/^0+/, '');
+	deliveryNo = items.DeliveryNo.replace(/^0+/, '');
 
 	if (status == 'S') {
 		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' and delivery ' + deliveryNo + ' has been created successfully', function() {
 			refreshData(true);
 			mainContainer.unmask();
+			Ext.Msg.confirm("Email PDF", "Do you want to receive DN and Invoice PDFs?", function(buttonId) {
+				if (buttonId === 'yes') {
+					generateEmailPDF(deliveryNo, 'X', 'X');
+				}
+			}, this // scope of the controller
+			);
 		});
 	} else if (status == 'E' && deliveryNo != '') {
 		Ext.Msg.alert('Order', 'The order ' + orderNumber + ' is created succesfully but delivery ' + deliveryNo + ' may not sucessfully post good issue. Please PGI manually.', function() {
@@ -552,6 +694,9 @@ function successGoodReciptOpenInboundDelivery(response) {
 	openInboundDeliveryData.pop();
 	if (openInboundDeliveryData.length > 0) {
 		postGoodReceiptOpenInboundDelivery();
+	} else {
+		// update van stock
+		getVanProduct();
 	}
 }
 
@@ -572,6 +717,8 @@ function successOpenInboundDeliveryList(response) {
 	}
 	if (openInboundDeliveryData.length > 0) {
 		postGoodReceiptOpenInboundDelivery();
+	} else {
+		Ext.toast('No open inbound STO', 3000);
 	}
 }
 
@@ -694,6 +841,27 @@ function successCreateOrderCallback(response) {
 			refreshData(false);
 		});
 	}
+}
+
+function successCreateVanRepl(response) {
+
+	var items = JSON.parse(response.responseText).d;
+
+	var stoNumber = items.StoNumber.replace(/^0+/, '');
+
+	mainContainer.unmask();
+
+	if (stoNumber != '') {
+		Ext.Msg.alert('Van', 'The STO ' + stoNumber + ' has been created successfully.', function() {
+			// update van stock
+			Ext.toast("Updating my stock", 2000);
+			getVanProduct();
+		});
+	} else {
+		Ext.Msg.alert('Van', 'No STO is created.', function() {
+		});
+	}
+
 }
 
 function successCreateSalesActivity(response) {
@@ -1139,6 +1307,51 @@ function successDeleteCustomer(response) {
 	updateCustomerStore();
 }
 
+function successVanReplInfoCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+
+		switch (productHistoryViewID) {
+			case 'vanProductDescMain':
+				vanVanReplData = {};
+				break;
+			case 'searchProductDescMain':
+				searchVanReplData = {};
+				break;
+			case 'previousProductDescMain':
+				preVanReplData = {};
+				break;
+		};
+
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+			myitem.prodNo = theItems.Material.replace(/^0+/, '');
+			myitem.plant = theItems.Plant;
+			myitem.sloc = theItems.Sloc;
+			myitem.minStk = parseFloat(theItems.MinStk);
+			myitem.maxStk = parseFloat(theItems.MaxStk);
+			myitem.delQty = parseFloat(theItems.DelQty);
+			myitem.delUom = theItems.DelUom;
+
+			switch (productHistoryViewID) {
+				case 'vanProductDescMain':
+					vanVanReplData = myitem;
+					break;
+				case 'searchProductDescMain':
+					searchVanReplData = myitem;
+					break;
+				case 'previousProductDescMain':
+					preVanReplData = myitem;
+					break;
+			};
+		}
+		updateVanReplUpdateScreen(productHistoryViewID, vanVanReplData);
+	}
+}
+
 function successCustomerRecentActivityCallback(response) {
 	var items = JSON.parse(response.responseText).d.results;
 
@@ -1154,12 +1367,21 @@ function successCustomerRecentActivityCallback(response) {
 
 			myitem.actNo = theItems.ActNo.replace(/^0+/, '');
 			myitem.contName = theItems.ContactName;
-			myitem.contNo = theItems.ContactNo;
+			myitem.contNo = theItems.ContactNo.replace(/^0+/, '');
 			myitem.fromDate = theItems.FromDate;
 			myitem.toDate = theItems.ToDate;
 			myitem.text = theItems.ActText;
 			myitem.createdBy = theItems.Createdby;
 			myitem.actType = theItems.ActTypeText;
+			myitem.actTypeKey = theItems.ActType;
+			myitem.reason = theItems.ActReason;
+			myitem.outcome = theItems.ActOutcome;
+			myitem.volume = theItems.Volume;
+			myitem.quantity = theItems.Quantity;
+			myitem.amount = theItems.Amount;
+			myitem.salesDoc = theItems.SalesDoc;
+			myitem.oppType = theItems.OpportunityType;
+
 			myitem.type = "Recent Activity";
 			activityData.items.push(myitem);
 		}
@@ -1171,7 +1393,8 @@ function successCustomerRecentActivityCallback(response) {
 function successUserValidate(response) {
 	var items = JSON.parse(response.responseText).d;
 	//get storage location
-	userStorageLoc = items.results[0].StorLoc;
+	// userStorageLoc = items.results[0].StorLoc;
+	userStorageLoc = items.results[0].SPosSloc;
 	userPlant = items.results[0].Plant;
 	// validate successfully
 	savePasswordCredential();
@@ -1182,8 +1405,6 @@ function successUserValidate(response) {
 	Ext.toast(CUSTOMER_LOADING, 3000);
 	getCustomerList('', 'X', '', '');
 	updateCustomerListTitle();
-	// get open inbound
-	getOpenInboundDelivery(userPlant, userStorageLoc);
 	getActivitySubTypes();
 }
 
@@ -1206,6 +1427,51 @@ function successActivitySubTypesCallback(response) {
 			myitem.value = theItems.Key;
 			myitem.text = theItems.Text;
 			activitySubTypeList.push(myitem);
+		}
+	}
+}
+
+function successMaterialUomCallback(response) {
+	var items = JSON.parse(response.responseText).d.results;
+	var uomList = [];
+	var prodDescId;
+	var noOfItems = items.length;
+	if (noOfItems > 0) {
+		// reset product Result
+		for (var i = 0; i < noOfItems; i++) {
+			var myitem = {};
+			var theItems = items[i];
+			myitem.text = theItems.Uom;
+			myitem.value = theItems.Uom;
+			myitem.conversion = theItems.Conversion;
+			uomList.push(myitem);
+		}
+
+		// determine which prodDesc screen to add uom
+		switch (currentTab) {
+			case 'vanProductTab':
+				prodDescId = '#vanProductDesc';
+				break;
+			case 'productTab':
+				prodDescId = '#searchProductDesc';
+				break;
+			case 'previousPurchaseTab':
+				prodDescId = '#previousProductDesc';
+				break;
+			case 'cartTab':
+				prodDescId = '#cartProductDesc';
+				break;
+		}
+		var prodDescView = Ext.ComponentQuery.query(prodDescId)[0];
+		var prodDescViewItems = prodDescView.getItems().items;
+		var uomSelect = prodDescViewItems.findAll({_itemId : 'uomSelect'})[0];
+
+		uomSelect.setOptions(uomList);
+		//default value to sales uom
+		if (selectedProduct.orderUom != null) {
+			uomSelect.setValue(selectedProduct.orderUom);
+		} else {
+			uomSelect.setValue(selectedProduct.uom);
 		}
 	}
 }

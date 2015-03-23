@@ -147,6 +147,8 @@ function reportErrorMessage(errorString, callbackFunction) {
 		alertDetail = MATERIAL_PLANT_NOT_FOUND_TEXT;
 	} else if (errorString.indexOf(GR_INB_ERROR_EXCEPTION) >= 0) {
 		alertDetail = GR_INB_ERROR_TEXT;
+	} else if (errorString.indexOf(CHANGE_SALES_ACT_ERROR_EXCEPTION) >= 0) {
+		alertDetail = CHANGE_SALES_ACT_ERROR_TEXT;
 	} else {
 		alertHeader = "Unknown error";
 		alertDetail = "Please contact IT";
@@ -178,4 +180,11 @@ function getCurrentYear() {
 
 function getMaxYear() {
 	return new Date().getFullYear() + 2;
+}
+
+function convertSAPDateToJSDate(sapDate) {
+	var resultDate;
+	var dmy = convertToDMYDate(sapDate).split('-');
+	resultDate = new Date(Date.UTC(parseInt(dmy[2]), parseInt(dmy[1]) - 1, parseInt(dmy[0])));
+	return resultDate;
 }

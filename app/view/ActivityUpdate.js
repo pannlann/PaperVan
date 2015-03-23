@@ -1,12 +1,12 @@
-Ext.define('PaperVan.view.ActivityCreation', {
+Ext.define('PaperVan.view.ActivityUpdate', {
 	extend : 'Ext.form.Panel',
-	xtype : 'activityCreation',
+	xtype : 'activityUpdate',
 	config : {
 		padding : '0 5 0 5',
 		fullscreen : true,
 		items : [{
 			xtype : 'fieldset',
-			title : 'New Activity',
+			title : 'Update Activity',
 			defaults : {
 				style : 'border-width: 2px 1px 0px 1px; border-style: groove; font-size: 80%;',
 				labelWidth : '40%',
@@ -22,18 +22,19 @@ Ext.define('PaperVan.view.ActivityCreation', {
 			items : [{
 				xtype : 'selectfield',
 				label : 'Type',
-				itemId : 'activityTypeSelect',
+				itemId : 'updateActivityTypeSelect',
 				options : ACTIVITY_TYPE,
 				usePicker : false,
+				readOnly : true,
 			}, {
 				xtype : 'selectfield',
 				label : 'Sub-Type',
-				itemId : 'opportunityTypeSelect',
+				itemId : 'updateOpportunityTypeSelect',
 				usePicker : false,
 			}, {
 				xtype : 'datepickerfield',
-				label : 'To Date',
-				itemId : 'activityDate',
+				label : 'Date',
+				itemId : 'updateActivityDate',
 				value : new Date(),
 				dateFormat : 'd/m/Y',
 				picker : {
@@ -43,54 +44,53 @@ Ext.define('PaperVan.view.ActivityCreation', {
 			}, {
 				xtype : 'selectfield',
 				label : 'Contact',
-				usePicker : false,
-				itemId : 'availableContactSelect'
+				itemId : 'updateAvailableContactSelect'
 			}, {
 				xtype : 'selectfield',
 				label : 'Reason',
-				itemId : 'activityReasonSelect',
+				itemId : 'updateActivityReasonSelect',
 				usePicker : false,
 				options : ACTIVITY_REASON
 			}, {
 				xtype : 'selectfield',
 				label : 'Outcome',
-				itemId : 'activityOutcomeSelect',
+				itemId : 'updateActivityOutcomeSelect',
 				usePicker : false,
 				options : ACTIVITY_OUTCOME
 			}, {
 				xtype : 'numberfield',
 				label : 'Volume',
-				itemId : 'volOpportunity',
+				itemId : 'updateVolOpportunity',
 				value : 0,
 				hidden : true
 			}, {
 				xtype : 'numberfield',
 				label : 'Quantity',
-				itemId : 'qtyOpportunity',
+				itemId : 'updateQtyOpportunity',
 				value : 0,
 				hidden : true
 			}, {
 				xtype : 'numberfield',
 				label : 'Amount',
-				itemId : 'amountOpportunity',
+				itemId : 'updateAmountOpportunity',
 				value : 0,
 				hidden : true
 			}, {
 				xtype : 'numberfield',
 				label : 'Sales Doc',
-				itemId : 'salesDocNo',
+				itemId : 'updateSalesDocNo',
 				hidden : true
 			}, {
 				xtype : 'textareafield',
-				itemId : 'activityCreationTextArea',
+				itemId : 'updateActivityTextArea',
 				label : 'Text',
 				autoCapitalize : true,
 				maxRows : 10,
 				maxLength : 1500
 			}, {
 				xtype : 'button',
-				itemId : 'activityCreationButton',
-				text : 'Submit Activity',
+				itemId : 'updateActivityButton',
+				text : 'Update Activity',
 				ui : 'action'
 			}]
 		}]

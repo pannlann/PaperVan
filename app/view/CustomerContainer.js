@@ -27,6 +27,13 @@ Ext.define('PaperVan.view.CustomerContainer', {
 				}
 			}
 		}, {
+			xtype : 'selectfield',
+			itemId : 'vanScheduleDaySelect',
+			label : 'Schdeule Day',
+			usePicker : false,
+			labelWidth : '50%',
+			options : DAYS_SELECTION,
+		}, {
 			xtype : 'customerList'
 		}]
 	}

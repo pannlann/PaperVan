@@ -48,7 +48,31 @@ var VISITING_PERIOD = [{
 	value : 'M',
 	text : 'Monthly'
 }];
-
+var DAYS_SELECTION = [{
+	value : 0,
+	text : 'All'
+}, {
+	value : 1,
+	text : 'Monday'
+}, {
+	value : 2,
+	text : 'Tuesday'
+}, {
+	value : 3,
+	text : 'Wednesday'
+}, {
+	value : 4,
+	text : 'Thursday'
+}, {
+	value : 5,
+	text : 'Friday'
+}, {
+	value : 6,
+	text : 'Saturday'
+}, {
+	value : 7,
+	text : 'Sunday'
+}];
 var REGION_LIST = [{
 	text : '',
 	value : '',
@@ -851,6 +875,7 @@ var CONTACT_LINK_SALES_ACT_TEXT = 'Cannot delete a contact which is linked to sa
 var NO_MORE_PRODUCT_HISTORY_TEXT = 'No product history ';
 var MATERIAL_PLANT_NOT_FOUND_TEXT = 'Material/plant error';
 var GR_INB_ERROR_TEXT = 'Error was occured when posting good receipt of open inbound delivery. Please contact warehouse to post GR manually';
+var CHANGE_SALES_ACT_ERROR_TEXT = 'An error has occurred. A sales activity is not updated.';
 
 var TOO_MANY_EXCEPTION = 'TOO_MANY_SEARCH_HITS';
 var INVALID_USER_EXCEPTION = 'INVALID_USER';
@@ -889,6 +914,7 @@ var ERROR_DELETING_CONTACT_EXCEPTION = 'ERROR_DELETING_CONTACT';
 var CONTACT_LINK_SALES_ACT_EXCEPTION = 'CONTACT_LINK_SALES_ACT';
 var MATERIAL_PLANT_NOT_FOUND_EXCEPTION = 'MATERIAL_PLANT_NOT_FOUND';
 var GR_INB_ERROR_EXCEPTION = 'GR_INB_ERROR';
+var CHANGE_SALES_ACT_ERROR_EXCEPTION = 'CHANGE_SALES_ACT_ERROR';
 // // loading message
 var VALIDATE_ACCOUNT_LOADING = 'Validating user account...';
 var PRODUCT_LOADING = 'Retrieving products...';
@@ -897,6 +923,7 @@ var PREV_PUR_LOADING = 'Retrieving previous purchases...';
 var ORDER_SIMULATE_LOADING = 'Simulating an order...';
 var ORDER_CREATE_LOADING = 'Creating an order...';
 var ACTIVITY_CREATE_LOADING = 'Creating an activity...';
+var ACTIVITY_CHANGE_LOADING = 'Changing an activity...';
 var DISPUTE_CREATE_LOADING = 'Creating a dispute case...';
 var CONTACT_CHANGE_LOADING = 'Changing contact detail...';
 var CONTACT_CREATE_LOADING = 'Creating contact detail...';
@@ -914,6 +941,9 @@ var UPDATE_VAN_SCHEDULE_LOADING = "Updating van's schedule...";
 var VAN_BATCH_LOADING = "Retrieving batches...";
 var CREATE_DELIVERY_LOADING = "Creating delivery...";
 var ADD_ATTACHMENT_LOADING = "Adding attachment...";
+var EMAIL_LOADING = "Emailing Invoice and Delivery...";
+var VAN_REPL_CHANGE_LOADING = "Updating material replenishment qty";
+var VAN_REPL_CREATE_LOADING = "Creating van replenishment STO";
 // ERROR CONST
 var DEVICE_NOT_CONNECTED = 'Device%2520not%2520connected';
 var DEVICE_TIME_OUT = 'Server%2520response%2520time%2520out';

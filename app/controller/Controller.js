@@ -20,6 +20,7 @@ Ext.define('PaperVan.controller.Controller', {
 			orderItemList : 'orderItemList',
 			customerMain : 'customerMain',
 			activityCreation : 'activityCreation',
+			activityUpdate : 'activityUpdate',
 			disputeCreation : 'disputeCreation',
 			customerRecentActivity : 'customerRecentActivity',
 			customerContact : 'customerContact',
@@ -32,8 +33,39 @@ Ext.define('PaperVan.controller.Controller', {
 			vanProductResultList : 'vanProductResultList',
 			vanScheduleUpdate : 'vanScheduleUpdate',
 			productDescMain : 'productDescMain',
+			customerContainer : 'customerContainer',
+			vanReplUpdate : 'vanReplUpdate',
+			vanProductOption : 'vanProductOption',
 		},
 		control : {
+			'vanReplUpdate numberfield[itemId=replMinField]' : {
+				change : 'onReplMinFieldChange'
+			},
+
+			'vanReplUpdate numberfield[itemId=replMaxField]' : {
+				change : 'onReplMaxFieldChange'
+			},
+
+			'vanReplUpdate spinnerfield[itemId=replMinSpinner]' : {
+				change : 'onReplMinSpinnerChange'
+			},
+
+			'vanReplUpdate spinnerfield[itemId=replMaxSpinner]' : {
+				change : 'onReplMaxSpinnerChange'
+			},
+
+			'vanReplUpdate button[itemId=vanReplUpdateButton]' : {
+				tap : 'onVanReplUpdateTap'
+			},
+
+			'vanReplUpdate button[itemId=vanReplDeleteButton]' : {
+				tap : 'onVanReplDeleteTap'
+			},
+
+			'customerContainer selectfield[itemId=vanScheduleDaySelect]' : {
+				change : 'onVanScheduleDayChange'
+			},
+
 			productDescMain : {
 				activate : 'onProductDescMainActivate'
 			},
@@ -42,13 +74,23 @@ Ext.define('PaperVan.controller.Controller', {
 				tap : 'onAddToCartTap'
 			},
 
+			'vanProductTab button[itemId=vanOptionButton]' : {
+				tap : 'onVanOptionButtonTap'
+			},
+
 			vanProductTab : {
 				back : 'onVanProductTabBack',
 				pop : 'onVanProductTabBack',
 			},
 
-			'vanProductTab button[itemId=vanRefreshButton]' : {
+			'vanProductOption button[itemId=vanRefreshButton]' : {
 				tap : 'onVanRefreshButtonTap',
+			},
+			'vanProductOption button[itemId=receiptInbStoButton]' : {
+				tap : 'onReceiptInbStoButtonTap',
+			},
+			'vanProductOption button[itemId=replenishVanStkButton]' : {
+				tap : 'onReplenishVanStkButtonTap',
 			},
 
 			'vanProductTab button[itemId=vanSortButton]' : {
@@ -63,6 +105,11 @@ Ext.define('PaperVan.controller.Controller', {
 				initialize : 'onCustomerCreateInit',
 			},
 			'activityCreation textareafield[itemId=activityCreationTextArea]' : {
+				focus : 'onTextAreaFocus',
+				blur : 'onTextAreaBlur',
+			},
+
+			'activityUpdate textareafield[itemId=updateActivityTextArea]' : {
 				focus : 'onTextAreaFocus',
 				blur : 'onTextAreaBlur',
 			},
@@ -104,8 +151,20 @@ Ext.define('PaperVan.controller.Controller', {
 				change : 'onActivityTypeChange',
 			},
 
+			'activityUpdate button[itemId=updateActivityButton]' : {
+				tap : 'onActivityUpdate',
+			},
+
+			'activityUpdate selectfield[itemId=updateActivityTypeSelect]' : {
+				change : 'onUpdateActivityTypeChange',
+			},
+
 			activityCreation : {
 				initialize : 'onActivityCreationInit',
+			},
+
+			activityUpdate : {
+				initialize : 'onActivityUpdateInit',
 			},
 
 			disputeCreation : {
@@ -314,6 +373,132 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		}
 	},
+
+	onVanReplUpdateTap : function(button) {
+		var vanReplData;
+		var relativeFields = button.getParent().getItems().items;
+		var minField = relativeFields.findAll({_itemId:'replMinField'})[0];
+		var maxField = relativeFields.findAll({_itemId:'replMaxField'})[0];
+		var minSpinner = relativeFields.findAll({_itemId:'replMinSpinner'})[0];
+		var maxSpinner = relativeFields.findAll({_itemId:'replMaxSpinner'})[0];
+		var minStk;
+		var maxStk;
+
+		// determine current tab
+		var vanReplUpdateItemId = button.getParent().getParent().getItemId();
+		switch (vanReplUpdateItemId) {
+			case 'vanVanReplUpdate':
+				vanReplData = vanVanReplData;
+				break;
+			case 'searchVanReplUpdate':
+				vanReplData = searchVanReplData;
+				break;
+			case 'previousVanReplUpdate':
+				vanReplData = previousVanReplData;
+				break;
+		};
+
+		if (vanReplData.delQty == 0) {
+			minStk = minField.getValue();
+			maxStk = maxField.getValue();
+		} else {
+			minStk = minSpinner.getValue();
+			maxStk = maxSpinner.getValue();
+		}
+
+		updateVanReplInfo(vanReplData.prodNo, vanReplData.plant, vanReplData.sloc, minStk, maxStk);
+	},
+
+	onVanReplDeleteTap : function(button) {
+		var vanReplData;
+		var minStk = 0;
+		var maxStk = 0;
+
+		// determine current tab
+		var vanReplUpdateItemId = button.getParent().getParent().getItemId();
+		switch (vanReplUpdateItemId) {
+			case 'vanVanReplUpdate':
+				vanReplData = vanVanReplData;
+				break;
+			case 'searchVanReplUpdate':
+				vanReplData = searchVanReplData;
+				break;
+			case 'previousVanReplUpdate':
+				vanReplData = previousVanReplData;
+				break;
+		};
+
+		updateVanReplInfo(vanReplData.prodNo, vanReplData.plant, vanReplData.sloc, minStk, maxStk);
+
+	},
+
+	onReplMinFieldChange : function(field, newValue) {
+		var relativeFields = field.getParent().getItems().items;
+		var maxField = relativeFields.findAll({_itemId:'replMaxField'})[0];
+		if (newValue < 0) {
+			field.setValue(0);
+		} else if (maxField.getValue() < newValue) {
+			maxField.setValue(newValue);
+		}
+	},
+
+	onReplMaxFieldChange : function(field, newValue) {
+		var relativeFields = field.getParent().getItems().items;
+		var minField = relativeFields.findAll({_itemId:'replMinField'})[0];
+		if (newValue < 0) {
+			field.setValue(0);
+		} else if (minField.getValue() > newValue) {
+			minField.setValue(newValue);
+		}
+
+	},
+
+	onReplMinSpinnerChange : function(field, newValue) {
+		var deliveryQty;
+		var relativeFields = field.getParent().getItems().items;
+		switch (currentTab) {
+			case 'vanProductTab':
+				deliveryQty = vanVanReplData.delQty;
+				break;
+			case 'productTab':
+				deliveryQty = searchVanReplData.delQty;
+				break;
+			case 'previousPurchaseTab':
+				deliveryQty = preVanReplData.delQty;
+				break;
+		}
+		var maxSpinner = relativeFields.findAll({_itemId:'replMaxSpinner'})[0];
+		if (newValue < 0) {
+			field.setValue(0);
+		} else if (maxSpinner.getValue() <= newValue) {
+			var value = parseFloat(newValue) + deliveryQty;
+			maxSpinner.setValue(value);
+		}
+	},
+
+	onReplMaxSpinnerChange : function(field, newValue) {
+		var deliveryQty;
+		var relativeFields = field.getParent().getItems().items;
+		switch (currentTab) {
+			case 'vanProductTab':
+				deliveryQty = vanVanReplData.delQty;
+				break;
+			case 'productTab':
+				deliveryQty = searchVanReplData.delQty;
+				break;
+			case 'previousPurchaseTab':
+				deliveryQty = preVanReplData.delQty;
+				break;
+		}
+		var minSpinner = relativeFields.findAll({_itemId:'replMinSpinner'})[0];
+		if (newValue < 0) {
+			field.setValue(0);
+		} else if (minSpinner.getValue() >= newValue) {
+			var value = parseFloat(newValue) - deliveryQty;
+			minSpinner.setValue(value);
+		}
+	},
+
 	onCamera : function(button) {
 		// if(Ext.os.is)
 		if (Ext.os.is.WindowsPhone) {
@@ -324,6 +509,10 @@ Ext.define('PaperVan.controller.Controller', {
 		} else {
 			cordova.plugins.barcodeScanner.scan(readBarcodeSuccess, readBarcodeFail);
 		}
+	},
+
+	onVanScheduleDayChange : function(select, day) {
+		filterCustomerByDay(day);
 	},
 
 	onVanScheduleUpdateButtonTap : function(button) {
@@ -351,8 +540,20 @@ Ext.define('PaperVan.controller.Controller', {
 	onVanScheduleDeleteButtonTap : function(button) {
 		deleteVanSchedule();
 	},
+	onReceiptInbStoButtonTap : function(button) {
+		vanProductOption.hide();
+		Ext.toast('Receipting Inbound STOs', 3000);
+		// get open inbound
+		getOpenInboundDelivery(userPlant, userStorageLoc);
+
+	},
+	onReplenishVanStkButtonTap : function(button) {
+		vanProductOption.hide();
+		createVanRepl(userPlant, userStorageLoc);
+	},
 	onVanRefreshButtonTap : function(button) {
-		Ext.toast('Refresh product list', 1500);
+		vanProductOption.hide();
+		Ext.toast('Updating my stock', 3000);
 		getVanProduct();
 	},
 	onTextAreaBlur : function(textArea) {
@@ -432,6 +633,9 @@ Ext.define('PaperVan.controller.Controller', {
 			Ext.ComponentQuery.query('#changeCustomerOption')[0].setHidden(false);
 		}
 	},
+	onVanOptionButtonTap : function(button) {
+		vanProductOption.show();
+	},
 	onCustomerContainerOptionButtonTap : function(button) {
 		customerContainerOption.show();
 	},
@@ -464,6 +668,29 @@ Ext.define('PaperVan.controller.Controller', {
 		}
 		reasonSelect.setValue(reason);
 	},
+	onUpdateActivityTypeChange : function(select, newValue, oldValue) {
+		// automatically update reason
+		var reason;
+		var salesOpp = ACTIVITY_TYPE.findAll({ text: 'Sales Opportunity' })[0].value;
+		var reasonSelect = Ext.ComponentQuery.query('#updateActivityReasonSelect')[0];
+		// when activity type is sales opportunity
+		if (newValue == salesOpp) {
+			reason = ACTIVITY_REASON.findAll({ text: 'Annual Reports' })[0].value;
+			// unhide opportunity related fields
+			Ext.ComponentQuery.query('#updateVolOpportunity')[0].setHidden(false);
+			Ext.ComponentQuery.query('#updateQtyOpportunity')[0].setHidden(false);
+			Ext.ComponentQuery.query('#updateAmountOpportunity')[0].setHidden(false);
+			Ext.ComponentQuery.query('#updateSalesDocNo')[0].setHidden(false);
+		} else {
+			reason = ACTIVITY_REASON.findAll({ text: 'Regular Sales Call' })[0].value;
+			// hide opportunity related fields
+			Ext.ComponentQuery.query('#updateVolOpportunity')[0].setHidden(true);
+			Ext.ComponentQuery.query('#updateQtyOpportunity')[0].setHidden(true);
+			Ext.ComponentQuery.query('#updateAmountOpportunity')[0].setHidden(true);
+			Ext.ComponentQuery.query('#updateSalesDocNo')[0].setHidden(true);
+		}
+		reasonSelect.setValue(reason);
+	},
 	onActivityCreationInit : function() {
 		// update contact select field in activity creation screens
 		var availableContactField = Ext.ComponentQuery.query('#availableContactSelect')[0];
@@ -474,6 +701,18 @@ Ext.define('PaperVan.controller.Controller', {
 		var activitySubTypeSelect = Ext.ComponentQuery.query('#opportunityTypeSelect')[0];
 		activitySubTypeSelect.setOptions(activitySubTypeList);
 	},
+
+	onActivityUpdateInit : function() {
+		// update contact select field in activity creation screens
+		var availableContactField = Ext.ComponentQuery.query('#updateAvailableContactSelect')[0];
+		availableContactField.setOptions(availableContact);
+		availableContactField.setReadOnly(isContactReadOnly);
+
+		// update activity subtype
+		var activitySubTypeSelect = Ext.ComponentQuery.query('#updateOpportunityTypeSelect')[0];
+		activitySubTypeSelect.setOptions(activitySubTypeList);
+	},
+
 	onDisputeCreationInit : function() {
 		// update contact select field in dispute creation screens
 		var availableDisputeField = Ext.ComponentQuery.query('#availableDisputeSelect')[0];
@@ -677,14 +916,33 @@ Ext.define('PaperVan.controller.Controller', {
 			);
 		}
 	},
+
 	onRecentActTab : function(list, index, target, record) {
-		tempActivityText = record.getData().text;
+		var data = record.getData();
 		var customerTab = Ext.ComponentQuery.query('customerTab')[0];
+		var titleText = 'Act ' + data.actNo;
+
+		// setup selectedSalesAct value
+		selectedSalesAct = data.actNo;
 
 		customerTab.push({
-			xtype : 'activityDisplay',
+			xtype : 'activityUpdate',
+			title : titleText
 		});
-		Ext.ComponentQuery.query('#activityDisplayTextArea')[0].setValue(tempActivityText);
+
+		// dateFormat(actDate, 'yyyymmdd');
+		var fromDate = new Date(convertSAPDateToJSDate(data.fromDate));
+		Ext.ComponentQuery.query('#updateActivityDate')[0].setValue(fromDate);
+		Ext.ComponentQuery.query('#updateAvailableContactSelect')[0].setValue(data.contNo);
+		Ext.ComponentQuery.query('#updateActivityTypeSelect')[0].setValue(data.actTypeKey);
+		Ext.ComponentQuery.query('#updateActivityReasonSelect')[0].setValue(data.reason);
+		Ext.ComponentQuery.query('#updateActivityOutcomeSelect')[0].setValue(data.outcome);
+		Ext.ComponentQuery.query('#updateOpportunityTypeSelect')[0].setValue(data.oppType);
+		Ext.ComponentQuery.query('#updateVolOpportunity')[0].setValue(data.volume);
+		Ext.ComponentQuery.query('#updateQtyOpportunity')[0].setValue(data.quantity);
+		Ext.ComponentQuery.query('#updateAmountOpportunity')[0].setValue(data.amount);
+		Ext.ComponentQuery.query('#updateSalesDocNo')[0].setValue(data.salesDoc);
+		Ext.ComponentQuery.query('#updateActivityTextArea')[0].setValue(data.text);
 
 		var button = Ext.ComponentQuery.query('#createActivityButton');
 		if (button.length > 0) {
@@ -699,6 +957,7 @@ Ext.define('PaperVan.controller.Controller', {
 			button[0].setHidden(true);
 		}
 	},
+
 	onDisputeCreationSubmit : function(button) {
 		var title = Ext.ComponentQuery.query('#disputeTitle')[0].getValue();
 		var category = Ext.ComponentQuery.query('#disputeTypeSelect')[0].getValue();
@@ -766,6 +1025,35 @@ Ext.define('PaperVan.controller.Controller', {
 			});
 		}
 	},
+
+	onActivityUpdate : function(button) {
+		var actDate = Ext.ComponentQuery.query('#updateActivityDate')[0].getValue();
+		var formattedDate = dateFormat(actDate, 'yyyymmdd');
+		var selectedContact = Ext.ComponentQuery.query('#updateAvailableContactSelect')[0].getValue();
+		var actText = Ext.ComponentQuery.query('#updateActivityTextArea')[0].getValue().trim();
+		var actType = Ext.ComponentQuery.query('#updateActivityTypeSelect')[0].getValue();
+		var actTypeText = Ext.ComponentQuery.query('#updateActivityTypeSelect')[0].getComponent().getValue();
+		var actReason = Ext.ComponentQuery.query('#updateActivityReasonSelect')[0].getValue();
+		var actOutcome = Ext.ComponentQuery.query('#updateActivityOutcomeSelect')[0].getValue();
+		var actOppType = Ext.ComponentQuery.query('#updateOpportunityTypeSelect')[0].getValue();
+		var actVol = Ext.ComponentQuery.query('#updateVolOpportunity')[0].getValue();
+		var actQty = Ext.ComponentQuery.query('#updateQtyOpportunity')[0].getValue();
+		var actAmount = Ext.ComponentQuery.query('#updateAmountOpportunity')[0].getValue();
+		var actSalesDoc = Ext.ComponentQuery.query('#updateSalesDocNo')[0].getValue();
+		if (actText.length > 0) {
+
+			Ext.Msg.confirm("Confirm", "Do you want to update a sales activity?", function(buttonId) {
+				if (buttonId === 'yes') {
+					changeSalesActivity(formattedDate, selectedContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType);
+				}
+			}, this // scope of the controller
+			);
+		} else {
+			Ext.Msg.alert('Alert', 'Please enter text before submit an activity.', function() {
+			});
+		}
+	},
+
 	onCustomerMainActivate : function(view) {
 
 		// set customer general detail
@@ -870,7 +1158,7 @@ Ext.define('PaperVan.controller.Controller', {
 			// show delete all button
 			var button;
 
-			button = Ext.ComponentQuery.query('#vanRefreshButton');
+			button = Ext.ComponentQuery.query('#vanOptionButton');
 			if (button.length > 0) {
 				button[0].setHidden(false);
 			}
@@ -1279,7 +1567,7 @@ Ext.define('PaperVan.controller.Controller', {
 	},
 	onChangeTab : function(mainPanel, value, oldValue) {
 		console.log('tab changes: ' + value.getItemId());
-
+		currentTab = value.getItemId();
 		if (!isInOrderConfirmationScreen) {
 			if (value.getItemId() != 'customerTab') {
 				if (selectedCust == null) {
@@ -1425,10 +1713,13 @@ Ext.define('PaperVan.controller.Controller', {
 		if (event.target.className == 'cart_input') {
 			event.stopEvent();
 		} else {
+
 			// save select record
 			selectedProduct = JSON.parse(JSON.stringify(productsInCart.items[index]));
 			console.log('product result list is select at: ' + selectedProduct.prodNo);
 
+			//get material uom
+			getMaterialUom(selectedProduct.prodNo);
 			// call Product Description screen
 			list.up('cartOrder').push({
 				xtype : 'productDesc',
@@ -1459,10 +1750,6 @@ Ext.define('PaperVan.controller.Controller', {
 					allItems[i].setValue(selectedProduct.manualPr);
 				}
 
-				// set batchNumber in the cart
-				// if (allItems[i].getItemId() == 'batchNumber') {
-				// allItems[i].setValue(selectedProduct.batch);
-				// }
 			}
 		}
 	},
@@ -1482,9 +1769,11 @@ Ext.define('PaperVan.controller.Controller', {
 		var productDesc;
 		var productHist;
 		var productAtp;
+		var vanReplUpdate;
 		var productDescId;
 		var productHistId;
 		var productAtpId;
+		var vanReplUpdateId;
 		var productHistStoreType;
 		var productAtpStoreType;
 		var hideLoadMoreButton = false;
@@ -1493,6 +1782,7 @@ Ext.define('PaperVan.controller.Controller', {
 			productDescId = 'vanProductDesc';
 			productHistId = 'vanProductDescHist';
 			productAtpId = 'vanProductDescAtp';
+			vanReplUpdateId = 'vanVanReplUpdate';
 
 			productHistStoreType = 'vanProductSalesHistory';
 			productAtpStoreType = 'vanProductAtp';
@@ -1503,6 +1793,7 @@ Ext.define('PaperVan.controller.Controller', {
 			productDescId = 'searchProductDesc';
 			productHistId = 'searchProductDescHist';
 			productAtpId = 'searchProductDescAtp';
+			vanReplUpdateId = 'searchVanReplUpdate';
 
 			productHistStoreType = 'searchProductSalesHistory';
 			productAtpStoreType = 'searchProductAtp';
@@ -1513,6 +1804,7 @@ Ext.define('PaperVan.controller.Controller', {
 			productDescId = 'previousProductDesc';
 			productHistId = 'previousProductDescHist';
 			productAtpId = 'previousProductDescAtp';
+			vanReplUpdateId = 'previousVanReplUpdate';
 
 			productHistStoreType = 'preProductSalesHistory';
 			productAtpStoreType = 'previousProductAtp';
@@ -1536,6 +1828,12 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 		});
 
+		// create van replenish stock view
+		vanReplUpdate = Ext.create('PaperVan.view.VanReplUpdate', {
+			itemId : vanReplUpdateId,
+			title : 'Van Replenishment Update'
+		});
+
 		// only add customer price button at van product tab
 		if (carouselId == 'vanProductDescMain') {
 			customerPriceButton = Ext.create('Ext.Button', {
@@ -1543,6 +1841,7 @@ Ext.define('PaperVan.controller.Controller', {
 				docked : 'bottom',
 				text : 'Get customer price',
 				ui : 'action',
+				style : 'border-width: 1px 0px 0px 0px;border-style: groove; font-size: 80%;',
 				handler : function() {
 					console.log('button load customer price');
 					Ext.toast("Loading customer price", 10000);
@@ -1550,6 +1849,7 @@ Ext.define('PaperVan.controller.Controller', {
 				}
 			});
 			productDesc.add([customerPriceButton]);
+
 		}
 		// create product history view
 		productHist = Ext.create('PaperVan.view.ProductDescHist', {
@@ -1589,7 +1889,7 @@ Ext.define('PaperVan.controller.Controller', {
 			}]
 		});
 
-		carousel.add([productDesc, productHist, productAtp]);
+		carousel.add([productDesc, productHist, productAtp, vanReplUpdate]);
 	},
 	onProductDescActivate : function(list) {
 		console.log('onProductDescActivate');
@@ -1644,20 +1944,20 @@ Ext.define('PaperVan.controller.Controller', {
 			}
 
 			// hide refresh button
-			button = Ext.ComponentQuery.query('#vanRefreshButton');
+			button = Ext.ComponentQuery.query('#vanOptionButton');
 			if (button.length > 0) {
 				button[0].setHidden(true);
 			}
 
 		}
 
-		// set uom in order qty field
-		var orderQtyField = list.down('#orderQty');
-		orderQtyField.setLabel('Order Qty (' + selectedProduct.uom + ')');
-
-		// set uom in manual pr field
-		var manualPrField = list.down('#manualPr');
-		manualPrField.setLabel('Manual Price / ' + selectedProduct.uom);
+		// // set uom in order qty field
+		// var orderQtyField = list.down('#orderQty');
+		// orderQtyField.setLabel('Order Qty (' + selectedProduct.uom + ')');
+		//
+		// // set uom in manual pr field
+		// var manualPrField = list.down('#manualPr');
+		// manualPrField.setLabel('Manual Price / ' + selectedProduct.uom);
 
 	},
 
@@ -1669,13 +1969,6 @@ Ext.define('PaperVan.controller.Controller', {
 		// save select record
 		selectedProduct = record.getData();
 
-		// call Product Description screen
-		// list.up('previousPurchaseTab').push({
-		// xtype : 'productDesc',
-		// data : selectedProduct,
-		// id : 'previousProductDesc',
-		// title : selectedProduct.prodDesc
-		// });
 		list.up('previousPurchaseTab').push({
 			xtype : 'productDescMain',
 			id : 'previousProductDescMain',
@@ -1684,6 +1977,10 @@ Ext.define('PaperVan.controller.Controller', {
 		getProductSalesHistoryList(selectedProduct.prodNo, 0, 'previousProductDescMain');
 		// get ATP based on customer plant
 		getProductAtpList(selectedProduct.prodNo, selectedCustRecord.plant);
+		// get van replenishment information
+		getVanReplInfo(selectedProduct.prodNo, userPlant, userStorageLoc, 'previousProductDescMain');
+		//get material uom
+		getMaterialUom(selectedProduct.prodNo);
 	},
 
 	// when product is selected then save product record in
@@ -1704,6 +2001,10 @@ Ext.define('PaperVan.controller.Controller', {
 		// get ATP from selected plant in search product screen
 		var searchPlant = Ext.ComponentQuery.query('#searchPlant')[0].getValue();
 		getProductAtpList(selectedProduct.prodNo, searchPlant);
+		// get van replenishment information
+		getVanReplInfo(selectedProduct.prodNo, userPlant, userStorageLoc, 'searchProductDescMain');
+		//get material uom
+		getMaterialUom(selectedProduct.prodNo);
 	},
 
 	// when product is selected then save product record in
@@ -1715,13 +2016,6 @@ Ext.define('PaperVan.controller.Controller', {
 		selectedProduct = record.getData();
 		console.log('van product result list is select at: ' + selectedProduct.prodNo);
 
-		// call Product Description screen
-		// list.up('vanProductTab').push({
-		// xtype : 'productDesc',
-		// data : selectedProduct,
-		// id : 'vanProductDesc',
-		// title : selectedProduct.prodDesc
-		// });
 		list.up('vanProductTab').push({
 			xtype : 'productDescMain',
 			id : 'vanProductDescMain',
@@ -1730,6 +2024,10 @@ Ext.define('PaperVan.controller.Controller', {
 		getProductSalesHistoryList(selectedProduct.prodNo, 0, 'vanProductDescMain');
 		// get ATP based on customer plant
 		getProductAtpList(selectedProduct.prodNo, selectedCustRecord.plant);
+		// get van replenishment information
+		getVanReplInfo(selectedProduct.prodNo, userPlant, userStorageLoc, 'vanProductDescMain');
+		//get material uom
+		getMaterialUom(selectedProduct.prodNo);
 	},
 
 	// when done button is tapped, add update cart item
@@ -1755,6 +2053,13 @@ Ext.define('PaperVan.controller.Controller', {
 				tempProduct.manualPr = allItems[i].getValue();
 			}
 
+			if (allItems[i].getItemId() == 'uomSelect') {
+				tempProduct.orderUom = allItems[i].getValue();
+				uomOptions = allItems[i].getOptions();
+
+				tempProduct.conversion = uomOptions.findAll({value: tempProduct.orderUom})[0].conversion;
+			}
+
 		}
 
 		updateToCart(tempProduct);
@@ -1771,6 +2076,7 @@ Ext.define('PaperVan.controller.Controller', {
 		// var tempProduct = JSON.parse(JSON.stringify(selectedProduct));
 		var tempData;
 		var buttonId = button.getItemId();
+		var uomOptions;
 		// var requiredBatch = false;
 
 		// determine which view used to retrieve a product data beofre adding to
@@ -1808,32 +2114,19 @@ Ext.define('PaperVan.controller.Controller', {
 				tempProduct.manualPr = allItems[i].getValue();
 			}
 
-			// set batchNumber
-			// if (allItems[i].getItemId() == 'batchNumber') {
-			// tempProduct.batch = allItems[i].getValue();
-			// }
-		}
+			if (allItems[i].getItemId() == 'uomSelect') {
+				tempProduct.orderUom = allItems[i].getValue();
+				uomOptions = allItems[i].getOptions();
 
-		// if (buttonId == 'vanAddToCartButton' && tempProduct.batch == '') {
-		// var relatedBatch = vanBatchResultData.items.findAll({
-		// prodNo : tempProduct.prodNo
-		// });
-		// // there is one batch available for selected product
-		// if (relatedBatch.length == 1) {
-		// // assign batch automatically
-		// tempProduct.batch = relatedBatch[0].batch;
-		// } else if (relatedBatch.length > 1) {
-		// // more than one batches available but user didn't pick any
-		// requiredBatch = true;
-		// }
-		// }
-		//
-		// if (!requiredBatch) {
+				tempProduct.conversion = uomOptions.findAll({value: tempProduct.orderUom})[0].conversion;
+			}
+
+		}
 
 		// add temp object to productsInCart variable
 		addToCart(tempProduct);
 		updateCartTotal();
-		Ext.toast(tempProduct.prodDesc + ' has been added to the cart.', 1200);
+		Ext.toast(tempProduct.prodDesc + ' has been added to the cart.', 2000);
 		// return to previous page
 		if (buttonId == 'addToCartButton') {
 			button.up('productTab').pop();
@@ -1880,7 +2173,7 @@ Ext.define('PaperVan.controller.Controller', {
 		console.log('Result list is active');
 		var button;
 
-		button = Ext.ComponentQuery.query('#vanRefreshButton');
+		button = Ext.ComponentQuery.query('#vanOptionButton');
 		if (button.length > 0) {
 			button[0].setHidden(true);
 		}
@@ -2132,20 +2425,21 @@ function addToCart(product) {
 			productsInCart.items[i].orderQty += product.orderQty;
 			productsInCart.items[i].jobNumber = product.jobNumber;
 			productsInCart.items[i].manualPr = product.manualPr;
+			productsInCart.items[i].orderUom = product.orderUom;
+			productsInCart.items[i].conversion = product.conversion;
 			isDuplicate = true;
 			break;
 		}
 	}
 
 	if (!isDuplicate) {
-		productsInCart.items.push(product)
-		// TODO need to save this variable into local storage
+		productsInCart.items.push(product);
 
 		// update badgeText
-		updateCartBadgeText()
+		updateCartBadgeText();
 	}
 	// update cartStore
-	updateCartStore()
+	updateCartStore();
 }
 
 function updateCustPrice(product) {
@@ -2194,7 +2488,8 @@ function updateToCart(product) {
 			productsInCart.items[i].orderQty = product.orderQty;
 			productsInCart.items[i].jobNumber = product.jobNumber;
 			productsInCart.items[i].manualPr = product.manualPr;
-			productsInCart.items[i].batch = product.batch;
+			productsInCart.items[i].orderUom = product.orderUom;
+			productsInCart.items[i].conversion = product.conversion;
 			break;
 		}
 	}
@@ -2388,11 +2683,11 @@ function updateCartTotal() {
 	var totalPrice = 0;
 	for (var i = 0; i < productsInCart.items.length; i++) {
 		if (productsInCart.items[i].manualPr != null) {
-			totalPrice = totalPrice + productsInCart.items[i].manualPr * productsInCart.items[i].orderQty;
+			totalPrice = totalPrice + (productsInCart.items[i].manualPr * productsInCart.items[i].orderQty * productsInCart.items[i].conversion);
 		} else if (productsInCart.items[i].custPr != null && productsInCart.items[i].custPr != 0) {
-			totalPrice = totalPrice + productsInCart.items[i].custPr * productsInCart.items[i].orderQty;
+			totalPrice = totalPrice + (productsInCart.items[i].custPr * productsInCart.items[i].orderQty * productsInCart.items[i].conversion);
 		} else if (productsInCart.items[i].listPr != null) {
-			totalPrice = totalPrice + productsInCart.items[i].listPr * productsInCart.items[i].orderQty;
+			totalPrice = totalPrice + (productsInCart.items[i].listPr * productsInCart.items[i].orderQty * productsInCart.items[i].conversion);
 			// customer price will always be available
 			// totalPrice = totalPrice + productsInCart.items[i].listPr *
 			// productsInCart.items[i].orderQty;
@@ -2582,6 +2877,25 @@ function getActivitySubTypes() {
 	callOData(getActivitySubTypeOData, filterString, successActivitySubTypesCallback, errCallback, null);
 }
 
+function getVanReplInfo(prodNo, plant, sloc, viewID) {
+	productHistoryViewID = viewID;
+
+	filters = [{
+		field : 'Material',
+		value : prodNo,
+	}, {
+		field : 'Plant',
+		value : plant,
+	}, {
+		field : 'Sloc',
+		value : sloc,
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getVanReplOData, filterString, successVanReplInfoCallback, errCallback, null);
+}
+
 function getCustomerContactList() {
 
 	filters = [{
@@ -2610,6 +2924,17 @@ function getCustomerAddress() {
 	searchString = '';
 	var filterString = constructFilter(filters, searchString);
 	callOData(getSingleCustomerOData, filterString, successCustomerAddress, errCallback, null, selectedCust);
+}
+
+function getMaterialUom(prodNo) {
+	filters = [{
+		field : 'Material',
+		value : prodNo
+	}];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+
+	callOData(getMaterialUomOData, filterString, successMaterialUomCallback, errCallback, null);
 }
 
 function getOpenInboundDelivery(plant, sloc) {
@@ -2862,6 +3187,7 @@ function prepareOrderItem() {
 	var temp;
 	var tempManualPr;
 	var storLoc;
+	var orderUom;
 
 	// convert product in a cart to string
 	//*MATERIAL|REQ_QTY|SALES_UNIT|MANUAL_PRICE|PURCH_NO_S|STOR_LOC|PLANT
@@ -2884,8 +3210,14 @@ function prepareOrderItem() {
 		if (i != 0) {
 			temp = '%7C';
 		}
+		if (productsInCart.items[i].orderUom != null) {
+			orderUom = productsInCart.items[i].orderUom;
+		} else {
+			orderUom = productsInCart.items[i].uom;
+		}
+
 		// temp += productsInCart.items[i].prodNo + '|' + productsInCart.items[i].orderQty + '|' + productsInCart.items[i].uom + '|' + tempManualPr + '|' + productsInCart.items[i].jobNumber + '|' + storLoc + '|' + plant;
-		temp += productsInCart.items[i].prodNo + '%7C' + productsInCart.items[i].orderQty + '%7C' + productsInCart.items[i].uom + '%7C' + tempManualPr + '%7C' + productsInCart.items[i].jobNumber + '%7C' + storLoc + '%7C' + plant;
+		temp += productsInCart.items[i].prodNo + '%7C' + productsInCart.items[i].orderQty + '%7C' + orderUom + '%7C' + tempManualPr + '%7C' + productsInCart.items[i].jobNumber + '%7C' + storLoc + '%7C' + plant;
 
 		orderItem += temp;
 	};
@@ -2930,6 +3262,27 @@ function createDelivery(orderNo) {
 	searchString = '';
 	var filterString = constructFilter(filters, searchString);
 	callOData(getDeliveryPGIOData, filterString, callCreateDeliveryOData, errCallback, deliveryPayload, null);
+
+}
+
+function generateEmailPDF(delNo, emailDel, emailInv) {
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : EMAIL_LOADING,
+		indicator : true
+	});
+
+	emailPDFPayload = {
+		'Delivery' : delNo,
+		'EmailDel' : emailDel,
+		'EmailInvoice' : emailInv,
+	};
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getEmailPDFOData, filterString, callCreateEmailPDFOData, errCallback, emailPDFPayload, null);
 
 }
 
@@ -3200,6 +3553,37 @@ function changeVanSchedule(visitPeriod, monday, tuesday, wednesday, thursday, fr
 	callOData(getCustomerOData, filterString, callChangeVanScheduleOData, errCallback, customerVanSchedulePayload, selectedCust);
 }
 
+function updateVanReplInfo(prodNo, plant, sloc, minStk, maxStk) {
+	updateVanReplKey = [{
+		'KeyField' : 'Material',
+		'Value' : prodNo
+	}, {
+		'KeyField' : 'Plant',
+		'Value' : plant
+	}, {
+		'KeyField' : 'Sloc',
+		'Value' : sloc
+	}];
+	vanReplPayload = {
+		'Material' : prodNo,
+		'Plant' : plant,
+		'Sloc' : sloc,
+		'MinStk' : minStk.toString(),
+		'MaxStk' : maxStk.toString()
+	};
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : VAN_REPL_CHANGE_LOADING,
+		indicator : true
+	});
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getVanReplOData, filterString, callUpdateVanReplOData, errCallback, vanReplPayload, updateVanReplKey);
+}
+
 function createCustomer(name1, name2, street, postcode, suburb, region, email, tel, fax) {
 
 	customerDetailPayload = {
@@ -3347,8 +3731,59 @@ function createDispute(title, category, contact, referenceDoc, claimAmount, text
 	callOData(getDisputeOData, filterString, callCreateDisputeOData, errCallback, disputePayload, null);
 }
 
-function createSalesActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
+function createVanRepl(plant, sloc) {
 
+	vanReplPayload = {
+		'Plant' : plant,
+		'Sloc' : sloc,
+	};
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : VAN_REPL_CREATE_LOADING,
+		indicator : true
+	});
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getVanReplOData, filterString, callCreateVanReplOData, errCallback, vanReplPayload, null);
+}
+
+function changeSalesActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
+
+	actText = removeSpecialCharacter(actText);
+
+	activityPayload = {
+		'ActNo' : selectedSalesAct,
+		'CustomerNo' : selectedCust,
+		'ContactNo' : (actContact == null) ? '' : actContact.toString(),
+		'ToDate' : (actDate == null) ? '' : actDate.toString(),
+		'ActText' : (actText == null) ? '' : actText.toString(),
+		'ActType' : (actType == null) ? '' : actType.toString(),
+		'ActReason' : (actReason == null) ? '' : actReason.toString(),
+		'ActOutcome' : (actOutcome == null) ? '' : actOutcome.toString(),
+		'Volume' : (actVol == null) ? '0' : actVol.toString(),
+		'Quantity' : (actQty == null) ? '0' : actQty.toString(),
+		'Amount' : (actAmount == null) ? '0' : actAmount.toString(),
+		'SalesDoc' : (actSalesDoc == null) ? '' : actSalesDoc.toString(),
+		'OpportunityType' : (actOppType == null) ? '' : actOppType.toString()
+	};
+
+	mainContainer.setMasked({
+		xtype : 'loadmask',
+		message : ACTIVITY_CHANGE_LOADING,
+		indicator : true
+	});
+
+	filters = [];
+	searchString = '';
+	var filterString = constructFilter(filters, searchString);
+	callOData(getSalesActivityOData, filterString, callChangeSalesActivityOData, errCallback, activityPayload, null);
+
+}
+
+function createSalesActivity(actDate, actContact, actText, actType, actReason, actOutcome, actVol, actQty, actAmount, actSalesDoc, actOppType) {
 
 	actText = removeSpecialCharacter(actText);
 
@@ -3360,9 +3795,9 @@ function createSalesActivity(actDate, actContact, actText, actType, actReason, a
 		'ActType' : (actType == null) ? '' : actType.toString(),
 		'ActReason' : (actReason == null) ? '' : actReason.toString(),
 		'ActOutcome' : (actOutcome == null) ? '' : actOutcome.toString(),
-		'Volume' : (actVol == null) ? '' : actVol.toString(),
-		'Quantity' : (actQty == null) ? '' : actQty.toString(),
-		'Amount' : (actAmount == null) ? '' : actAmount.toString(),
+		'Volume' : (actVol == null) ? '0' : actVol.toString(),
+		'Quantity' : (actQty == null) ? '0' : actQty.toString(),
+		'Amount' : (actAmount == null) ? '0' : actAmount.toString(),
 		'SalesDoc' : (actSalesDoc == null) ? '' : actSalesDoc.toString(),
 		'OpportunityType' : (actOppType == null) ? '' : actOppType.toString()
 	};
@@ -3377,7 +3812,6 @@ function createSalesActivity(actDate, actContact, actText, actType, actReason, a
 	searchString = '';
 	var filterString = constructFilter(filters, searchString);
 	callOData(getSalesActivityOData, filterString, callCreateSalesActivityOData, errCallback, activityPayload, null);
-
 }
 
 function refreshData(successful) {
@@ -3600,22 +4034,22 @@ function getCustomerDetail() {
 
 function updateCustomerListTitle() {
 	var customerList = Ext.ComponentQuery.query("customerTab")[0];
-	customerList.getNavigationBar().setTitle('Customers for ' + userStorageLoc);
+	customerList.getNavigationBar().setTitle(userStorageLoc);
 }
 
 function updateCustomerList(salesOffice, todayCustomer, allCustomer, allVanCustomer) {
 	var customerStore = Ext.getStore('customer');
 	var customerList = Ext.ComponentQuery.query("customerList")[0];
 	customerStore.clearFilter();
-	if (todayCustomer == 'X') {
-		customerList.setGrouped(false);
-		customerStore.setGrouper(null);
-		customerStore.sort('sequence', 'ASC');
-	} else {
-		customerStore.setGrouper(customerGrouper);
-		customerStore.sort('custName', 'ASC');
-		customerList.setGrouped(true);
-	}
+	// if (todayCustomer == 'X') {
+	// customerList.setGrouped(false);
+	// customerStore.setGrouper(null);
+	// customerStore.sort('sequence', 'ASC');
+	// } else {
+	customerStore.setGrouper(customerGrouper);
+	customerStore.sort('custName', 'ASC');
+	customerList.setGrouped(true);
+	// }
 }
 
 function getVisitPeriodText(visitPeriodKey) {
@@ -3739,4 +4173,143 @@ function onVanProductSearch() {
 			return false;
 		});
 	}
+}
+
+function filterCustomerByDay(day) {
+	var store = Ext.getStore('customer');
+	store.clearFilter();
+
+	store.filterBy(function(record) {
+		switch (day) {
+			case 1:
+				if (record.get('monday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 2:
+				if (record.get('tuesday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 3:
+				if (record.get('wednesday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 4:
+				if (record.get('thursday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 5:
+				if (record.get('friday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 6:
+				if (record.get('saturday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			case 7:
+				if (record.get('sunday') == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+				break;
+			default :
+				return true;
+				break;
+		}
+	});
+}
+
+function updateVanReplUpdateScreen(viewID, vanReplData) {
+	var vanReplUpdateItemId;
+	var vanReplFieldSet;
+	var allItems;
+	var minReplQty;
+	var replData;
+	switch (viewID) {
+		case 'vanProductDescMain':
+			vanReplUpdateItemId = '#vanVanReplUpdate';
+			replData = vanVanReplData;
+			break;
+		case 'searchProductDescMain':
+			vanReplUpdateItemId = '#searchVanReplUpdate';
+			replData = searchVanReplData;
+			break;
+		case 'previousProductDescMain':
+			vanReplUpdateItemId = '#previousVanReplUpdate';
+			replData = previousVanReplData;
+			break;
+	};
+	vanReplFieldSet = Ext.ComponentQuery.query(vanReplUpdateItemId)[0].items.items[0];
+	// get all items under van fieldset
+	allItems = vanReplFieldSet.getItems().items;
+	for (var i = 0; i < allItems.length; i++) {
+		// set delQty textfield
+		if (allItems[i].getItemId() == 'delQtyField') {
+			minReplQty = replData.delQty + ' ' + replData.delUom;
+			allItems[i].setValue(minReplQty);
+		}
+
+		// when delQty = 0; meaning no limit in the input field
+		if (replData.delQty == 0) {
+			if (allItems[i].getItemId() == 'replMinField') {
+				allItems[i].setHidden(false);
+				allItems[i].setValue(replData.minStk);
+			}
+			if (allItems[i].getItemId() == 'replMaxField') {
+				allItems[i].setHidden(false);
+				allItems[i].setValue(replData.maxStk);
+			}
+			if (allItems[i].getItemId() == 'replMinSpinner') {
+				allItems[i].setHidden(true);
+			}
+			if (allItems[i].getItemId() == 'replMaxSpinner') {
+				allItems[i].setHidden(true);
+			}
+		} else {
+			if (allItems[i].getItemId() == 'replMinField') {
+				allItems[i].setHidden(true);
+			}
+			if (allItems[i].getItemId() == 'replMaxField') {
+				allItems[i].setHidden(true);
+			}
+			if (allItems[i].getItemId() == 'replMinSpinner') {
+				allItems[i].setHidden(false);
+				allItems[i].setValue(replData.minStk);
+				allItems[i].setStepValue(replData.delQty);
+			}
+			if (allItems[i].getItemId() == 'replMaxSpinner') {
+				allItems[i].setHidden(false);
+				allItems[i].setValue(replData.maxStk);
+				allItems[i].setStepValue(replData.delQty);
+			}
+		}
+	};
+}
+
+function showUom(uom, orderUom) {
+	var returnUom;
+	if (orderUom != null) {
+		returnUom = orderUom;
+	} else {
+		returnUom = uom;
+	}
+	return returnUom;
 }

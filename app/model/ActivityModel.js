@@ -25,7 +25,31 @@ Ext.define("PaperVan.model.ActivityModel", {
         }, {
             name : 'createdBy',
             type : 'string'
-        }, {
+		}, {
+			name : 'actTypeKey',
+			type : 'string'
+		}, {
+			name : 'reason',
+			type : 'string'
+		}, {
+			name : 'outcome',
+			type : 'string'
+		}, {
+			name : 'oppType',
+			type : 'string'
+		}, {
+			name : 'volume',
+			type : 'string'
+		}, {
+			name : 'quantity',
+			type : 'string'
+		}, {
+			name : 'amount',
+			type : 'string'
+		}, {
+			name : 'salesDoc',
+			type : 'string'
+		}, {
             name : 'type',
             type : 'string'
         }]

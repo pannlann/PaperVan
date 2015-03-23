@@ -5,7 +5,7 @@ Ext.define('PaperVan.view.ProductSearch', {
         title : 'Product Search',
         padding : '0 0 0 0',
         defaults : {
-            style : 'border-width: 2px 1px 0px 1px; border-style: groove',
+            style : 'border-width: 2px 1px 0px 1px; border-style: groove; font-size: 80%;',
             labelWidth : '60%'
         },
         items : [{
